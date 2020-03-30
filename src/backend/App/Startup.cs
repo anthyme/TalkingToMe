@@ -32,6 +32,7 @@ namespace App
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseCors("ReactPolicy");
             }
 
             baseContext.Database.Migrate();
