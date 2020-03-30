@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using TalkingToMe.BaseMigration.Context;
+using TalkingToMe.BaseMigration.Models;
 
 namespace App
 {
@@ -13,6 +15,8 @@ namespace App
     {
         public static void Main(string[] args)
         {
+          
+
             CreateHostBuilder(args).Build().Run();
         }
 

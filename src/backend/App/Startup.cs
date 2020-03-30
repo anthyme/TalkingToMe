@@ -1,4 +1,4 @@
-using App.Models;
+using TalkingToMe.BaseMigration.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Builder;
@@ -27,13 +27,14 @@ namespace App
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, BaseContext baseContext)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
-          
+
+            baseContext.Database.Migrate();
 
             app.UseHttpsRedirection();
 
@@ -46,5 +47,6 @@ namespace App
                 endpoints.MapControllers();
             });
         }
+
     }
 }
