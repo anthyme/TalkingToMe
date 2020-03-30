@@ -9,7 +9,7 @@ function App() {
 
   const [message, setMessage] = useState(300);
 
-  fetch(`https://localhost:44381/api/HelloWorldBase`, {
+  fetch(`https://talkingtome-api.azurewebsites.net/api/HelloWorldBase`, {
     method: 'get',
     headers: {
       'Content-Type': 'application/json'
