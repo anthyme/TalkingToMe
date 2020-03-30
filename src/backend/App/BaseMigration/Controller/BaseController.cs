@@ -5,35 +5,36 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Back_End_Chat.Context;
-using Back_End_Chat.Models;
+using TalkingToMe.BaseMigration.Context;
+using TalkingToMe.BaseMigration.Models;
 
-namespace App.BaseMigration.Controllers
+namespace TalkingToMe.BaseMigration.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ChannelsControllerTest : ControllerBase
+    public class HelloWorldBase : ControllerBase
     {
-        private readonly ChatContext _context;
+        private readonly BaseContext _context;
 
-        public ChannelsControllerTest(ChatContext context)
+        public HelloWorldBase(BaseContext context)
         {
             _context = context;
         }
 
         // GET: api/ChannelsControllerTest/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Channel>> GetChannel(int id)
+        [HttpGet]
+        public async Task<ActionResult<HelloWorld>> GetChannel()
         {
-            var channel = await _context.HelloWorldBase.FindAsync(id);
+            var helloWorld = await _context.HelloWorldBase.FindAsync(1);
 
-            if (channel == null)
+            if (helloWorld == null)
             {
                 return NotFound();
             }
 
-            return channel;
+            return helloWorld;
         }
 
+    }
 }
 

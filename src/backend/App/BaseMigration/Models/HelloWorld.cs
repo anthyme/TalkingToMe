@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace App.BaseModels.Models
+namespace TalkingToMe.BaseMigration.Models
 {
     public class HelloWorld
     {
