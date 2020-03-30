@@ -20,7 +20,13 @@ namespace App
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
+            services.AddCors(o => o.AddPolicy("ReactPolicy", builder =>
+            {
+                builder.WithOrigins("http://localhost:3000")
+                       .AllowAnyMethod()
+                       .AllowAnyHeader()
+                       .AllowCredentials();
+            }));
             services.AddDbContext<BaseContext>(options =>
            options.UseSqlServer(Configuration.GetConnectionString("DBString")));
             services.AddControllers();
@@ -41,12 +47,15 @@ namespace App
 
             app.UseRouting();
 
+            app.UseCors("ReactPolicy");
+
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
             });
+
         }
 
     }
