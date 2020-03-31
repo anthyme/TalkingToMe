@@ -15,3 +15,7 @@ Mardi 31/03/2020
 - Création Context pour création BDD
 - Création Projet "Tests" dans la solution TalkingToMe
 - Modification du DBset dans "Startup.cs" pour creer la BDD
+- Création "Album" et "Menu" de démarrage pour le conférencier avec MaterialUi
+- Création "Cards" pour afficher les talks créés avec MaterialUi
+- Import de "pptx" dans react
+- Création "Formulaire" de création pour les talks et sauvegarde via api des informations

@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 import { withSearchValue } from "./enhancers/WithSearchValue";
 import { UserProvider } from './constants/UserContext'
 import SignIn from "./components/Login";
-import Album from "./components/Menu";
+import {Menu} from "./components/Menu";
 import logo from './logo.svg';
 import './App.css';
 
@@ -42,7 +42,7 @@ function App() {
         <div className="container-fluid">
             <Switch>
                 <Route exact path="/" render={(props) => (<SignIn />)} />
-                <Route exact path="/Menu" render={(props) => (<Album />)} />
+                <Route exact path="/Menu" render={(props) => (<Menu />)} />
             </Switch>
         </div>
 
