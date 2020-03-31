@@ -1,4 +1,10 @@
 import React, { useState } from 'react';
+import { Component } from 'react';
+import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
+import { withSearchValue } from "./enhancers/WithSearchValue";
+import { UserProvider } from './constants/UserContext'
+import SignIn from "./components/Login";
+import Album from "./components/Menu";
 import logo from './logo.svg';
 import './App.css';
 
@@ -31,13 +37,18 @@ function App() {
 
 
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        {message}
-      </header>
-    </div>
+    <UserProvider value=''>
+    <Router>
+        <div className="container-fluid">
+            <Switch>
+                <Route exact path="/" render={(props) => (<SignIn />)} />
+                <Route exact path="/Menu" render={(props) => (<Album />)} />
+            </Switch>
+        </div>
+
+    </Router>
+</UserProvider>
   );
 }
 
-export default App;
+export default App = withSearchValue(App);

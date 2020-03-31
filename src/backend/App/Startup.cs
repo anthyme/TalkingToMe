@@ -1,4 +1,5 @@
 using TalkingToMe.BaseMigration.Context;
+using App.TalkCreation.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Builder;
@@ -27,7 +28,7 @@ namespace App
                        .AllowAnyHeader()
                        .AllowCredentials();
             }));
-            services.AddDbContext<BaseContext>(options =>
+            services.AddDbContext<TalkContext>(options =>
            options.UseSqlServer(Configuration.GetConnectionString("DBString")));
             services.AddControllers();
         }
