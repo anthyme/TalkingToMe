@@ -18,4 +18,12 @@ Mardi 31/03/2020
 - Création "Album" et "Menu" de démarrage pour le conférencier avec MaterialUi
 - Création "Cards" pour afficher les talks créés avec MaterialUi
 - Import de "pptx" dans react
+
+Mercredi 01/04/2020
+- installation "npm install --save material-ui-dropzone"
+- Création react drag and drop
+- Création popUp modulable
+- Création quizz formulaire
+- Création premier header
+- Migration BDD vers BDD UML Miro
 - Création "Formulaire" de création pour les talks et sauvegarde via api des informations

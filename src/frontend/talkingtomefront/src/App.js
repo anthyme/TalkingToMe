@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 import { withSearchValue } from "./enhancers/WithSearchValue";
 import { UserProvider } from './constants/UserContext'
 import SignIn from "./components/Login";
+import QuizzCreator from "./quizzCreation/QuizzCreator"
 import {Menu} from "./components/Menu";
 import logo from './logo.svg';
 import './App.css';
@@ -43,6 +44,7 @@ function App() {
             <Switch>
                 <Route exact path="/" render={(props) => (<SignIn />)} />
                 <Route exact path="/Menu" render={(props) => (<Menu />)} />
+                <Route exact path="/Quizz" render={(props) => (<QuizzCreator />)} />
             </Switch>
         </div>
 

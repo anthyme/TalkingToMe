@@ -15,7 +15,7 @@ import Container from '@material-ui/core/Container';
 import Link from '@material-ui/core/Link';
 import {withSearchValue} from "../enhancers/WithSearchValue"
 import TalkPresCard from "./TalkPresCard"
-import PopUp from './PopUp'
+import PopUp from '../popUps/PopUp'
 
 function Copyright() {
   return (
