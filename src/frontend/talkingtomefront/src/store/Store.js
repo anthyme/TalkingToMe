@@ -5,4 +5,4 @@ const rootReducer = combineReducers({
   main: mainreducer
 });
 
-export const store = createStore(rootReducer);
+export const store = createStore(mainreducer);

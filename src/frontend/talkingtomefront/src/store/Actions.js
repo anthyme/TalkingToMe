@@ -1,39 +1,29 @@
 import * as types from "./ActionsTypes";
 
 
-export const setUser = newUserValue => ({
-    type: types.UPDATE_USER_VALUE,
+export const setcurrentAnswerId = newcurrentAnswerId => ({
+    type: types.UPDATE_CURRENTANSWERID_VALUE,
     payload: {
-        value: newUserValue
+        value: newcurrentAnswerId
     }
 });
-export const setChannelUsers = newFooValue => ({
-    type: types.UPDATE_CHANNELUSERS_VALUE,
+export const setcurrentAnswer = newcurrentAnswer => ({
+    type: types.UPDATE_CURRENTANSWER_VALUE,
     payload: {
-        value: newFooValue
+        value: newcurrentAnswer
     }
 });
-export const setUserId = newUserIdValue => ({
-    type: types.UPDATE_USERID_VALUE,
+
+export const setQuestionId = newQuestionId => ({
+    type: types.UPDATE_QUESTIONID_VALUE,
     payload: {
-        value: newUserIdValue
+        value: newQuestionId
     }
 });
-export const setChannel = newFooValue => ({
-    type: types.UPDATE_CHANNEL_VALUE,
+
+export const setQuestion = newQuestion => ({
+    type: types.UPDATE_QUESTION_VALUE,
     payload: {
-        value: newFooValue
-    }
-});
-export const setUsername = newFooValue => ({
-    type: types.UPDATE_USERNAME_VALUE,
-    payload: {
-        value: newFooValue
-    }
-});
-export const setChannelId = newFooValue => ({
-    type: types.UPDATE_CHANNEL_ID,
-    payload: {
-        value: newFooValue
+        value: newQuestion
     }
 });

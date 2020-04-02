@@ -68,4 +68,4 @@ const useStyles = makeStyles((theme) => ({
               </Grid>
   );
 }
-export default TalkPresCard  = withSearchValue(TalkPresCard);
+export default TalkPresCard;

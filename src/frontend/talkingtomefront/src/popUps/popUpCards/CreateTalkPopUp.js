@@ -31,4 +31,4 @@ return (
         </DialogContent>
         </>
         );}
-export default CreateTalkPopUp = withSearchValue(CreateTalkPopUp);
+export default CreateTalkPopUp;

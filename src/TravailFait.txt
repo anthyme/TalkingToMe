@@ -26,4 +26,10 @@ Mercredi 01/04/2020
 - Création quizz formulaire
 - Création premier header
 - Migration BDD vers BDD UML Miro
+
+jeudi 02/04/2020
+- création format d'envoi pour quizzes
+- Suprression de Answers
+- Suppression de questions
 - Création "Formulaire" de création pour les talks et sauvegarde via api des informations
+- Refactoring react for hooks

@@ -1,28 +1,22 @@
 import * as actions from "../ActionsTypes";
 const initialState = {
-    user: '',
-    channelUsers: '',
-    userName: '',
-    userId: '',
-    channel: '',
-    channelId: ''
+    currentAnswer: {},
+    currentAnswerId: '23 ',
+    questionId:'',
+    question: {}
+   
 };
 
 export const mainreducer = (state = initialState, { type, payload }) => {
     switch (type) {
-        case actions.UPDATE_USER_VALUE:
-            return { ...state, user: payload.value };
-        case actions.UPDATE_CHANNEL_VALUE:
-            return { ...state, channel: payload.value };
-        case actions.UPDATE_USERID_VALUE:
-            console.log(payload.value);
-            return { ...state, userId: payload.value };
-        case actions.UPDATE_CHANNELUSERS_VALUE:
-            return { ...state, channelUsers: payload.value };
-        case actions.UPDATE_USERNAME_VALUE:
-            return { ...state, userName: payload.value };
-        case actions.UPDATE_CHANNEL_ID:
-            return { ...state, channelId: payload.value };
+        case actions.UPDATE_CURRENTANSWERID_VALUE:
+            return { ...state, currentAnswerId: payload };
+        case actions.UPDATE_CURRENTANSWER_VALUE:
+            return { ...state, currentAnswer: payload.value };
+        case actions.UPDATE_QUESTIONID_VALUE:
+            return { ...state, questionId: payload.value };
+        case actions.UPDATE_QUESTION_VALUE:
+            return { ...state, question: payload.value };
         default:
             return state;
     }

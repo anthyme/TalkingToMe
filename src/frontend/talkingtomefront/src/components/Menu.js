@@ -125,4 +125,4 @@ function Album() {
     </React.Fragment>
   );
 }
-export let Menu = withSearchValue(Album);
+export let Menu;

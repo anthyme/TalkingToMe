@@ -43,4 +43,4 @@ function PopUp() {
     </div>
   );
 }
-export default PopUp = withSearchValue(PopUp);
+export default PopUp;
