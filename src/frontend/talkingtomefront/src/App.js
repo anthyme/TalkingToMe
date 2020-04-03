@@ -1,16 +1,10 @@
 import React, { useState } from 'react';
-import { Component } from 'react';
-import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
-import { withSearchValue } from "./enhancers/WithSearchValue";
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { UserProvider } from './constants/UserContext'
 import SignIn from "./components/Login";
 import QuizzCreator from "./quizzCreation/QuizzCreator"
-import {Menu} from "./components/Menu";
-import logo from './logo.svg';
+import Menu from "./components/Menu";
 import './App.css';
-
-
-
 
 function App() {
 
@@ -39,17 +33,17 @@ function App() {
 
   return (
     <UserProvider value=''>
-    <Router>
+      <Router>
         <div className="container-fluid">
-            <Switch>
-                <Route exact path="/" render={(props) => (<SignIn />)} />
-                <Route exact path="/Menu" render={(props) => (<Menu />)} />
-                <Route exact path="/Quizz" render={(props) => (<QuizzCreator />)} />
-            </Switch>
+          <Switch>
+            <Route exact path="/" render={() => (<SignIn />)} />
+            <Route exact path="/Menu" render={() => (<Menu />)} />
+            <Route exact path="/Quizz" render={() => (<QuizzCreator />)} />
+          </Switch>
         </div>
 
-    </Router>
-</UserProvider>
+      </Router>
+    </UserProvider>
   );
 }
 

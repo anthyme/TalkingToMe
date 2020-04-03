@@ -15,9 +15,7 @@ function Answer(props) {
   const currentAnswerIdRdx = useSelector(state => state.currentAnswerId);
   const questionIdRdx = useSelector(state => state.questionIdRdx);
   const dispatch = useDispatch();
-  //const setQuestionIdRdx = useDispatch(dispatch => dispatch.setQuestionIdRdx);
-  //const setCurrentAnswerRdx = useDispatch(UPDATE_CURRENTANSWERID_VALUE);
-  //const setCurrentAnswerIdRdx = useDispatch(dispatch => dispatch.setCurrentAnswerIdRdx);
+  
 
   const deleteAnswer = (event) => {
     //setCurrentAnswerRdx(event.target.value);

@@ -6,7 +6,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import {withSearchValue} from "../enhancers/WithSearchValue";
+import { withSearchValue } from "../enhancers/WithSearchValue";
 import CreateTalkPopUp from "./popUpCards/CreateTalkPopUp";
 import DropZone from "./popUpCards/DropZone"
 
@@ -29,7 +29,7 @@ function PopUp() {
       <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
         <DialogTitle id="form-dialog-title">Create new Talk</DialogTitle>
         <DialogContent>
-          <CreateTalkPopUp/>
+          <CreateTalkPopUp />
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} color="primary">

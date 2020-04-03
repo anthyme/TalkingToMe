@@ -13,7 +13,7 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import Link from '@material-ui/core/Link';
-import {withSearchValue} from "../enhancers/WithSearchValue"
+import { withSearchValue } from "../enhancers/WithSearchValue"
 import TalkPresCard from "./TalkPresCard"
 import PopUp from '../popUps/PopUp'
 
@@ -64,7 +64,7 @@ const useStyles = makeStyles((theme) => ({
 
 const cards = [1, 2];
 
-function Album() {
+function Menu() {
   const classes = useStyles();
 
   return (
@@ -91,7 +91,7 @@ function Album() {
             <div className={classes.heroButtons}>
               <Grid container spacing={2} justify="center">
                 <Grid item>
-                  <PopUp/>
+                  <PopUp />
                 </Grid>
                 <Grid item>
                   <Button variant="outlined" color="primary">
@@ -106,7 +106,7 @@ function Album() {
           {/* End hero unit */}
           <Grid container spacing={4}>
             {cards.map((card) => (
-              <TalkPresCard card={card}/>
+              <TalkPresCard card={card} />
             ))}
           </Grid>
         </Container>
@@ -125,4 +125,4 @@ function Album() {
     </React.Fragment>
   );
 }
-export let Menu;
+export default Menu;
