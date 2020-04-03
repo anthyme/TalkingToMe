@@ -9,28 +9,26 @@ import * as actions from "../store/ActionsTypes"
 //import {withSearchValue} from "../enhancers/WithSearchValue";
 
 function Answer(props) {
-  const [value, setValue] = useState(props.answerId);
+  const [value, setValue] = useState('');
   const [show, setShow] = useState(true);
   const currentAnswerRdx = useSelector(state => state.currentAnswer);
   const currentAnswerIdRdx = useSelector(state => state.currentAnswerId);
-  const questionIdRdx = useSelector(state => state.questionIdRdx);
+  const questionIdRdx = useSelector(state => state.questionId);
   const dispatch = useDispatch();
   
 
   const deleteAnswer = (event) => {
-    //setCurrentAnswerRdx(event.target.value);
-    //setCurrentAnswerIdRdx(props.questionId)
+    dispatch({ type: actions.UPDATE_CURRENTANSWERID_VALUE, payload : props.answerId});
+    dispatch({ type: actions.UPDATE_QUESTIONID_VALUE, payload : props.questionId});
+    dispatch({ type: actions.UPDATE_CURRENTANSWER_VALUE, payload : "empty"});
     setShow(false);
   }
 
   const onInputChange =(event) => {
-    console.log(props.answerId);
     setValue(event.target.value);
-    dispatch({ type: actions.UPDATE_CURRENTANSWERID_VALUE, payload : "3"});
-    console.log(currentAnswerIdRdx);
-    //setCurrentAnswerRdx(event.target.value);
-    //setCurrentAnswerIdRdx(props.answerId);
-    //setQuestionIdRdx(props.questionId);
+    dispatch({ type: actions.UPDATE_CURRENTANSWERID_VALUE, payload : props.answerId});
+    dispatch({ type: actions.UPDATE_QUESTIONID_VALUE, payload : props.questionId});
+    dispatch({ type: actions.UPDATE_CURRENTANSWER_VALUE, payload : event.target.value});
   };
   
   switch (show){
@@ -39,10 +37,9 @@ function Answer(props) {
             <React.Fragment>
                 <Grid item spacing="0">
                     <FormControlLabel  value={value} control={<Radio />}/>
-                    <TextField placeholder={"Question"+props.answerId} inputProps={{ 'aria-label': 'description' }} onChange={event=>{onInputChange(event)}}/>
+                    <TextField placeholder={"Answer"+props.answerId} inputProps={{ 'aria-label': 'description' }} onChange={event=>{onInputChange(event)}}/>
                     <DeleteIcon onClick = {deleteAnswer} style={{cursor:'pointer'}}/>
                 </Grid>
-                {currentAnswerIdRdx}
             </React.Fragment>
           );
         case false:
