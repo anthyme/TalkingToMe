@@ -1,47 +1,46 @@
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
-import { UserProvider } from './constants/UserContext'
-import SignIn from "./components/Login";
-import QuizzCreator from "./quizzCreation/QuizzCreator"
-import Menu from "./components/Menu";
+import { UserProvider } from './constants/UserContext';
+import SignIn from './components/Login';
+import QuizzCreator from './quizzCreation/QuizzCreator';
+import Menu from './components/Menu';
 import './App.css';
 
 function App() {
-
   const [message, setMessage] = useState(300);
 
   fetch(`https://talkingtome-api.azurewebsites.net/api/HelloWorldBase`, {
     method: 'get',
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
     },
   })
-    .then((response) => {
+    .then(response => {
       if (response.status === 200) {
         return response;
       } else if (response.status === 408 || response.status === 400) {
-        console.log("Failed getting Channel 1");
+        console.log('Failed getting Channel 1');
       }
     })
-    .then(response => { return response.json(); })
+    .then(response => {
+      return response.json();
+    })
     .then(responseData => {
       setMessage(responseData.message);
     })
     .then(() => console.log(message))
-    .catch(err => console.log("caught this error: " + err));
-
+    .catch(err => console.log('caught this error: ' + err));
 
   return (
-    <UserProvider value=''>
+    <UserProvider value="">
       <Router>
         <div className="container-fluid">
           <Switch>
-            <Route exact path="/" render={() => (<SignIn />)} />
-            <Route exact path="/Menu" render={() => (<Menu />)} />
-            <Route exact path="/Quizz" render={() => (<QuizzCreator />)} />
+            <Route exact path="/" render={() => <SignIn />} />
+            <Route exact path="/Menu" render={() => <Menu />} />
+            <Route exact path="/Quizz" render={() => <QuizzCreator />} />
           </Switch>
         </div>
-
       </Router>
     </UserProvider>
   );

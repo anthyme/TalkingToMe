@@ -113,5 +113,9 @@ export default function SignIn() {
         <Copyright />
       </Box>
     </Container>
+<<<<<<< HEAD
   )
+=======
+  );
+>>>>>>> b39a5330a8d0d01c9a4b187a4f036ea9f5e6e1f8
 }
