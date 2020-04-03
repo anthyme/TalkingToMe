@@ -1,5 +1,5 @@
-import React,{useState, useEffect} from 'react';
-import {useSelector} from "react-redux";
+import React, { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
@@ -19,29 +19,38 @@ export default function QuizzCreator() {
   useEffect(() => {
     console.log('useEffect has been called!');
     let newQuestionJson = questionsJson;
-    newQuestionJson[questionIdRdx]=questionRdx;
+    newQuestionJson[questionIdRdx] = questionRdx;
     setQuestionsJson(newQuestionJson);
-},[currentAnswerRdx]);
+  }, [currentAnswerRdx]);
 
-  const AddNewQuestion =() => {
-    let newQuestionId = questionsID[questionsID.length -1]+1;
+  const AddNewQuestion = () => {
+    let newQuestionId = questionsID[questionsID.length - 1] + 1;
     let newTable = [...questionsID, newQuestionId];
     setQuestionsId(newTable);
-};
+  };
 
-const ChangeId =(qId) =>{
+  const ChangeId = qId => {
     console.log(qId);
-};
+  };
 
   return (
     <React.Fragment>
       <Typography variant="h6" gutterBottom>
         Quizz Creation
       </Typography>
-        <div>
-            {questionsID.map(qId => <QuizzQuestion onClick={(qId)=>{ChangeId(qId)}} questionId={qId} />)}
-        </div>
-        <Button variant="outlined" onClick={AddNewQuestion}>Question</Button>
+      <div>
+        {questionsID.map(qId => (
+          <QuizzQuestion
+            onClick={qId => {
+              ChangeId(qId);
+            }}
+            questionId={qId}
+          />
+        ))}
+      </div>
+      <Button variant="outlined" onClick={AddNewQuestion}>
+        Question
+      </Button>
     </React.Fragment>
   );
 }
