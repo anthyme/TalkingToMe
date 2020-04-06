@@ -1,0 +1,35 @@
+Mardi 31/03/2020
+- installation "npm install @material-ui/icons" 
+	& "npm install @material-ui/core" 
+	& "npm install @material-ui/styles"
+	& "npm install react-redux"
+	& "npm install redux"
+	& "npm install react-router-dom"
+- Mise en place de React-redux
+- Mise en place de routers
+- Template materialUi pour "Login.js"
+- Premier UML BDD sur Miro
+- Création token pour google account (/!\ Il faut attendre qu'on ai une page vers qui rediriger)
+- Création Models pour "Talks, Quizzes et QuizzesToTalks (table de transition one-to-many)"
+- Création Controllers de base pour "Talks, Quizzes et QuizzesToTalks (Dans le fichier "Data")"
+- Création Context pour création BDD
+- Création Projet "Tests" dans la solution TalkingToMe
+- Modification du DBset dans "Startup.cs" pour creer la BDD
+- Création "Album" et "Menu" de démarrage pour le conférencier avec MaterialUi
+- Création "Cards" pour afficher les talks créés avec MaterialUi
+- Import de "pptx" dans react
+
+Mercredi 01/04/2020
+- installation "npm install --save material-ui-dropzone"
+- Création react drag and drop
+- Création popUp modulable
+- Création quizz formulaire
+- Création premier header
+- Migration BDD vers BDD UML Miro
+
+jeudi 02/04/2020
+- création format d'envoi pour quizzes
+- Suprression de Answers
+- Suppression de questions
+- Création "Formulaire" de création pour les talks et sauvegarde via api des informations
+- Refactoring react for hooks
