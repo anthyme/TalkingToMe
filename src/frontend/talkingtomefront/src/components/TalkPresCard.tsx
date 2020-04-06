@@ -13,7 +13,6 @@ import Typography from '@material-ui/core/Typography'
 import { makeStyles } from '@material-ui/core/styles'
 import Container from '@material-ui/core/Container'
 import Link from '@material-ui/core/Link'
-import { withSearchValue } from '../enhancers/WithSearchValue'
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -37,16 +36,15 @@ const useStyles = makeStyles(theme => ({
 
 // TODO -Change Image and Add onclickModifier
 function TalkPresCard(card) {
-  const classes = useStyles()
+  //const classes = useStyles()
   return (
     <Grid item key={card} xs={12} sm={6} md={4}>
-      <Card className={classes.card}>
+      <Card>
         <CardMedia
-          className={classes.cardMedia}
           image="https://source.unsplash.com/random"
           title="Image title"
         />
-        <CardContent className={classes.cardContent}>
+        <CardContent>
           <Typography gutterBottom variant="h5" component="h2">
             Talk Name
           </Typography>

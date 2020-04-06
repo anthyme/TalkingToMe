@@ -1,19 +1,18 @@
-import React, { Component } from 'react'
-import { DropzoneArea } from 'material-ui-dropzone'
-import Button from '@material-ui/core/Button'
-import { withSearchValue } from '../../enhancers/WithSearchValue'
+import React, { Component } from 'react';
+import { DropzoneArea } from 'material-ui-dropzone';
+import Button from '@material-ui/core/Button';
 
 export default class DropZone extends Component {
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {
       files: [],
-    }
+    };
   }
   handleChange(files) {
     this.setState({
       files: files,
-    })
+    });
   }
   render() {
     return (
@@ -22,7 +21,7 @@ export default class DropZone extends Component {
         acceptedFiles={['application/ppt']}
         dropzoneText="Drop your ppt file here, or click for file explorer"
       />
-    )
+    );
   }
 }
 //export default DropZone = withSearchValue(DropZone);

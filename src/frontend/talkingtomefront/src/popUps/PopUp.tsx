@@ -1,25 +1,24 @@
-import React from 'react'
-import Button from '@material-ui/core/Button'
-import TextField from '@material-ui/core/TextField'
-import Dialog from '@material-ui/core/Dialog'
-import DialogActions from '@material-ui/core/DialogActions'
-import DialogContent from '@material-ui/core/DialogContent'
-import DialogContentText from '@material-ui/core/DialogContentText'
-import DialogTitle from '@material-ui/core/DialogTitle'
-import { withSearchValue } from '../enhancers/WithSearchValue'
-import CreateTalkPopUp from './popUpCards/CreateTalkPopUp'
-import DropZone from './popUpCards/DropZone'
+import React from 'react';
+import Button from '@material-ui/core/Button';
+import TextField from '@material-ui/core/TextField';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import CreateTalkPopUp from './popUpCards/CreateTalkPopUp';
+import DropZone from './popUpCards/DropZone';
 
 function PopUp() {
-  const [open, setOpen] = React.useState(false)
+  const [open, setOpen] = React.useState(false);
 
   const handleClickOpen = () => {
-    setOpen(true)
-  }
+    setOpen(true);
+  };
 
   const handleClose = () => {
-    setOpen(false)
-  }
+    setOpen(false);
+  };
 
   return (
     <div>
@@ -45,6 +44,6 @@ function PopUp() {
         </DialogActions>
       </Dialog>
     </div>
-  )
+  );
 }
-export default PopUp
+export default PopUp;

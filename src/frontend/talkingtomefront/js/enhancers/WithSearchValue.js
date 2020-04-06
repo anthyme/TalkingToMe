@@ -1,3 +1,4 @@
+"use strict";
 /*import { connect } from "../../node_modules/react-redux";
 import * as setters from "../store/Actions";
 
