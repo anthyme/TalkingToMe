@@ -39,28 +39,27 @@ export default function QuizzCreator() {
 
   const debounceRedux = useCallback(_.debounce(setNewQuestion, 1000), []);
 
-
   function setNewQuestion() {
-      let newQuestionJson = questionsJson
-      newQuestionJson[questionIdRdx] = questionRdx
-      setQuestionsJson(newQuestionJson)
+    let newQuestionJson = questionsJson;
+    newQuestionJson[questionIdRdx] = questionRdx;
+    setQuestionsJson(newQuestionJson);
   }
 
   useEffect(() => {
-    if(questionRdx){
-      console.log("questions changed");
+    if (questionRdx) {
+      console.log('questions changed');
       debounceRedux();
-      let newQuestionJson = questionsJson
-      newQuestionJson[questionIdRdx] = questionRdx
-      setQuestionsJson(newQuestionJson)
-  }
-  }, [questionRdx])
+      let newQuestionJson = questionsJson;
+      newQuestionJson[questionIdRdx] = questionRdx;
+      setQuestionsJson(newQuestionJson);
+    }
+  }, [questionRdx]);
 
   const AddNewQuestion = () => {
-    let newQuestionId = questionsID[questionsID.length - 1] + 1
-    let newTable = [...questionsID, newQuestionId]
-    setQuestionsId(newTable)
-  }
+    let newQuestionId = questionsID[questionsID.length - 1] + 1;
+    let newTable = [...questionsID, newQuestionId];
+    setQuestionsId(newTable);
+  };
 
   const ChangeId = (qId: any) => {
     console.log(qId)
@@ -68,7 +67,7 @@ export default function QuizzCreator() {
   
   const ShowJson = ()=>{
     console.log(questionRdx);
-  }
+  };
 
   return (
     <React.Fragment>
@@ -76,10 +75,8 @@ export default function QuizzCreator() {
         Quizz Creation
       </Typography>
       <div>
-        {questionsID.map(qId => (
-          <QuizzQuestion
-            questionId={qId}
-                />
+        {questionsID.map((qId) => (
+          <QuizzQuestion questionId={qId} />
         ))}
       </div>
       <Button variant="outlined" onClick={AddNewQuestion}>
@@ -89,5 +86,5 @@ export default function QuizzCreator() {
         Show Json
       </Button>
     </React.Fragment>
-  )
+  );
 }

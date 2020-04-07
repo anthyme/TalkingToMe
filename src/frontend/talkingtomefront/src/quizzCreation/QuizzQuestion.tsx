@@ -8,7 +8,6 @@ import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import Paper from '@material-ui/core/Paper';
 import Answer from './Answer';
-import QuizzCreator from './QuizzCreator';
 import * as actions from '../store/ActionsTypes';
 import _ from 'lodash';
 import { CardActions } from '@material-ui/core';
