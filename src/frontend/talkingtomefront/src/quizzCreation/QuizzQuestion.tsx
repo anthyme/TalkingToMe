@@ -12,9 +12,21 @@ import QuizzCreator from './QuizzCreator';
 import * as actions from '../store/ActionsTypes';
 import _ from 'lodash';
 import { CardActions } from '@material-ui/core';
+import { InitialState } from '../store/reducers/MainReducer';
+import { RootDispatcher } from '../store/MainDispatcher';
 
+interface IProps {
+  questionId: number,
+}
+
+interface StateProps { 
+  currentAnswerRdx: string,
+  currentAnswerIdRdx: number,
+  questionIdRdx: number,
+  questionRdx: Object
+}
 //TODO - Keep changes upon revert, aka : Num of questions & content of each question
-function QuizzQuestion(props) {
+const QuizzQuestion: React.FC<IProps> = (props) =>  {
   const [answersId, setAnswersId] = useState([0, 1]);
   const [value, setValue] = useState('');
   const [questionValue, setQuestionValue] = useState('');
@@ -22,11 +34,16 @@ function QuizzQuestion(props) {
   const [show, setShow] = useState(true);
   const [answers, setAnswers] = useState(['', '']);
 
-  const questionIdRdx = useSelector((state) => state.questionId);
-  const questionRdx = useSelector((state) => state.question);
-  const currentAnswerRdx = useSelector((state) => state.currentAnswer);
-  const currentAnswerIdRdx = useSelector((state) => state.currentAnswerId);
+  const {currentAnswerRdx, currentAnswerIdRdx,questionIdRdx,questionRdx} = useSelector<InitialState, StateProps>((state: InitialState) => {
+    return {
+      currentAnswerRdx: state.currentAnswerRdx,
+      currentAnswerIdRdx: state.currentAnswerIdRdx,
+      questionIdRdx: state.questionIdRdx,
+      questionRdx: state.questionRdx
+    }
+});
   const dispatch = useDispatch();
+  const rootDispatcher = new RootDispatcher(dispatch);
 
   const debounceRedux = useCallback(_.debounce(setRedux, 1000), []);
 
@@ -41,24 +58,24 @@ function QuizzQuestion(props) {
     console.log(questionJson);
   };
 
-  function setRedux(newJson) {
+  function setRedux(newJson:any) {
     dispatch({ type: actions.UPDATE_QUESTION_VALUE, payload: newJson });
   }
 
-  const deleteQuestion = (event) => {
+  const deleteQuestion = (event:any) => {
     //TODO - Change json to empty on quizzcreator
     setShow(false);
   };
 
-  const handleQuestionTypeChange = (event) => {
+  const handleQuestionTypeChange = (event:any) => {
     setSelectedValue(event.target.value);
   };
 
-  const handleRadioChange = (event) => {
+  const handleRadioChange = (event:any) => {
     setValue(event.target.value);
   };
 
-  const handleQuestionChange = (event) => {
+  const handleQuestionChange = (event:any) => {
     setQuestionValue(event.target.value);
     console.log(value);
   };
@@ -94,7 +111,7 @@ function QuizzQuestion(props) {
                 <Grid item xs={12}>
                   <TextField
                     required
-                    id={props.questionId}
+                    id={props.questionId.toString()}
                     name={questionValue}
                     label="Question"
                     fullWidth
@@ -163,7 +180,7 @@ function QuizzQuestion(props) {
                 <Grid item xs={12}>
                   <TextField
                     required
-                    id={props.questionId}
+                    id={props.questionId.toString()}
                     name={questionValue}
                     label="Question"
                     value=""

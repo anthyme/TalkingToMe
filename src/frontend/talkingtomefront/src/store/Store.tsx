@@ -1,8 +1,10 @@
 import { createStore, combineReducers } from 'redux';
-import { mainreducer } from './reducers/MainReducer';
+import {DispatchAction, InitialState, mainReducer} from "./reducers/MainReducer";
 
-const rootReducer = combineReducers({
-  main: mainreducer,
-});
+//const rootReducer = combineReducers({
+//  main: mainreducer,
+//});
 
-export const store = createStore(rootReducer);
+//export type AppState = ReturnType<typeof rootReducer>
+
+export const store = createStore<InitialState, DispatchAction, null, null>(mainReducer);

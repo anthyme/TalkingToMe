@@ -3,13 +3,8 @@ import { DropzoneArea } from 'material-ui-dropzone';
 import Button from '@material-ui/core/Button';
 
 export default class DropZone extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      files: [],
-    };
-  }
-  handleChange(files) {
+
+  handleChange(files:any) {
     this.setState({
       files: files,
     });

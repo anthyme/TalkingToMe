@@ -34,9 +34,14 @@ const useStyles = makeStyles(theme => ({
   },
 }))
 
+interface IProps {
+  card :number
+}
+
 // TODO -Change Image and Add onclickModifier
-function TalkPresCard(card) {
+const TalkPresCard: React.FC<IProps> = (props) => {
   //const classes = useStyles()
+  const card = props.card;
   return (
     <Grid item key={card} xs={12} sm={6} md={4}>
       <Card>

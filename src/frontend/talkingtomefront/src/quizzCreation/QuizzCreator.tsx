@@ -8,17 +8,34 @@ import FormControlLabel from '@material-ui/core/FormControlLabel'
 import Checkbox from '@material-ui/core/Checkbox'
 import QuizzQuestion from './QuizzQuestion'
 import _ from 'lodash'
+import { RootDispatcher } from '../store/MainDispatcher'
+import { InitialState } from '../store/reducers/MainReducer'
+
+interface StateProps { 
+  currentAnswerRdx: string,
+  currentAnswerIdRdx: number,
+  questionIdRdx: number,
+  questionRdx: Object
+}
 
 export default function QuizzCreator() {
   const [cardIds, setCardIds] = useState([])
   const [questionsID, setQuestionsId] = useState([0])
   const [questionsJson, setQuestionsJson] = useState([{}])
-
-  const questionIdRdx = useSelector(state => state.questionId);
+  const {currentAnswerRdx, currentAnswerIdRdx,questionIdRdx,questionRdx} = useSelector<InitialState, StateProps>((state: InitialState) => {
+    return {
+      currentAnswerRdx: state.currentAnswerRdx,
+      currentAnswerIdRdx: state.currentAnswerIdRdx,
+      questionIdRdx: state.questionIdRdx,
+      questionRdx: state.questionRdx
+    }
+});
+  const dispatch = useDispatch();
+  const rootDispatcher = new RootDispatcher(dispatch);
+  /*const questionIdRdx = useSelector(state => state.questionId);
   const questionRdx = useSelector(state => state.question);
   const currentAnswerRdx = useSelector(state => state.currentAnswer);
-  const currentAnswerIdRdx = useSelector(state => state.currentAnswerId);
-  const dispatch = useDispatch();
+  const currentAnswerIdRdx = useSelector(state => state.currentAnswerId);*/
 
   const debounceRedux = useCallback(_.debounce(setNewQuestion, 1000), []);
 
@@ -45,7 +62,7 @@ export default function QuizzCreator() {
     setQuestionsId(newTable)
   }
 
-  const ChangeId = qId => {
+  const ChangeId = (qId: any) => {
     console.log(qId)
   }
   

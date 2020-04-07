@@ -61,7 +61,7 @@ const useStyles = makeStyles(theme => ({
   },
 }))
 
-const cards = [1, 2]
+const cards : number[] = [1, 2]
 
 function Menu() {
   const classes = useStyles()
