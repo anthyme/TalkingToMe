@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import Radio from '@material-ui/core/Radio';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
@@ -9,11 +9,9 @@ import * as actions from '../store/ActionsTypes';
 //import {withSearchValue} from "../enhancers/WithSearchValue";
 
 function Answer(props) {
-  const [value, setValue] = useState('');
+  const [value, setValue] = useState(false);
   const [show, setShow] = useState(true);
-  const currentAnswerRdx = useSelector((state) => state.currentAnswer);
-  const currentAnswerIdRdx = useSelector((state) => state.currentAnswerId);
-  const questionIdRdx = useSelector((state) => state.questionId);
+  const [checked, setChecked] = useState(false);
   const dispatch = useDispatch();
 
   const deleteAnswer = (event) => {
@@ -30,6 +28,7 @@ function Answer(props) {
   };
 
   const onInputChange = (event) => {
+    setChecked(!checked);
     setValue(event.target.value);
     dispatch({
       type: actions.UPDATE_CURRENTANSWERID_VALUE,
