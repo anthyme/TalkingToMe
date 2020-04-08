@@ -4,6 +4,7 @@ import { UserProvider } from './constants/UserContext';
 import SignIn from './components/Login';
 import QuizzCreator from './quizzCreation/QuizzCreator';
 import Menu from './components/Menu';
+import TalkInterface from './talk/TalkInterface';
 import './App.css';
 
 function App() {
@@ -15,6 +16,7 @@ function App() {
             <Route exact path="/" render={() => <SignIn />} />
             <Route exact path="/Menu" render={() => <Menu />} />
             <Route exact path="/Quizz" render={() => <QuizzCreator />} />
+            <Route exact path="/Talk" render={() => <TalkInterface />} />
           </Switch>
         </div>
       </Router>
