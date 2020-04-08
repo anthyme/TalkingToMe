@@ -44,7 +44,6 @@ const QuizzQuestion: React.FC<IProps> = (props) =>  {
   const dispatch = useDispatch();
   const rootDispatcher = new RootDispatcher(dispatch);
 
-  const debounceRedux = useCallback(_.debounce(setRedux, 1000), []);
 
   const questionJson = {
     question: { questionValue },
@@ -54,15 +53,13 @@ const QuizzQuestion: React.FC<IProps> = (props) =>  {
   };
 
   const ShowJson = () => {
-    console.log(questionJson);
+    console.log(questionRdx);
+    console.log(questionIdRdx);
   };
-
-  function setRedux(newJson:any) {
-    dispatch({ type: actions.UPDATE_QUESTION_VALUE, payload: newJson });
-  }
 
   const deleteQuestion = (event:any) => {
     //TODO - Change json to empty on quizzcreator
+    rootDispatcher.setQuestionRdx({});
     setShow(false);
   };
 
@@ -89,14 +86,13 @@ const QuizzQuestion: React.FC<IProps> = (props) =>  {
   };
 
   useEffect(() => {
-    if (props.questionId === questionIdRdx && currentAnswerRdx) {
-      console.log('Hello!');
-      console.log(questionRdx);
+    if (props.questionId === questionIdRdx) {
+      console.log('Changed question!');
       let newAnswers = answers;
       newAnswers[currentAnswerIdRdx] = currentAnswerRdx;
       let newJson = questionJson;
       setAnswers(newAnswers);
-      debounceRedux(newJson);
+      rootDispatcher.setQuestionRdx(newJson);
     }
   }, [currentAnswerRdx, questionValue, value]);
 

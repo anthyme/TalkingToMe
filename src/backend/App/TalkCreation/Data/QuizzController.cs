@@ -1,4 +1,5 @@
 ﻿using System;
+using App.TalkCreation.Data;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -7,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using App.TalkCreation.Context;
 using App.TalkCreation.Models;
+using Newtonsoft.Json.Linq;
 
 namespace App.TalkCreation.Data
 {
@@ -15,10 +17,12 @@ namespace App.TalkCreation.Data
     public class QuizzController : ControllerBase
     {
         private readonly TalkContext _context;
+        private QuizzService _quizzService;
 
-        public QuizzController(TalkContext context)
+        public QuizzController(TalkContext context, QuizzService quizzService)
         {
             _context = context;
+            _quizzService = quizzService;
         }
 
         // GET: api/ChannelsControllerTest
@@ -83,12 +87,13 @@ namespace App.TalkCreation.Data
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPost]
-        public async Task<ActionResult<Quizz>> PostQuizz(Quizz channel)
+        public async Task<ActionResult<Quizz>> PostQuizz([FromBody]dynamic quizz)
         {
-            _context.Quizzes.Add(channel);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetChannel", new { id = channel.Id }, channel);
+            Console.WriteLine(quizz);
+            dynamic parsedQuizz = JObject.Parse(quizz.ToString());
+            Console.WriteLine(parsedQuizz.Text);
+            Quizz returnQuizz= _quizzService.AddNewQuizzNoTalk(parsedQuizz);
+            return CreatedAtAction("Quizz Added To Db", returnQuizz);
         }
 
         // DELETE: api/ChannelsControllerTest/5

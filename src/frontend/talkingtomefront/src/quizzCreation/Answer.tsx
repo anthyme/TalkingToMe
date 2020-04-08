@@ -17,7 +17,7 @@ interface IProps {
 interface StateProps { 
   currentAnswerRdx: string,
   currentAnswerIdRdx: number,
-  questionIdRdx: number,
+  questionIdRdx: number | null,
   questionRdx: Object
 }
 

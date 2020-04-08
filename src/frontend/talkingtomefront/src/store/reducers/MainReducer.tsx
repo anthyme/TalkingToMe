@@ -8,8 +8,8 @@ export interface InitialState {
 }
 const initialState:InitialState = {
     currentAnswerRdx: "",
-    currentAnswerIdRdx: 23,
-    questionIdRdx: 1,
+    currentAnswerIdRdx: 0,
+    questionIdRdx: -1,
     questionRdx: {}
    
 };

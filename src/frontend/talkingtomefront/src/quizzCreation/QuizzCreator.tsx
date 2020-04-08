@@ -10,6 +10,7 @@ import QuizzQuestion from './QuizzQuestion'
 import _ from 'lodash'
 import { RootDispatcher } from '../store/MainDispatcher'
 import { InitialState } from '../store/reducers/MainReducer'
+import * as constants from "../constants"
 
 interface StateProps { 
   currentAnswerRdx: string,
@@ -32,10 +33,6 @@ export default function QuizzCreator() {
 });
   const dispatch = useDispatch();
   const rootDispatcher = new RootDispatcher(dispatch);
-  /*const questionIdRdx = useSelector(state => state.questionId);
-  const questionRdx = useSelector(state => state.question);
-  const currentAnswerRdx = useSelector(state => state.currentAnswer);
-  const currentAnswerIdRdx = useSelector(state => state.currentAnswerId);*/
 
   const debounceRedux = useCallback(_.debounce(setNewQuestion, 1000), []);
 
@@ -46,8 +43,8 @@ export default function QuizzCreator() {
   }
 
   useEffect(() => {
-    if (questionRdx) {
-      console.log('questions changed');
+    if (questionIdRdx!==-1) {
+      console.log('creator changed!');
       debounceRedux();
       let newQuestionJson = questionsJson;
       newQuestionJson[questionIdRdx] = questionRdx;
@@ -66,8 +63,17 @@ export default function QuizzCreator() {
   }
   
   const ShowJson = ()=>{
-    console.log(questionRdx);
+    console.log(questionsJson);
   };
+  const PostQuizz = async ()=>{
+    const requestOptions = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(questionsJson)
+    };
+    let response = await fetch(constants.urlDataBase, requestOptions);
+    let json = response.json();
+}
 
   return (
     <React.Fragment>
@@ -84,6 +90,9 @@ export default function QuizzCreator() {
       </Button>
       <Button variant="outlined" onClick={ShowJson}>
         Show Json
+      </Button>
+      <Button variant="outlined" onClick={PostQuizz}>
+        Validate Quizz
       </Button>
     </React.Fragment>
   );

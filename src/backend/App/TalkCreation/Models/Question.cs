@@ -8,12 +8,12 @@ namespace App.TalkCreation.Models
     public class Question
     {
         public int Id { get; set; }
-        public int QuizzID { get; set; }
-        public Quizz Quizz { get; set; }
+        public int QuizzId { get; set; }
+        public QuizzToQuestion Quizz { get; set; }
         public String Quest { get; set; }
         public String Type { get; set; }
-        List<String> Answers { get; set; }
-        String CorrectAn { get; set; }
+        public String Answers { get; set; }
+        public String CorrectAn { get; set; }
         //public Object Presentation { get; set; }
 
 
