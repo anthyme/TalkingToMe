@@ -2,10 +2,27 @@
 
 namespace App.Migrations
 {
-    public partial class new_Quizz_Talk_DB : Migration
+    public partial class new_DB : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "Questions",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    QuizzId = table.Column<int>(nullable: true),
+                    Quest = table.Column<string>(nullable: true),
+                    Type = table.Column<string>(nullable: true),
+                    Answers = table.Column<string>(nullable: true),
+                    CorrectAn = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Questions", x => x.Id);
+                });
+
             migrationBuilder.CreateTable(
                 name: "Quizz",
                 columns: table => new
@@ -48,6 +65,12 @@ namespace App.Migrations
                 {
                     table.PrimaryKey("PK_QuizzToQuestions", x => x.Id);
                     table.ForeignKey(
+                        name: "FK_QuizzToQuestions_Questions_QuestionId",
+                        column: x => x.QuestionId,
+                        principalTable: "Questions",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
                         name: "FK_QuizzToQuestions_Quizz_QuizzId",
                         column: x => x.QuizzId,
                         principalTable: "Quizz",
@@ -81,27 +104,11 @@ namespace App.Migrations
                         onDelete: ReferentialAction.Restrict);
                 });
 
-            migrationBuilder.CreateTable(
-                name: "Questions",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false),
-                    QuizzId = table.Column<int>(nullable: false),
-                    Quest = table.Column<string>(nullable: true),
-                    Type = table.Column<string>(nullable: true),
-                    Answers = table.Column<string>(nullable: true),
-                    CorrectAn = table.Column<string>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Questions", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Questions_QuizzToQuestions_Id",
-                        column: x => x.Id,
-                        principalTable: "QuizzToQuestions",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
+            migrationBuilder.CreateIndex(
+                name: "IX_QuizzToQuestions_QuestionId",
+                table: "QuizzToQuestions",
+                column: "QuestionId",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_QuizzToQuestions_QuizzId",
@@ -122,19 +129,19 @@ namespace App.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Questions");
+                name: "QuizzToQuestions");
 
             migrationBuilder.DropTable(
                 name: "QuizzToTalks");
 
             migrationBuilder.DropTable(
-                name: "QuizzToQuestions");
-
-            migrationBuilder.DropTable(
-                name: "Talks");
+                name: "Questions");
 
             migrationBuilder.DropTable(
                 name: "Quizz");
+
+            migrationBuilder.DropTable(
+                name: "Talks");
         }
     }
 }

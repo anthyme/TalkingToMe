@@ -8,7 +8,9 @@ namespace App.TalkCreation.Models
     public class Question
     {
         public int Id { get; set; }
-        public QuizzToQuestion Quizz { get; set; }
+#nullable enable
+        public QuizzToQuestion? Quizz { get; set; }
+#nullable disable
         public String Quest { get; set; }
         public String Type { get; set; }
         public String Answers { get; set; }

@@ -33,7 +33,7 @@ namespace App.TalkCreation.Context
             modelBuilder.Entity<QuizzToTalk>().HasOne(e => e.Talk).WithMany(e => e.Quizzes).HasForeignKey(b => b.TalkId).OnDelete(DeleteBehavior.Restrict);
             modelBuilder.Entity<QuizzToTalk>().HasOne(e => e.Quizz).WithMany(e => e.Talks);
             modelBuilder.Entity<QuizzToQuestion>().HasOne(e => e.Quizz).WithMany(e => e.Questions).HasForeignKey(b => b.QuizzId).OnDelete(DeleteBehavior.Restrict);
-            modelBuilder.Entity<QuizzToQuestion>().HasOne(e => e.Question).WithOne(e => e.Quizz).HasForeignKey<Question>(p => p.Id).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<Question>().HasOne(e => e.Quizz).WithOne(e=>e.Question).HasForeignKey<QuizzToQuestion>(p => p.QuestionId);
         }
     }
 }

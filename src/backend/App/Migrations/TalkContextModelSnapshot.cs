@@ -21,7 +21,9 @@ namespace App.Migrations
             modelBuilder.Entity("App.TalkCreation.Models.Question", b =>
                 {
                     b.Property<int>("Id")
-                        .HasColumnType("int");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Answers")
                         .HasColumnType("nvarchar(max)");
@@ -69,6 +71,9 @@ namespace App.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("QuestionId")
+                        .IsUnique();
 
                     b.HasIndex("QuizzId");
 
@@ -121,17 +126,14 @@ namespace App.Migrations
                     b.ToTable("Talks");
                 });
 
-            modelBuilder.Entity("App.TalkCreation.Models.Question", b =>
-                {
-                    b.HasOne("App.TalkCreation.Models.QuizzToQuestion", "Quizz")
-                        .WithOne("Question")
-                        .HasForeignKey("App.TalkCreation.Models.Question", "Id")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("App.TalkCreation.Models.QuizzToQuestion", b =>
                 {
+                    b.HasOne("App.TalkCreation.Models.Question", "Question")
+                        .WithOne("Quizz")
+                        .HasForeignKey("App.TalkCreation.Models.QuizzToQuestion", "QuestionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("App.TalkCreation.Models.Quizz", "Quizz")
                         .WithMany("Questions")
                         .HasForeignKey("QuizzId")

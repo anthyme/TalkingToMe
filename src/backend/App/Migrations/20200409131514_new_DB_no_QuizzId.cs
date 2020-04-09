@@ -2,7 +2,7 @@
 
 namespace App.Migrations
 {
-    public partial class Nullable_Talk_Quizz_and_QuizzId : Migration
+    public partial class new_DB_no_QuizzId : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -17,8 +17,7 @@ namespace App.Migrations
                 name: "QuizzId",
                 table: "Questions",
                 type: "int",
-                nullable: false,
-                defaultValue: 0);
+                nullable: true);
         }
     }
 }
