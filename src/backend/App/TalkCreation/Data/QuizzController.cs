@@ -87,11 +87,12 @@ namespace App.TalkCreation.Data
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPost]
-        public async Task<ActionResult<Quizz>> PostQuizz([FromBody]dynamic quizz)
+        public async Task<ActionResult<string>> PostQuizz([FromBody]dynamic quizz)
         {
             var parsedQuizz = JArray.Parse(quizz.ToString());
-            Quizz returnQuizz= _quizzService.AddNewQuizzNoTalk(parsedQuizz);
-            return CreatedAtAction("Quizz Added To Db", returnQuizz);
+            string returnQuizz= _quizzService.AddNewQuizzNoTalk(parsedQuizz);
+            Console.WriteLine(returnQuizz);
+            return returnQuizz;
         }
 
         // DELETE: api/ChannelsControllerTest/5

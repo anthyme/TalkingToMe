@@ -75,6 +75,7 @@ export default function QuizzCreator() {
     };
     let response = await fetch(constants.urlDataBase, requestOptions);
     let json = response.json();
+    console.log(json);
 }
 
   return (

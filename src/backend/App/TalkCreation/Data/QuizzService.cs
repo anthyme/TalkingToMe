@@ -19,9 +19,8 @@ namespace App.TalkCreation.Data
         }
 
         //TODO - Change syntax for fetch
-        public Quizz AddNewQuizzNoTalk(dynamic data)
+        public string AddNewQuizzNoTalk(dynamic data)
         {
-            Console.WriteLine(data);
             var optionsBuilder = new DbContextOptionsBuilder<TalkContext>();
             optionsBuilder.UseSqlServer(_connectionString);
             using (TalkContext context = new TalkContext(optionsBuilder.Options))
@@ -32,8 +31,9 @@ namespace App.TalkCreation.Data
                     Name = QuizzInfo.Name
                 };
                 context.Quizzes.Add(addQuizz);
-                int quizzId = addQuizz.Id;
                 context.SaveChanges();
+                int quizzId = addQuizz.Id;
+                data.RemoveAt(data.Count-1);
                 foreach (dynamic question in data)
                 {
                     string answers = "{";
@@ -51,20 +51,18 @@ namespace App.TalkCreation.Data
                         CorrectAn = question.rightAnswer.value
                     };
                     context.Questions.Add(addQuestion);
-                    int questionId = addQuestion.Id;
                     context.SaveChanges();
-                    Console.WriteLine(addQuestion.ToString());
-                    Console.WriteLine(addQuizz.ToString());
-                    /*QuizzToQuestion addQuizzToQuestion = new QuizzToQuestion
+                    int questionId = addQuestion.Id;
+                    
+                    QuizzToQuestion addQuizzToQuestion = new QuizzToQuestion
                     {
                         QuizzId = quizzId,
                         QuestionId= questionId
                     };
                     context.QuizzToQuestions.Add(addQuizzToQuestion);
-                */
+                    context.SaveChanges();
                 }
-                context.SaveChanges();
-                return addQuizz;
+                return "{\"response\":\"New Quizz Saved\"}";
             }
         }
     }
