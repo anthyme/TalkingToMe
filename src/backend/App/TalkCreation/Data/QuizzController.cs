@@ -17,7 +17,7 @@ namespace App.TalkCreation.Data
     public class QuizzController : ControllerBase
     {
         private readonly TalkContext _context;
-        private QuizzService _quizzService;
+        private readonly QuizzService _quizzService;
 
         public QuizzController(TalkContext context, QuizzService quizzService)
         {
@@ -89,9 +89,7 @@ namespace App.TalkCreation.Data
         [HttpPost]
         public async Task<ActionResult<Quizz>> PostQuizz([FromBody]dynamic quizz)
         {
-            Console.WriteLine(quizz);
-            dynamic parsedQuizz = JObject.Parse(quizz.ToString());
-            Console.WriteLine(parsedQuizz.Text);
+            var parsedQuizz = JArray.Parse(quizz.ToString());
             Quizz returnQuizz= _quizzService.AddNewQuizzNoTalk(parsedQuizz);
             return CreatedAtAction("Quizz Added To Db", returnQuizz);
         }

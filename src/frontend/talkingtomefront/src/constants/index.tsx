@@ -1,1 +1,1 @@
-export const urlDataBase = "https://localhost:44311/api/Quizz";
+export const urlDataBase = "https://localhost:44381/api/Quizz";

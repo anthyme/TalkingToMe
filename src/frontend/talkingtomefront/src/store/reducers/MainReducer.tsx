@@ -10,7 +10,7 @@ const initialState:InitialState = {
     currentAnswerRdx: "",
     currentAnswerIdRdx: 0,
     questionIdRdx: -1,
-    questionRdx: {}
+    questionRdx: {Name: "QuizzTest"}
    
 };
 

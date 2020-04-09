@@ -86,7 +86,7 @@ const QuizzQuestion: React.FC<IProps> = (props) =>  {
   };
 
   useEffect(() => {
-    if (props.questionId === questionIdRdx) {
+    if (props.questionId === questionIdRdx && questionIdRdx!==-1) {
       console.log('Changed question!');
       let newAnswers = answers;
       newAnswers[currentAnswerIdRdx] = currentAnswerRdx;

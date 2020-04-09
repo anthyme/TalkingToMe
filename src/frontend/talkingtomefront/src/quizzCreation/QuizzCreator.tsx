@@ -45,7 +45,7 @@ export default function QuizzCreator() {
   useEffect(() => {
     if (questionIdRdx!==-1) {
       console.log('creator changed!');
-      debounceRedux();
+      //debounceRedux();
       let newQuestionJson = questionsJson;
       newQuestionJson[questionIdRdx] = questionRdx;
       setQuestionsJson(newQuestionJson);
@@ -65,11 +65,13 @@ export default function QuizzCreator() {
   const ShowJson = ()=>{
     console.log(questionsJson);
   };
+
   const PostQuizz = async ()=>{
+    let sentJson = [...questionsJson,{Name:"TestQuizz"}]
     const requestOptions = {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(questionsJson)
+      body: JSON.stringify(sentJson)
     };
     let response = await fetch(constants.urlDataBase, requestOptions);
     let json = response.json();

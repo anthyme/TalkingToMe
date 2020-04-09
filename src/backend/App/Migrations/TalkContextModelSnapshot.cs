@@ -32,9 +32,6 @@ namespace App.Migrations
                     b.Property<string>("Quest")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("QuizzId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Type")
                         .HasColumnType("nvarchar(max)");
 

@@ -17,43 +17,50 @@ namespace App.TalkCreation.Data
         {
             _connectionString = configuration.GetConnectionString("DBString");
         }
+
+        //TODO - Change syntax for fetch
         public Quizz AddNewQuizzNoTalk(dynamic data)
         {
+            Console.WriteLine(data);
             var optionsBuilder = new DbContextOptionsBuilder<TalkContext>();
             optionsBuilder.UseSqlServer(_connectionString);
             using (TalkContext context = new TalkContext(optionsBuilder.Options))
             {
+                var QuizzInfo= data[data.Count-1];
                 Quizz addQuizz = new Quizz
                 {
-                    Name = data.Name.toString()
+                    Name = QuizzInfo.Name
                 };
                 context.Quizzes.Add(addQuizz);
                 int quizzId = addQuizz.Id;
+
                 foreach (dynamic question in data)
                 {
                     string answers = "{";
-                    foreach (Object answer in data.Answers)
+                    foreach (String answer in question.answers.answers)
                     {
-                        answers += '"' + answer.ToString() + '"' + ",";
+                        answers += '"' + answer + '"' + ",";
                     }
-                    answers = "}";
-                    
+                    answers += "}";
+
                     Question addQuestion = new Question
                     {
                         Answers = answers,
-                        Quest = question.Question.ToString(),
-                        Type = question.Type.ToString(),
-                        CorrectAn = question.CorrectAn.ToString()
+                        Quest = question.question.questionValue,
+                        Type = question.type.selectedValue,
+                        CorrectAn = question.rightAnswer.value
                     };
                     context.Questions.Add(addQuestion);
                     int questionId = addQuestion.Id;
-                    
-                    QuizzToQuestion addQuizzToQuestion = new QuizzToQuestion
+                    Console.WriteLine(addQuestion.ToString());
+                    Console.WriteLine(addQuizz.ToString());
+                    /*QuizzToQuestion addQuizzToQuestion = new QuizzToQuestion
                     {
                         QuizzId = quizzId,
                         QuestionId= questionId
                     };
                     context.QuizzToQuestions.Add(addQuizzToQuestion);
+                */
                 }
                 context.SaveChanges();
                 return addQuizz;
