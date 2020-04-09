@@ -33,7 +33,7 @@ namespace App.TalkCreation.Data
                 };
                 context.Quizzes.Add(addQuizz);
                 int quizzId = addQuizz.Id;
-
+                context.SaveChanges();
                 foreach (dynamic question in data)
                 {
                     string answers = "{";
@@ -52,6 +52,7 @@ namespace App.TalkCreation.Data
                     };
                     context.Questions.Add(addQuestion);
                     int questionId = addQuestion.Id;
+                    context.SaveChanges();
                     Console.WriteLine(addQuestion.ToString());
                     Console.WriteLine(addQuizz.ToString());
                     /*QuizzToQuestion addQuizzToQuestion = new QuizzToQuestion
