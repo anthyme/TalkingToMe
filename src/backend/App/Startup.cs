@@ -4,9 +4,12 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using App.TalkCreation.Data;
+using Newtonsoft.Json;
+using Microsoft.AspNetCore.Mvc.NewtonsoftJson;
 
 namespace App
 {
@@ -33,6 +36,10 @@ namespace App
             services.AddDbContext<TalkContext>(options =>
            options.UseSqlServer(Configuration.GetConnectionString("DBString")));
             services.AddControllers();
+            services.AddControllersWithViews()
+            .AddNewtonsoftJson(options =>
+              options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+ );
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

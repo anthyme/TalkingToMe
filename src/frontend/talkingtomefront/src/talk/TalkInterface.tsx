@@ -1,4 +1,4 @@
-import React, { useState, ChangeEvent } from 'react';
+import React, { useState, ChangeEvent, useEffect } from 'react';
 import { Redirect } from 'react-router-dom';
 import Button from '@material-ui/core/Button';
 import Select from '@material-ui/core/Select';
@@ -8,6 +8,9 @@ import { makeStyles } from '@material-ui/core/styles';
 const TalkInterface = () => {
   const [quizzId, setQuizzId] = useState('0');
   const [shouldRedirect, setShouldRedirect] = useState(false);
+
+  const TalkId: number = 1;
+  const UserId: number = 1; //This two const should come from props but for development purpose, they're set like that for now
 
   const onChangeQuizz = (value: any) => {
     setQuizzId(value);
@@ -20,6 +23,39 @@ const TalkInterface = () => {
   const startQuizz = () => {
     console.log(`Now we should show the quizz ${quizzId}`);
   };
+
+  const loadQuizzToTalk = async () => {
+    console.log('Louis rentre dans loadQuizz');
+    const response = await fetch(
+      `https://localhost:44381/api/Talks/${TalkId}`,
+      {
+        method: 'get',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      },
+    );
+    if (response.status === 200) {
+      console.log('Louis response talk get');
+      console.log(response.json());
+      return response;
+    } else {
+      console.log('Failed getting talk');
+    }
+    //     .then((response) => {
+    //       return response.json();
+    //     })
+    //     .then((responseData) => {
+    //       setMessage(responseData.message);
+    //     })
+    //     .then(() => console.log(message))
+    //     .catch((err) => console.log('caught this error: ' + err));
+  };
+
+  useEffect(() => {
+    console.log("Le use effect s'active");
+    loadQuizzToTalk();
+  }, []);
 
   const useStyles = makeStyles((theme) => ({
     title: {

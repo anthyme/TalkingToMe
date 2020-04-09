@@ -25,14 +25,14 @@ namespace App.TalkCreation.Data
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Talk>>> GetTalks()
         {
-            return await _context.Talks.ToListAsync();
+            return await _context.Talks.Include( p => p.Quizzes).ToListAsync();
         }
 
         // GET: api/ChannelsControllerTest/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Talk>> GetTalk(int id)
+        public async Task<ActionResult<IEnumerable<Talk>>> GetTalk(int id)
         {
-            var talk = await _context.Talks.FindAsync(id);
+            var talk = await _context.Talks.Include(p => p.Quizzes).ThenInclude(p => p.Quizz).ThenInclude(p => p.Questions).Where(p => p.Id == id).ToListAsync();
 
             if (talk == null)
             {
