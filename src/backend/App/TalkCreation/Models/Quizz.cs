@@ -12,7 +12,7 @@ namespace App.TalkCreation.Models
         public List<QuizzToTalk>? Talks { get; set; }
 #nullable disable
         public String Name { get; set; }
-        public List<QuizzToQuestion> Questions { get; set; }
+        public ICollection<Question> Questions { get; set; }
 
     }
 }

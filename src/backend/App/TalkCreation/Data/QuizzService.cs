@@ -45,6 +45,7 @@ namespace App.TalkCreation.Data
 
                     Question addQuestion = new Question
                     {
+                        QuizzId = quizzId,
                         Answers = answers,
                         Quest = question.question.questionValue,
                         Type = question.type.selectedValue,
@@ -52,15 +53,7 @@ namespace App.TalkCreation.Data
                     };
                     context.Questions.Add(addQuestion);
                     context.SaveChanges();
-                    int questionId = addQuestion.Id;
                     
-                    QuizzToQuestion addQuizzToQuestion = new QuizzToQuestion
-                    {
-                        QuizzId = quizzId,
-                        QuestionId= questionId
-                    };
-                    context.QuizzToQuestions.Add(addQuizzToQuestion);
-                    context.SaveChanges();
                 }
                 return "{\"response\":\"New Quizz Saved\"}";
             }
