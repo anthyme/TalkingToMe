@@ -1,4 +1,4 @@
-import React, {useState, ChangeEvent} from 'react';
+import React, { useState, ChangeEvent } from 'react';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
@@ -6,26 +6,25 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import {postTalk} from '../DataTransfer'
+import { postTalk } from '../DataTransfer';
 import DropZone from './DropZone';
-
 
 function CreateTalkPopUp() {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
-  
-  const TalkJson ={
-    name: {name},
-    description: {description}
+
+  const TalkJson = {
+    name: { name },
+    description: { description },
   };
 
-  const onDescriptionChange = (event: ChangeEvent<HTMLInputElement>)=>{
+  const onDescriptionChange = (event: ChangeEvent<HTMLInputElement>) => {
     setDescription(event.target.value);
-  }
+  };
 
-  const onNameChange = (event: ChangeEvent<HTMLInputElement>)=>{
+  const onNameChange = (event: ChangeEvent<HTMLInputElement>) => {
     setName(event.target.value);
-  }
+  };
 
   return (
     <>
@@ -45,7 +44,7 @@ function CreateTalkPopUp() {
           }}
           fullWidth
         />
-           <TextField
+        <TextField
           autoFocus
           margin="dense"
           id="description"
@@ -60,7 +59,12 @@ function CreateTalkPopUp() {
           <DropZone />
         </p>
       </DialogContent>
-      <Button variant="outlined" onClick={()=>{postTalk(TalkJson)}}>
+      <Button
+        variant="outlined"
+        onClick={() => {
+          postTalk(TalkJson);
+        }}
+      >
         Create Talk
       </Button>
     </>

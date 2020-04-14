@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace App.TalkCreation.Data
 {
-    public class TalksServicePut
+    public class TalksServicePost
     {
     }
 }
