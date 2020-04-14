@@ -15,8 +15,8 @@ function CreateTalkPopUp() {
   const [description, setDescription] = useState('');
   
   const TalkJson ={
-    name: {},
-    description: {}
+    name: {name},
+    description: {description}
   };
 
   const onDescriptionChange = (event: ChangeEvent<HTMLInputElement>)=>{
