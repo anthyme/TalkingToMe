@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using App.TalkCreation.Context;
 using App.TalkCreation.Models;
 using Newtonsoft.Json.Linq;
+using App.TalkCreation.Data.DataFetch.Dto;
 
 namespace App.TalkCreation.Data
 {
@@ -18,11 +19,13 @@ namespace App.TalkCreation.Data
     {
         private readonly TalkContext _context;
         private readonly TalksService _talkService;
+        private readonly TalksServiceFetch _talksServiceFetch;
 
-        public TalksController(TalkContext context, TalksService talksService)
+        public TalksController(TalkContext context, TalksService talksService, TalksServiceFetch talksServiceFetch)
         {
             _context = context;
             _talkService = talksService;
+            _talksServiceFetch = talksServiceFetch;
         }
 
         // GET: api/ChannelsControllerTest
@@ -37,8 +40,6 @@ namespace App.TalkCreation.Data
         public async Task<ActionResult<IEnumerable<Talk>>> GetTalk(int id)
         {
             var talk = await _context.Talks.ToListAsync();
-            //.Include(p => p.Quizzes).ThenInclude(p => p.Quizz).ThenInclude(p => p.Questions).ThenInclude(p => p.Question).Where(p => p.Id == id)
-            //Query à améliorer dans les services
 
             if (talk == null)
             {
@@ -113,19 +114,12 @@ namespace App.TalkCreation.Data
             return talk;
         }
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult<IEnumerable<Talk>>> GetTalkAndQuizz(int id)
+        [HttpGet("fetchTalkAndQuizzes/{id}")]
+        public async Task<TalkAndQuizzesDTO> fetchTalkAndQuizzes(int id)
         {
-            var talk = await _context.Talks.ToListAsync();
-            //.Include(p => p.Quizzes).ThenInclude(p => p.Quizz).ThenInclude(p => p.Questions).ThenInclude(p => p.Question).Where(p => p.Id == id)
-            //Query à améliorer dans les services
+            Task<TalkAndQuizzesDTO> talk = _talksServiceFetch.getTalkAndQuizzes(id);
 
-            if (talk == null)
-            {
-                return NotFound();
-            }
-
-            return talk;
+            return await talk;
         }
     }
 }

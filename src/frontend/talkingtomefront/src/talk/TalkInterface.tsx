@@ -4,7 +4,6 @@ import Button from '@material-ui/core/Button';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import { makeStyles } from '@material-ui/core/styles';
-import { Http2ServerResponse } from 'http2';
 
 const TalkInterface = () => {
   const [quizzId, setQuizzId] = useState('0');
@@ -30,7 +29,7 @@ const TalkInterface = () => {
 
   const loadTalk = async () => {
     const response = await fetch(
-      `https://localhost:44381/api/Talks/${TalkId}`,
+      `https://localhost:44381/api/Talks/fetchTalkAndQuizzes/${TalkId}`,
       {
         method: 'get',
         headers: {
@@ -43,16 +42,24 @@ const TalkInterface = () => {
       setRequestFailed(true);
     }
     const responseData = await response.json();
-    !requestFailed && showInitialFetchedData(responseData[0]);
+    !requestFailed && showInitialFetchedData(responseData);
   };
 
   const showInitialFetchedData = (data: any) => {
-    setTalkName(data.name);
+    setTalkName(data.talkName);
+    for (let quizz of data.quizzes) {
+      console.log('Louis quizzes', quizz);
+      setListQuizzes((listQuizzes) => [...listQuizzes, quizz]);
+    }
   };
 
   useEffect(() => {
     loadTalk();
   }, []); //Load only once at first build
+
+  useEffect(() => {
+    console.log('Louis post fetch ListQuizzes:', listQuizzes);
+  }, [listQuizzes]);
 
   const useStyles = makeStyles((theme) => ({
     title: {
@@ -96,9 +103,9 @@ const TalkInterface = () => {
             <MenuItem value="0" disabled={true}>
               Select a quizz
             </MenuItem>
-            <MenuItem value="1">Quizz 1</MenuItem>
-            <MenuItem value="2">Quizz 2</MenuItem>
-            <MenuItem value="3">Quizz 3</MenuItem>
+            {listQuizzes.map((quizz: any) => (
+              <MenuItem value={quizz.id}>{quizz.name}</MenuItem>
+            ))}
           </Select>
           <Button
             variant="outlined"
