@@ -43,7 +43,7 @@ const TalkInterface = () => {
       setRequestFailed(true);
     }
     const responseData = await response.json();
-    requestFailed && showInitialFetchedData(responseData[0]);
+    !requestFailed && showInitialFetchedData(responseData[0]);
   };
 
   const showInitialFetchedData = (data: any) => {

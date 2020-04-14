@@ -108,5 +108,20 @@ namespace App.TalkCreation.Data
 
             return talk;
         }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<IEnumerable<Talk>>> GetTalkAndQuizz(int id)
+        {
+            var talk = await _context.Talks.ToListAsync();
+            //.Include(p => p.Quizzes).ThenInclude(p => p.Quizz).ThenInclude(p => p.Questions).ThenInclude(p => p.Question).Where(p => p.Id == id)
+            //Query à améliorer dans les services
+
+            if (talk == null)
+            {
+                return NotFound();
+            }
+
+            return talk;
+        }
     }
 }
