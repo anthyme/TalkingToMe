@@ -17,12 +17,14 @@ namespace App.TalkCreation.Data
     public class TalksController : ControllerBase
     {
         private readonly TalkContext _context;
-        private readonly TalksService _talkService;
+        private readonly TalksServicePost _talkServicePost;
+        private readonly TalksServiceFetch _talkServiceFetch;
 
-        public TalksController(TalkContext context, TalksService talksService)
+        public TalksController(TalkContext context, TalksServicePost talksService, TalksServiceFetch talksServiceFetch)
         {
             _context = context;
-            _talkService = talksService;
+            _talkServicePost = talksService;
+            _talkServiceFetch = talksServiceFetch;
         }
 
         // GET: api/ChannelsControllerTest
@@ -34,18 +36,10 @@ namespace App.TalkCreation.Data
 
         // GET: api/ChannelsControllerTest/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<IEnumerable<Talk>>> GetTalk(int id)
+        public async Task<ActionResult<List<Talk>>> GetTalk(int id)
         {
-            var talk = await _context.Talks.ToListAsync();
-            //.Include(p => p.Quizzes).ThenInclude(p => p.Quizz).ThenInclude(p => p.Questions).ThenInclude(p => p.Question).Where(p => p.Id == id)
-            //Query à améliorer dans les services
-
-            if (talk == null)
-            {
-                return NotFound();
-            }
-
-            return talk;
+            List<Talk> talks = await _talkServiceFetch.getTalksByUserId(id);
+            return talks;
         }
 
         // PUT: api/ChannelsControllerTest/5
@@ -92,7 +86,7 @@ namespace App.TalkCreation.Data
         public async Task<ActionResult<string>> PostTalk([FromBody]dynamic talk)
         {
             var parsedTalk = JArray.Parse(talk.ToString());
-            string returnQuizz = _talkService.AddNewTalk(parsedTalk);
+            string returnQuizz = _talkServicePost.AddNewTalk(parsedTalk);
             Console.WriteLine(returnQuizz);
             return returnQuizz;
         }
@@ -109,21 +103,6 @@ namespace App.TalkCreation.Data
 
             _context.Talks.Remove(talk);
             await _context.SaveChangesAsync();
-
-            return talk;
-        }
-
-        [HttpGet("{id}")]
-        public async Task<ActionResult<IEnumerable<Talk>>> GetTalkAndQuizz(int id)
-        {
-            var talk = await _context.Talks.ToListAsync();
-            //.Include(p => p.Quizzes).ThenInclude(p => p.Quizz).ThenInclude(p => p.Questions).ThenInclude(p => p.Question).Where(p => p.Id == id)
-            //Query à améliorer dans les services
-
-            if (talk == null)
-            {
-                return NotFound();
-            }
 
             return talk;
         }

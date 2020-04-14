@@ -29,5 +29,16 @@ namespace App.TalkCreation.Data
                 return talkNQuizz;
             }
         }
+
+        public async Task<List<Talk>> getTalksByUserId(int id)
+        {
+            var optionsBuilder = new DbContextOptionsBuilder<TalkContext>();
+            optionsBuilder.UseSqlServer(_connectionString);
+            using (TalkContext context = new TalkContext(optionsBuilder.Options))
+            {
+                var talkNQuizz = await context.Talks.Where(p => p.OwnerId==id).ToListAsync();
+                return talkNQuizz;
+            }
+        }
     }
 }

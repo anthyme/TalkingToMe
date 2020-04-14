@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useEffect, useState}from 'react'
 import AppBar from '@material-ui/core/AppBar'
 import Button from '@material-ui/core/Button'
 import CameraIcon from '@material-ui/icons/PhotoCamera'
@@ -15,6 +15,7 @@ import Container from '@material-ui/core/Container'
 import Link from '@material-ui/core/Link'
 import TalkPresCard from './TalkPresCard'
 import PopUp from '../popUps/PopUp'
+import {getTalks} from "../dataTransfers/DataTalkFetch"
 
 function Copyright() {
   return (
@@ -61,11 +62,13 @@ const useStyles = makeStyles(theme => ({
   },
 }))
 
-const cards : number[] = [1, 2]
-
+//TODO - CHANGE THIS TO CONNECTED USER ID
 function Menu() {
+  const [cards, setCards] = useState([]);
   const classes = useStyles()
-
+  useEffect(() => {
+    getTalks(1).then((json)=>{setCards(json)});
+  }, []);
   return (
     <React.Fragment>
       <CssBaseline />
@@ -118,7 +121,8 @@ function Menu() {
           <Grid container spacing={4}>
             {cards.map(card => (
               <TalkPresCard card={card} />
-            ))}
+            ))
+          }
           </Grid>
         </Container>
       </main>

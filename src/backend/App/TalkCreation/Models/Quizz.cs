@@ -8,6 +8,7 @@ namespace App.TalkCreation.Models
     public class Quizz
     {
         public int Id { get; set; }
+        public int OwnerId { get; set; }
 #nullable enable
         public List<QuizzToTalk>? Talks { get; set; }
 #nullable disable
