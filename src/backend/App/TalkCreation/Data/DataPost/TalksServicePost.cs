@@ -57,5 +57,22 @@ namespace App.TalkCreation.Data
                 return "{\"response\":\"New Talk created\"}";
             }
         }
+
+        public void ChangeTalk(dynamic data)
+        {
+            var optionsBuilder = new DbContextOptionsBuilder<TalkContext>();
+            optionsBuilder.UseSqlServer(_connectionString);
+            using (TalkContext context = new TalkContext(optionsBuilder.Options))
+            {
+                Talk changeTalk = new Talk
+                {
+                    Id= data.id,
+                    Name = data.name,
+                    Description = data.description
+                };
+                context.Talks.Add(changeTalk);
+                context.SaveChanges();
+            }
+        }
     }
 }

@@ -46,32 +46,11 @@ namespace App.TalkCreation.Data
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutQuizz(int id, Talk talk)
+        public async Task<string> PutQuizz([FromBody]dynamic talk)
         {
-            if (id != talk.Id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(talk).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!TalkExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
+            var parsedTalk = JArray.Parse(talk.ToString());
+            string returnTalk = _talkServicePost.ChangeTalk(parsedTalk);
+            return "Talk modified";
         }
 
         private bool TalkExists(int id)

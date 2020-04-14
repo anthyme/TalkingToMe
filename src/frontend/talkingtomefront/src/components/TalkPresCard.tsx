@@ -13,6 +13,7 @@ import Typography from '@material-ui/core/Typography'
 import { makeStyles } from '@material-ui/core/styles'
 import Container from '@material-ui/core/Container'
 import Link from '@material-ui/core/Link'
+import EditTalkPopUp from '../popUps/popUpCards/EditTalkPopUp'
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -56,9 +57,7 @@ const TalkPresCard: React.FC<IProps> = (props) => {
           <Typography>{card.description}</Typography>
         </CardContent>
         <CardActions>
-          <Button size="small" color="primary">
-            Edit
-          </Button>
+        <EditTalkPopUp talk={card}/>
           <Button size="small" color="primary">
             start
           </Button>
