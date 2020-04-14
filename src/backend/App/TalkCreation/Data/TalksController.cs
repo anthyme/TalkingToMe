@@ -1,4 +1,5 @@
 ﻿using System;
+using App.TalkCreation.Data;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -7,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using App.TalkCreation.Context;
 using App.TalkCreation.Models;
+using Newtonsoft.Json.Linq;
 
 namespace App.TalkCreation.Data
 {
@@ -15,10 +17,12 @@ namespace App.TalkCreation.Data
     public class TalksController : ControllerBase
     {
         private readonly TalkContext _context;
+        private readonly TalksService _talkService;
 
-        public TalksController(TalkContext context)
+        public TalksController(TalkContext context, TalksService talksService)
         {
             _context = context;
+            _talkService = talksService;
         }
 
         // GET: api/ChannelsControllerTest
@@ -85,12 +89,12 @@ namespace App.TalkCreation.Data
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPost]
-        public async Task<ActionResult<Quizz>> PostTalk(Talk talk)
+        public async Task<ActionResult<string>> PostTalk([FromBody]dynamic talk)
         {
-            _context.Talks.Add(talk);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetChannel", new { id = talk.Id }, talk);
+            var parsedTalk = JArray.Parse(talk.ToString());
+            string returnQuizz = _talkService.AddNewTalk(parsedTalk);
+            Console.WriteLine(returnQuizz);
+            return returnQuizz;
         }
 
         // DELETE: api/ChannelsControllerTest/5
