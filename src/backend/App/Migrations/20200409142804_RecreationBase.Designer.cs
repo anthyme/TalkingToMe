@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace App.Migrations
 {
     [DbContext(typeof(TalkContext))]
-    [Migration("20200409131514_new_DB_no_QuizzId")]
-    partial class new_DB_no_QuizzId
+    [Migration("20200409142804_RecreationBase")]
+    partial class RecreationBase
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

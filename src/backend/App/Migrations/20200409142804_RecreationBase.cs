@@ -2,7 +2,7 @@
 
 namespace App.Migrations
 {
-    public partial class new_DB : Migration
+    public partial class RecreationBase : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -12,7 +12,6 @@ namespace App.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    QuizzId = table.Column<int>(nullable: true),
                     Quest = table.Column<string>(nullable: true),
                     Type = table.Column<string>(nullable: true),
                     Answers = table.Column<string>(nullable: true),

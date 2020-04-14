@@ -4,13 +4,17 @@ import Button from '@material-ui/core/Button';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import { makeStyles } from '@material-ui/core/styles';
+import { Http2ServerResponse } from 'http2';
 
 const TalkInterface = () => {
   const [quizzId, setQuizzId] = useState('0');
   const [shouldRedirect, setShouldRedirect] = useState(false);
+  const [requestFailed, setRequestFailed] = useState(false);
+  const [listQuizzes, setListQuizzes] = useState([{}]);
+  const [talkName, setTalkName] = useState('');
 
   const TalkId: number = 1;
-  const UserId: number = 1; //This two const should come from props but for development purpose, they're set like that for now
+  const UserId: number = 1; //These two const should come from props but for development purpose, they're set like that for now
 
   const onChangeQuizz = (value: any) => {
     setQuizzId(value);
@@ -24,8 +28,7 @@ const TalkInterface = () => {
     console.log(`Now we should show the quizz ${quizzId}`);
   };
 
-  const loadQuizzToTalk = async () => {
-    console.log('Louis rentre dans loadQuizz');
+  const loadTalk = async () => {
     const response = await fetch(
       `https://localhost:44381/api/Talks/${TalkId}`,
       {
@@ -36,26 +39,20 @@ const TalkInterface = () => {
       },
     );
     if (response.status === 200) {
-      console.log('Louis response talk get');
-      console.log(response.json());
-      return response;
     } else {
-      console.log('Failed getting talk');
+      setRequestFailed(true);
     }
-    //     .then((response) => {
-    //       return response.json();
-    //     })
-    //     .then((responseData) => {
-    //       setMessage(responseData.message);
-    //     })
-    //     .then(() => console.log(message))
-    //     .catch((err) => console.log('caught this error: ' + err));
+    const responseData = await response.json();
+    requestFailed && showInitialFetchedData(responseData[0]);
+  };
+
+  const showInitialFetchedData = (data: any) => {
+    setTalkName(data.name);
   };
 
   useEffect(() => {
-    console.log("Le use effect s'active");
-    loadQuizzToTalk();
-  }, []);
+    loadTalk();
+  }, []); //Load only once at first build
 
   const useStyles = makeStyles((theme) => ({
     title: {
@@ -78,7 +75,7 @@ const TalkInterface = () => {
         <Redirect to="/Menu" push />
       ) : (
         <>
-          <h1 className={classes.title}>Talk's Name</h1>
+          <h1 className={classes.title}>{talkName}</h1>
           <div>
             <Button
               variant="outlined"
