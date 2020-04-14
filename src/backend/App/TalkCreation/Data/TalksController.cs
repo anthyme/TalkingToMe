@@ -18,13 +18,13 @@ namespace App.TalkCreation.Data
     public class TalksController : ControllerBase
     {
         private readonly TalkContext _context;
-        private readonly TalksService _talkService;
+        private readonly TalksServicePost _talkServicePost;
         private readonly TalksServiceFetch _talksServiceFetch;
 
-        public TalksController(TalkContext context, TalksService talksService, TalksServiceFetch talksServiceFetch)
+        public TalksController(TalkContext context, TalksServicePost talksService, TalksServiceFetch talksServiceFetch)
         {
             _context = context;
-            _talkService = talksService;
+            _talkServicePost = talksService;
             _talksServiceFetch = talksServiceFetch;
         }
 
@@ -93,7 +93,7 @@ namespace App.TalkCreation.Data
         public async Task<ActionResult<string>> PostTalk([FromBody]dynamic talk)
         {
             var parsedTalk = JArray.Parse(talk.ToString());
-            string returnQuizz = _talkService.AddNewTalk(parsedTalk);
+            string returnQuizz = _talkServicePost.AddNewTalk(parsedTalk);
             Console.WriteLine(returnQuizz);
             return returnQuizz;
         }
