@@ -35,7 +35,7 @@ const useStyles = makeStyles(theme => ({
 }))
 
 interface IProps {
-  card :number
+  card :any
 }
 
 // TODO -Change Image and Add onclickModifier
@@ -43,7 +43,7 @@ const TalkPresCard: React.FC<IProps> = (props) => {
   //const classes = useStyles()
   const card = props.card;
   return (
-    <Grid item key={card} xs={12} sm={6} md={4}>
+    <Grid item key={card.id} xs={12} sm={6} md={4}>
       <Card>
         <CardMedia
           image="https://source.unsplash.com/random"
@@ -51,9 +51,9 @@ const TalkPresCard: React.FC<IProps> = (props) => {
         />
         <CardContent>
           <Typography gutterBottom variant="h5" component="h2">
-            Talk Name
+            {card.name}
           </Typography>
-          <Typography>Description of the talk.</Typography>
+          <Typography>{card.description}</Typography>
         </CardContent>
         <CardActions>
           <Button size="small" color="primary">

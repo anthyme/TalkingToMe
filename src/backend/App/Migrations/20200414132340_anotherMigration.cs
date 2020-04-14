@@ -2,7 +2,7 @@
 
 namespace App.Migrations
 {
-    public partial class noQuizzToQuestTable : Migration
+    public partial class anotherMigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

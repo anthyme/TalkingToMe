@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace App.Migrations
 {
     [DbContext(typeof(TalkContext))]
-    [Migration("20200414092040_noQuizzToQuestTable")]
-    partial class noQuizzToQuestTable
+    [Migration("20200414132340_anotherMigration")]
+    partial class anotherMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
