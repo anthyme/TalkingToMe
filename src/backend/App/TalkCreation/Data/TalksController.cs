@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using App.TalkCreation.Context;
 using App.TalkCreation.Models;
 using Newtonsoft.Json.Linq;
+using App.TalkCreation.Data.DataFetch.Dto;
 
 namespace App.TalkCreation.Data
 {
@@ -18,13 +19,13 @@ namespace App.TalkCreation.Data
     {
         private readonly TalkContext _context;
         private readonly TalksServicePost _talkServicePost;
-        private readonly TalksServiceFetch _talkServiceFetch;
+        private readonly TalksServiceFetch _talksServiceFetch;
 
         public TalksController(TalkContext context, TalksServicePost talksService, TalksServiceFetch talksServiceFetch)
         {
             _context = context;
             _talkServicePost = talksService;
-            _talkServiceFetch = talksServiceFetch;
+            _talksServiceFetch = talksServiceFetch;
         }
 
         // GET: api/ChannelsControllerTest
@@ -36,10 +37,16 @@ namespace App.TalkCreation.Data
 
         // GET: api/ChannelsControllerTest/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<List<Talk>>> GetTalk(int id)
+        public async Task<ActionResult<IEnumerable<Talk>>> GetTalk(int id)
         {
-            List<Talk> talks = await _talkServiceFetch.getTalksByUserId(id);
-            return talks;
+            var talk = await _context.Talks.ToListAsync();
+
+            if (talk == null)
+            {
+                return NotFound();
+            }
+
+            return talk;
         }
 
         // PUT: api/ChannelsControllerTest/5
@@ -84,6 +91,14 @@ namespace App.TalkCreation.Data
             await _context.SaveChangesAsync();
 
             return talk;
+        }
+
+        [HttpGet("fetchTalkAndQuizzes/{id}")]
+        public async Task<TalkAndQuizzesDTO> fetchTalkAndQuizzes(int id)
+        {
+            Task<TalkAndQuizzesDTO> talk = _talksServiceFetch.getTalkAndQuizzes(id);
+
+            return await talk;
         }
     }
 }
