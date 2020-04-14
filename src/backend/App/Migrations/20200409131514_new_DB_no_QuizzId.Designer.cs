@@ -3,14 +3,16 @@ using App.TalkCreation.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace App.Migrations
 {
     [DbContext(typeof(TalkContext))]
-    partial class TalkContextModelSnapshot : ModelSnapshot
+    [Migration("20200409131514_new_DB_no_QuizzId")]
+    partial class new_DB_no_QuizzId
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -34,15 +36,10 @@ namespace App.Migrations
                     b.Property<string>("Quest")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("QuizzId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Type")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("QuizzId");
 
                     b.ToTable("Questions");
                 });
@@ -60,6 +57,29 @@ namespace App.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Quizz");
+                });
+
+            modelBuilder.Entity("App.TalkCreation.Models.QuizzToQuestion", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("QuestionId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("QuizzId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("QuestionId")
+                        .IsUnique();
+
+                    b.HasIndex("QuizzId");
+
+                    b.ToTable("QuizzToQuestions");
                 });
 
             modelBuilder.Entity("App.TalkCreation.Models.QuizzToTalk", b =>
@@ -108,12 +128,18 @@ namespace App.Migrations
                     b.ToTable("Talks");
                 });
 
-            modelBuilder.Entity("App.TalkCreation.Models.Question", b =>
+            modelBuilder.Entity("App.TalkCreation.Models.QuizzToQuestion", b =>
                 {
+                    b.HasOne("App.TalkCreation.Models.Question", "Question")
+                        .WithOne("Quizz")
+                        .HasForeignKey("App.TalkCreation.Models.QuizzToQuestion", "QuestionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("App.TalkCreation.Models.Quizz", "Quizz")
                         .WithMany("Questions")
                         .HasForeignKey("QuizzId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
 
