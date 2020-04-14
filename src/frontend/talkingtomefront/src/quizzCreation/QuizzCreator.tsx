@@ -73,7 +73,7 @@ export default function QuizzCreator() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(sentJson)
     };
-    let response = await fetch(constants.urlDataBase, requestOptions);
+    let response = await fetch(constants.urlDataBase+"Quizz", requestOptions);
     let json = response.json();
     console.log(json);
 }
