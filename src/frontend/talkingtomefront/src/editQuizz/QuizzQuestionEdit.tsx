@@ -115,6 +115,7 @@ const QuizzQuestionEdit: React.FC<IProps> = (props) =>  {
                     label="Question"
                     fullWidth
                     autoComplete="fname"
+                    value={questionValue}
                     onChange={handleQuestionChange}
                   />
                   <div>
@@ -182,7 +183,7 @@ const QuizzQuestionEdit: React.FC<IProps> = (props) =>  {
                     id={props.questionId.toString()}
                     name={questionValue}
                     label="Question"
-                    value=""
+                    value={questionValue}
                     fullWidth
                     autoComplete="fname"
                     onChange={handleQuestionChange}

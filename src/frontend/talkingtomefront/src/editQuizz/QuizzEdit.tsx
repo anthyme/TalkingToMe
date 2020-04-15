@@ -12,6 +12,8 @@ import { RootDispatcher } from '../store/MainDispatcher'
 import { InitialState } from '../store/reducers/MainReducer'
 import { getQuizz } from "../dataTransfers/DataTalkFetch"
 import * as constants from "../constants"
+import { putQuizz } from '../dataTransfers/DataQuizzPost'
+import { putTalk } from '../dataTransfers/DataTalkPost'
 
 interface StateProps { 
   currentAnswerRdx: string,
@@ -89,17 +91,10 @@ export default function QuizzEdit() {
     console.log(questionsJson);
   };
 
-  const PostQuizz = async ()=>{
-    let sentJson = [...questionsJson,{Name:"TestQuizz", id:{quizzId}}]
-    const requestOptions = {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(sentJson)
-    };
-    let response = await fetch(constants.urlDataBase+"Quizz", requestOptions);
-    let json = response.json();
-    console.log(json);
-}
+  const PostQuizz = ()=>{
+    putQuizz(questionsJson,quizzId);
+  }
+
 
   return (
     <React.Fragment>

@@ -23,7 +23,7 @@ interface StateProps {
 }
 
 const Answer: React.FC<IProps> = (props) => {
-  const [value, setValue] = useState('');
+  const [value, setValue] = useState(props.answer.Reponse);
   const [show, setShow] = useState(true);
   const {currentAnswerRdx, currentAnswerIdRdx,questionIdRdx,questionRdx} = useSelector<InitialState, StateProps>((state: InitialState) => {
     return {
@@ -35,9 +35,6 @@ const Answer: React.FC<IProps> = (props) => {
 });
   const dispatch = useDispatch();
   const rootDispatcher = new RootDispatcher(dispatch);
-  //const currentAnswerRdx = useSelector((state) => state.currentAnswer);
-  //const currentAnswerIdRdx = useSelector((state) => state.currentAnswerId);
-  //const questionIdRdx = useSelector((state) => state.questionId);
 
 
   const deleteAnswer = () => {
@@ -63,6 +60,7 @@ const Answer: React.FC<IProps> = (props) => {
             <TextField
               placeholder={'Answer' + props.answerId}
               inputProps={{ 'aria-label': 'description' }}
+              value = {value}
               onChange={(event: ChangeEvent<HTMLInputElement>) => {
                 onInputChange(event);
               }}
