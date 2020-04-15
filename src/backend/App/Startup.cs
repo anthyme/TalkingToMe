@@ -30,6 +30,7 @@ namespace App
             services.AddScoped<QuizzServicePost>();
             services.AddScoped<TalksServiceFetch>();
             services.AddScoped<TalksServicePost>();
+            services.AddScoped<QuestionServiceFetch>();
             services.AddCors(o => o.AddPolicy("ReactPolicy", builder =>
             {
                 builder.WithOrigins("http://localhost:3000")
