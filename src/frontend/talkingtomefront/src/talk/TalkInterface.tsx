@@ -4,9 +4,11 @@ import Button from '@material-ui/core/Button';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import { makeStyles } from '@material-ui/core/styles';
+import { loadTalkNQuizzes } from '../dataTransfers/DataTalkFetch';
+import { loadQuizzContent } from '../dataTransfers/DataQuestionFetch';
 
 const TalkInterface = () => {
-  const [quizzId, setQuizzId] = useState('0');
+  const [quizzId, setQuizzId] = useState(0);
   const [shouldRedirect, setShouldRedirect] = useState(false);
   const [requestFailed, setRequestFailed] = useState(false);
   const [listQuizzes, setListQuizzes] = useState([{}]);
@@ -24,41 +26,26 @@ const TalkInterface = () => {
   };
 
   const startQuizz = () => {
-    console.log(`Now we should show the quizz ${quizzId}`);
+    loadQuizzContent(quizzId);
   };
 
-  const loadTalk = async () => {
-    const response = await fetch(
-      `https://localhost:44381/api/Talks/fetchTalkAndQuizzes/${TalkId}`,
-      {
-        method: 'get',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      },
-    );
-    if (response.status < 100 || response.status > 400) {
-      setRequestFailed(true);
-    }
-    const responseData = await response.json();
-    !requestFailed && showInitialFetchedData(responseData);
+  const loadInit = async () => {
+    const responseData = await loadTalkNQuizzes(TalkId);
+    responseData
+      ? showInitialFetchedData(responseData)
+      : setRequestFailed(true);
   };
 
   const showInitialFetchedData = (data: any) => {
     setTalkName(data.talkName);
     for (let quizz of data.quizzes) {
-      console.log('Louis quizzes', quizz);
       setListQuizzes((listQuizzes) => [...listQuizzes, quizz]);
     }
   };
 
   useEffect(() => {
-    loadTalk();
+    loadInit();
   }, []); //Load only once at first build
-
-  useEffect(() => {
-    console.log('Louis post fetch ListQuizzes:', listQuizzes);
-  }, [listQuizzes]);
 
   const useStyles = makeStyles((theme) => ({
     title: {
@@ -102,9 +89,12 @@ const TalkInterface = () => {
             <MenuItem value="0" disabled={true}>
               Select a quizz
             </MenuItem>
-            {listQuizzes.map((quizz: any) => (
-              <MenuItem value={quizz.id}>{quizz.name}</MenuItem>
-            ))}
+            {listQuizzes.map(
+              (quizz: any) =>
+                quizz.name && (
+                  <MenuItem value={quizz.id}>{quizz.name}</MenuItem>
+                ),
+            )}
           </Select>
           <Button
             variant="outlined"
