@@ -60,5 +60,24 @@ namespace App.TalkCreation.Data
                 return talkNQuizz;
             }
         }
+
+        public async Task<string> deleteTalk(int id)
+        {
+            var optionsBuilder = new DbContextOptionsBuilder<TalkContext>();
+            optionsBuilder.UseSqlServer(_connectionString);
+            using (TalkContext context = new TalkContext(optionsBuilder.Options))
+            {
+            var talk = await context.Talks.FindAsync(id);
+            if (talk == null)
+            {
+                    //TODO - Create return error
+                return "{\"response\":\"Remove failed\"}";
+            }
+
+            context.Talks.Remove(talk);
+            await context.SaveChangesAsync();
+            return "{\"response\":\"Remove sucessful\"}";
+            }
+        }
     }
 }

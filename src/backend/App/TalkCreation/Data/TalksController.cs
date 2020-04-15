@@ -72,18 +72,10 @@ namespace App.TalkCreation.Data
 
         // DELETE: api/ChannelsControllerTest/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Talk>> DeleteTalk(int id)
+        public async Task<ActionResult<string>> DeleteTalk(int id)
         {
-            var talk = await _context.Talks.FindAsync(id);
-            if (talk == null)
-            {
-                return NotFound();
-            }
-
-            _context.Talks.Remove(talk);
-            await _context.SaveChangesAsync();
-
-            return talk;
+            string response = await _talkServiceFetch.deleteTalk(id);
+            return response;
         }
     }
 }
