@@ -32,7 +32,7 @@ const QuizzQuestionEdit: React.FC<IProps> = (props) =>  {
   const [questionValue, setQuestionValue] = useState(props.qJson.Quest);
   const [selectedValue, setSelectedValue] = React.useState(props.qJson.Type);
   const [show, setShow] = useState(true);
-  const [answers, setAnswers] = useState(['', '']);
+  const [answers, setAnswers] = useState(props.qJson.Answers);
 
   const {currentAnswerRdx, currentAnswerIdRdx,questionIdRdx,questionRdx} = useSelector<InitialState, StateProps>((state: InitialState) => {
     return {
@@ -149,7 +149,7 @@ const QuizzQuestionEdit: React.FC<IProps> = (props) =>  {
                   >
                     <div>
                       {answersId.map((qId) => (
-                        <Answer answerId={qId} questionId={props.questionId} />
+                        <Answer answerId={qId} questionId={props.questionId} answer={props.qJson.Response} />
                       ))}
                     </div>
                   </RadioGroup>

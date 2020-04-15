@@ -12,6 +12,7 @@ import { RootDispatcher } from '../store/MainDispatcher';
 //import {withSearchValue} from "../enhancers/WithSearchValue";
 interface IProps {
   answerId: number,
+  answer: any,
   questionId: number
 }
 interface StateProps { 

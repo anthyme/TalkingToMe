@@ -22,6 +22,8 @@ interface StateProps {
 
 export default function QuizzEdit() {
   const [cardIds, setCardIds] = useState([])
+  const [title, setTitle] = useState("")
+  const [quizzId, setQuizzId] = useState(0)
   const [questionsID, setQuestionsId] = useState([0])
   const [questionsJson, setQuestionsJson] = useState([{id:1}])
   const {currentAnswerRdx, currentAnswerIdRdx,questionIdRdx,questionRdx} = useSelector<InitialState, StateProps>((state: InitialState) => {
@@ -43,6 +45,10 @@ export default function QuizzEdit() {
     setQuestionsJson(newQuestionJson);
   }
 
+  const handleTitleChange = (event:any) => {
+    setTitle(event.target.value);
+  };
+
   useEffect(() => {
     if (questionIdRdx!==-1) {
       console.log('creator changed!');
@@ -55,7 +61,10 @@ export default function QuizzEdit() {
 
   useEffect(() => {
     //TODO - Change to edited id
-    getQuizz(1).then((json)=>{setQuestionsJson(json);});
+    getQuizz(1).then((json)=>{
+      setQuestionsJson(json.Questions);
+      setQuizzId(json.Id)
+    });
     let first = [0];
     setQuestionsId(first);
     for(let i=1; i<questionsJson.length;i++){
@@ -81,7 +90,7 @@ export default function QuizzEdit() {
   };
 
   const PostQuizz = async ()=>{
-    let sentJson = [...questionsJson,{Name:"TestQuizz"}]
+    let sentJson = [...questionsJson,{Name:"TestQuizz", id:{quizzId}}]
     const requestOptions = {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -94,9 +103,14 @@ export default function QuizzEdit() {
 
   return (
     <React.Fragment>
-      <Typography variant="h6" gutterBottom>
-        Quizz Creation
-      </Typography>
+      <TextField
+                    required
+                    label="Quizz Title"
+                    fullWidth
+                    autoComplete="fname"
+                    value = {title}
+                    onChange={handleTitleChange}
+                  />
       <div>
         {questionsID.map((qId) => {
           return(

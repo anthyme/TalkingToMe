@@ -58,7 +58,6 @@ namespace App.TalkCreation.Data
             {
                 var talks = await context.Talks.Where(p => p.OwnerId==id).ToListAsync();
                 return talks;
-<<<<<<< HEAD
             }
         }
 
@@ -78,8 +77,7 @@ namespace App.TalkCreation.Data
             context.Talks.Remove(talk);
             await context.SaveChangesAsync();
             return "{\"response\":\"Remove sucessful\"}";
-=======
->>>>>>> b55ec3cea0587b147ec8f297ad5feb10cfd3c8f4
+
             }
         }
     }
