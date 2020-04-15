@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using App.TalkCreation.Context;
 using App.TalkCreation.Models;
 using Newtonsoft.Json.Linq;
+using App.TalkCreation.Data.DataFetch.Dto;
 
 namespace App.TalkCreation.Data
 {
@@ -40,6 +41,13 @@ namespace App.TalkCreation.Data
         {
             List<Talk> talks = await _talkServiceFetch.getTalksByUserId(id);
             return talks;
+        }
+
+        [HttpGet("fetchTalkAndQuizzes/{id}")] //Fetch custom for specific DTO
+        public async Task<TalkAndQuizzesDTO> fetchTalkAndQuizzes(int id)
+        {
+            Task<TalkAndQuizzesDTO> talk = _talkServiceFetch.getTalkAndQuizzes(id);
+            return await talk;
         }
 
         // PUT: api/ChannelsControllerTest/5
