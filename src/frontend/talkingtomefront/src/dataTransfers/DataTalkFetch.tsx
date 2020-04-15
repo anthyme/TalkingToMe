@@ -10,3 +10,13 @@ export const getTalks= async (userId:number)=>{
     console.log(response);
     return response;
 }
+
+export const getQuizz= async (userId:number)=>{
+  const requestOptions = {
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json' },
+  };
+  let response = await fetch(constants.urlDataBase+"Quizz/"+userId, requestOptions).then((response)=>{return response.json()});
+  console.log(response);
+  return response;
+}

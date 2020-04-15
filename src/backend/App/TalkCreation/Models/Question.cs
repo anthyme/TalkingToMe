@@ -12,7 +12,7 @@ namespace App.TalkCreation.Models
         public Quizz Quizz { get; set; }
         public String Quest { get; set; }
         public String Type { get; set; }
-        public String Answers { get; set; }
+        public ICollection<Answer> Answers { get; set; }
         public String CorrectAn { get; set; }
 
 

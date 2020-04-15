@@ -24,6 +24,7 @@ namespace App.TalkCreation.Context
             modelBuilder.Entity<QuizzToTalk>().ToTable("QuizzToTalks");
             modelBuilder.Entity<Talk>().ToTable("Talks");
             modelBuilder.Entity<Question>().ToTable("Questions");
+            modelBuilder.Entity<Answer>().ToTable("Answers");
 
             modelBuilder.Entity<Talk>().HasMany(e => e.Quizzes).WithOne();
             modelBuilder.Entity<Quizz>().HasMany(e => e.Talks).WithOne();
@@ -32,6 +33,8 @@ namespace App.TalkCreation.Context
             modelBuilder.Entity<QuizzToTalk>().HasOne(e => e.Quizz).WithMany(e => e.Talks);
             modelBuilder.Entity<Question>().HasOne(e => e.Quizz).WithMany(e => e.Questions).HasForeignKey(p => p.QuizzId);
             modelBuilder.Entity<Quizz>().HasMany(c => c.Questions).WithOne(e => e.Quizz);
+            modelBuilder.Entity<Answer>().HasOne(e => e.Question).WithMany(p=> p.Answers).HasForeignKey(p => p.QuestionId);
+            modelBuilder.Entity<Question>().HasMany(c => c.Answers).WithOne(e => e.Question);
         }
     }
 }

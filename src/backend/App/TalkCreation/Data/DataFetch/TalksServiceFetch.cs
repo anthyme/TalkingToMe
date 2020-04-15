@@ -56,8 +56,8 @@ namespace App.TalkCreation.Data
             optionsBuilder.UseSqlServer(_connectionString);
             using (TalkContext context = new TalkContext(optionsBuilder.Options))
             {
-                var talkNQuizz = await context.Talks.Where(p => p.OwnerId==id).ToListAsync();
-                return talkNQuizz;
+                var talks = await context.Talks.Where(p => p.OwnerId==id).ToListAsync();
+                return talks;
             }
         }
 
