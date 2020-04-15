@@ -37,8 +37,7 @@ const TalkInterface = () => {
         },
       },
     );
-    if (response.status === 200) {
-    } else {
+    if (response.status < 100 || response.status > 400) {
       setRequestFailed(true);
     }
     const responseData = await response.json();
