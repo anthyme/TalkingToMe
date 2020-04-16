@@ -65,6 +65,7 @@ const useStyles = makeStyles(theme => ({
 //TODO - CHANGE THIS TO CONNECTED USER ID
 function Menu() {
   const [cards, setCards] = useState([]);
+  const [quizzCards, setQuizzCards] = useState([]);
   const classes = useStyles()
   useEffect(() => {
     getTalks(1).then((json)=>{setCards(json)});

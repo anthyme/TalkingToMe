@@ -25,6 +25,7 @@ namespace App.TalkCreation.Data
             optionsBuilder.UseSqlServer(_connectionString);
             using (TalkContext context = new TalkContext(optionsBuilder.Options))
             {
+                Console.WriteLine(data);
                 var QuizzInfo= data[data.Count-1];
                 Quizz addQuizz = new Quizz
                 {
@@ -53,7 +54,7 @@ namespace App.TalkCreation.Data
                             QuestionId = questionId,
                             Response = answerString
                         };
-                        context.Questions.Add(addQuestion);
+                        context.Answers.Add(answer);
                         context.SaveChanges();
                     }
 

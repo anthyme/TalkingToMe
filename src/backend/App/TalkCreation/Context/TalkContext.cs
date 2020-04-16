@@ -17,6 +17,7 @@ namespace App.TalkCreation.Context
         public DbSet<QuizzToTalk> QuizzToTalks { get; set; }
         public DbSet<Talk> Talks { get; set; }
         public DbSet<Question> Questions { get; set; }
+        public DbSet<Answer> Answers { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
