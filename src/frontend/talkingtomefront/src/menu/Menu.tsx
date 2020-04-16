@@ -1,22 +1,22 @@
-import React, {useEffect, useState}from 'react'
-import AppBar from '@material-ui/core/AppBar'
-import Button from '@material-ui/core/Button'
-import CameraIcon from '@material-ui/icons/PhotoCamera'
-import Card from '@material-ui/core/Card'
-import CardActions from '@material-ui/core/CardActions'
-import CardContent from '@material-ui/core/CardContent'
-import CardMedia from '@material-ui/core/CardMedia'
-import CssBaseline from '@material-ui/core/CssBaseline'
-import Grid from '@material-ui/core/Grid'
-import Toolbar from '@material-ui/core/Toolbar'
-import Typography from '@material-ui/core/Typography'
-import { makeStyles } from '@material-ui/core/styles'
-import Container from '@material-ui/core/Container'
-import Link from '@material-ui/core/Link'
-import TalkPresCard from '../components/TalkPresCard'
-import {getTalks} from "../dataTransfers/DataTalkFetch"
-import CreateTalkPopUp from '../popUps/popUpCards/CreateTalkPopUp'
-import CreateQuizzPopUp from '../popUps/popUpCards/CreateQuizzPopUp'
+import React, { useEffect, useState } from 'react';
+import AppBar from '@material-ui/core/AppBar';
+import Button from '@material-ui/core/Button';
+import CameraIcon from '@material-ui/icons/PhotoCamera';
+import Card from '@material-ui/core/Card';
+import CardActions from '@material-ui/core/CardActions';
+import CardContent from '@material-ui/core/CardContent';
+import CardMedia from '@material-ui/core/CardMedia';
+import CssBaseline from '@material-ui/core/CssBaseline';
+import Grid from '@material-ui/core/Grid';
+import Toolbar from '@material-ui/core/Toolbar';
+import Typography from '@material-ui/core/Typography';
+import { makeStyles } from '@material-ui/core/styles';
+import Container from '@material-ui/core/Container';
+import Link from '@material-ui/core/Link';
+import TalkPresCard from '../components/TalkPresCard';
+import { getTalks } from '../dataTransfers/DataTalkFetch';
+import CreateTalkPopUp from '../popUps/popUpCards/CreateTalkPopUp';
+import CreateQuizzPopUp from '../popUps/popUpCards/CreateQuizzPopUp';
 
 function Copyright() {
   return (
@@ -28,10 +28,10 @@ function Copyright() {
       {new Date().getFullYear()}
       {'.'}
     </Typography>
-  )
+  );
 }
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   icon: {
     marginRight: theme.spacing(2),
   },
@@ -61,15 +61,19 @@ const useStyles = makeStyles(theme => ({
     backgroundColor: theme.palette.background.paper,
     padding: theme.spacing(6),
   },
-}))
+}));
 
 //TODO - CHANGE THIS TO CONNECTED USER ID
 function Menu() {
   const [cards, setCards] = useState([]);
   const [quizzCards, setQuizzCards] = useState([]);
-  const classes = useStyles()
+  const [shouldRedirectToTalk, setShouldRedirectToTalk] = useState(false);
+
+  const classes = useStyles();
   useEffect(() => {
-    getTalks(1).then((json)=>{setCards(json)});
+    getTalks(1).then((json) => {
+      setCards(json);
+    });
   }, []);
   return (
     <React.Fragment>
@@ -110,7 +114,7 @@ function Menu() {
                   <CreateTalkPopUp />
                 </Grid>
                 <Grid item>
-                  <CreateQuizzPopUp/>
+                  <CreateQuizzPopUp />
                 </Grid>
               </Grid>
             </div>
@@ -119,10 +123,9 @@ function Menu() {
         <Container className={classes.cardGrid} maxWidth="md">
           {/* End hero unit */}
           <Grid container spacing={4}>
-            {cards.map(card => (
-              <TalkPresCard card={card} />
-            ))
-          }
+            {cards.map((card, key) => (
+              <TalkPresCard card={card} key={key} />
+            ))}
           </Grid>
         </Container>
       </main>
@@ -143,6 +146,6 @@ function Menu() {
       </footer>
       {/* End footer */}
     </React.Fragment>
-  )
+  );
 }
-export default Menu
+export default Menu;

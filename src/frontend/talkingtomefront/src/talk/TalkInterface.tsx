@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Redirect } from 'react-router-dom';
 import Button from '@material-ui/core/Button';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import { makeStyles } from '@material-ui/core/styles';
+import { Typography, CssBaseline, AppBar, Toolbar } from '@material-ui/core';
 import { loadTalkNQuizzes } from '../dataTransfers/DataTalkFetch';
 import { loadQuizzContent } from '../dataTransfers/DataQuestionFetch';
 import QuestionInterface from './questionsPreview/QuestionInterface';
+import { Redirect } from 'react-router-dom';
 
 const TalkInterface = () => {
   const [quizzId, setQuizzId] = useState(0);
@@ -55,7 +56,6 @@ const TalkInterface = () => {
   const showQuestions = (data: any) => {
     setQuestionsData(data);
     setShowQuestion(true);
-    console.log('Louis data', data);
   };
 
   //UseEffects
@@ -71,9 +71,19 @@ const TalkInterface = () => {
     button: {
       margin: 5,
     },
-    backMenu: {
-      right: 0,
-      position: 'absolute',
+    fragmentMargin: {
+      padding: 15,
+    },
+    toolbar: {
+      display: 'flex',
+      justifyContent: 'space-between',
+    },
+    quizzNQuest: {
+      paddingLeft: '40px',
+      paddingRight: '40px',
+    },
+    selectNStart: {
+      marginBottom: '10px',
     },
   }));
 
@@ -81,58 +91,87 @@ const TalkInterface = () => {
 
   return (
     <React.Fragment>
+      <CssBaseline />
+      <AppBar position="relative">
+        <Toolbar className={classes.toolbar}>
+          <Typography variant="h6" color="inherit" noWrap>
+            Talk
+          </Typography>
+          <Button
+            variant="contained"
+            onClick={backToMenu}
+            className={classes.button}
+          >
+            Back to talks menu
+          </Button>
+        </Toolbar>
+      </AppBar>
       {shouldRedirect ? (
         <Redirect to="/Menu" push />
       ) : (
-        <>
-          <h1 className={classes.title}>{talkName}</h1>
-          <div>
+        <div className={classes.fragmentMargin}>
+          <Typography
+            component="h2"
+            variant="h3"
+            align="center"
+            color="textPrimary"
+            gutterBottom
+          >
+            {talkName}
+          </Typography>
+          <div className={classes.selectNStart}>
+            <Select
+              labelId="label"
+              id="select"
+              value={quizzId}
+              onChange={(e: any) => onChangeQuizz(e.target.value)}
+            >
+              {!showQuestion && (
+                <MenuItem value="0" disabled={true}>
+                  Select a quizz
+                </MenuItem>
+              )}
+              {listQuizzes.map(
+                (quizz: any) =>
+                  quizz.name && (
+                    <MenuItem value={quizz.id} key={quizz.id}>
+                      {quizz.name}
+                    </MenuItem>
+                  ),
+              )}
+            </Select>
             <Button
               variant="outlined"
               color="primary"
-              onClick={backToMenu}
-              className={`${classes.button} ${classes.backMenu}`}
+              onClick={startQuizz}
+              className={classes.button}
             >
-              Back to main menu
+              Start Quizz
             </Button>
           </div>
-          <h2>Select your quizz</h2>
-          <Select
-            labelId="label"
-            id="select"
-            value={quizzId}
-            onChange={(e: any) => onChangeQuizz(e.target.value)}
-          >
-            <MenuItem value="0" disabled={true}>
-              Select a quizz
-            </MenuItem>
-            {listQuizzes.map(
-              (quizz: any) =>
-                quizz.name && (
-                  <MenuItem value={quizz.id}>{quizz.name}</MenuItem>
-                ),
-            )}
-          </Select>
-          <Button
-            variant="outlined"
-            color="primary"
-            onClick={startQuizz}
-            className={classes.button}
-          >
-            Start Quizz
-          </Button>
-          {showQuestion &&
-            questionsData.map(
-              (question: any) =>
-                question && (
-                  <QuestionInterface
-                    key={question.id}
-                    quest={question.quest}
-                    typeQuest={question.type}
-                  />
-                ),
-            )}
-        </>
+          <div className={classes.quizzNQuest}>
+            {showQuestion && <h3 className={classes.title}>Quizz preview</h3>}
+            {showQuestion &&
+              questionsData.map(
+                (question: any) =>
+                  question && (
+                    <QuestionInterface
+                      key={question.id}
+                      quest={question.quest}
+                      typeQuest={question.type}
+                      answers={question.answers.map(
+                        (ans: {
+                          id: number;
+                          questionId: number;
+                          response: string;
+                        }) => ans.response,
+                      )}
+                      correctAn={question.correctAn}
+                    />
+                  ),
+              )}
+          </div>
+        </div>
       )}
     </React.Fragment>
   );
