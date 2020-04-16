@@ -18,7 +18,7 @@ namespace App.TalkCreation.Data.DataFetch
         {
             _connectionString = configuration.GetConnectionString("DBString");
         }
-
+        
         //TODO - Change syntax for fetch
         public async Task<QuizzDTO> returnQuizzById(int id)
         {
@@ -44,6 +44,37 @@ namespace App.TalkCreation.Data.DataFetch
                     Questions = quizz.Questions
                 };
                 return quizzDto;
+            }
+        }
+
+        public async Task<List<QuizzDTO>> returnQuizzByUserId(int id)
+        {
+            var optionsBuilder = new DbContextOptionsBuilder<TalkContext>();
+            optionsBuilder.UseSqlServer(_connectionString);
+            using (TalkContext context = new TalkContext(optionsBuilder.Options))
+            {
+                var quizzes = await context.Quizzes
+                    .Where(p => p.OwnerId == id)
+                    .Include(p => p.Questions)
+                    .ThenInclude(p => p.Answers)
+                    .ToListAsync();
+                if (quizzes == null)
+                {
+                    //TODO - Create return error
+                    return null;
+                }
+                List<QuizzDTO> quizzesDto = new List<QuizzDTO>();
+                foreach(Quizz quizz in quizzes)
+                {
+                    QuizzDTO quizzDto = new QuizzDTO
+                    {
+                        Id = quizz.Id,
+                        Name = quizz.Name,
+                    };
+                    quizzesDto.Add(quizzDto);
+                }
+
+                return quizzesDto;
             }
         }
     }
