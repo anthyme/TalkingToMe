@@ -1,11 +1,6 @@
-import React, {useEffect, useState}from 'react'
+import React, { useEffect, useState } from 'react'
 import AppBar from '@material-ui/core/AppBar'
-import Button from '@material-ui/core/Button'
 import CameraIcon from '@material-ui/icons/PhotoCamera'
-import Card from '@material-ui/core/Card'
-import CardActions from '@material-ui/core/CardActions'
-import CardContent from '@material-ui/core/CardContent'
-import CardMedia from '@material-ui/core/CardMedia'
 import CssBaseline from '@material-ui/core/CssBaseline'
 import Grid from '@material-ui/core/Grid'
 import Toolbar from '@material-ui/core/Toolbar'
@@ -13,28 +8,16 @@ import Typography from '@material-ui/core/Typography'
 import { makeStyles } from '@material-ui/core/styles'
 import Container from '@material-ui/core/Container'
 import Link from '@material-ui/core/Link'
-import TalkPresCard from '../components/TalkPresCard'
-import {getTalks} from "../dataTransfers/DataTalkFetch"
+import { getTalks } from '../dataTransfers/DataTalkFetch'
 import CreateTalkPopUp from '../popUps/popUpCards/CreateTalkPopUp'
 import CreateQuizzPopUp from '../popUps/popUpCards/CreateQuizzPopUp'
+import TalkCardViews from '../menu/TalkCardViews'
+import QuizzCardViews from '../menu/QuizzCardView'
+import Footer from '../static/Footer'
+import Header from '../static/Header'
+import WelcomeMsg from '../static/WelcomeMsg'
 
-function Copyright() {
-  return (
-    <Typography variant="body2" color="textSecondary" align="center">
-      {'Copyright © '}
-      <Link color="inherit" href="https://material-ui.com/">
-        Your Website
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  )
-}
-
-const useStyles = makeStyles(theme => ({
-  icon: {
-    marginRight: theme.spacing(2),
-  },
+const useStyles = makeStyles((theme) => ({
   heroContent: {
     backgroundColor: theme.palette.background.paper,
     padding: theme.spacing(8, 0, 6),
@@ -57,92 +40,57 @@ const useStyles = makeStyles(theme => ({
   cardContent: {
     flexGrow: 1,
   },
-  footer: {
-    backgroundColor: theme.palette.background.paper,
-    padding: theme.spacing(6),
-  },
 }))
 
+function renderTab(value : string, classes : string, cards :any){
+  switch(value){
+    case "Quizzes":
+      return (
+        <QuizzCardViews className={classes} cards={cards} />
+      );
+    case "Talks":
+      return (
+        <TalkCardViews className={classes} cards={cards} />
+      );
+}
+}
 //TODO - CHANGE THIS TO CONNECTED USER ID
 function Menu() {
-  const [cards, setCards] = useState([]);
-  const [quizzCards, setQuizzCards] = useState([]);
+  const [cards, setCards] = useState([])
+  const [quizzCards, setQuizzCards] = useState([])
+  const [talkCards, setTalkCards] = useState([])
+  const [chosenTab, setChosenTab] = useState("Talks")
   const classes = useStyles()
   useEffect(() => {
-    getTalks(1).then((json)=>{setCards(json)});
-  }, []);
+    getTalks(1).then((json) => {
+      setCards(json)
+    })
+  }, [])
   return (
     <React.Fragment>
       <CssBaseline />
-      <AppBar position="relative">
-        <Toolbar>
-          <CameraIcon className={classes.icon} />
-          <Typography variant="h6" color="inherit" noWrap>
-            Menu TalkingToMe
-          </Typography>
-        </Toolbar>
-      </AppBar>
+      <Header />
       <main>
-        {/* Hero unit */}
         <div className={classes.heroContent}>
           <Container maxWidth="sm">
-            <Typography
-              component="h1"
-              variant="h2"
-              align="center"
-              color="textPrimary"
-              gutterBottom
-            >
-              Home
-            </Typography>
-            <Typography
-              variant="h5"
-              align="center"
-              color="textSecondary"
-              paragraph
-            >
-              Welcome on the home page, here you will be able to see and manage
-              your talks.
-            </Typography>
+            <WelcomeMsg />
             <div className={classes.heroButtons}>
               <Grid container spacing={2} justify="center">
                 <Grid item>
                   <CreateTalkPopUp />
                 </Grid>
                 <Grid item>
-                  <CreateQuizzPopUp/>
+                  <CreateQuizzPopUp />
                 </Grid>
               </Grid>
             </div>
           </Container>
         </div>
-        <Container className={classes.cardGrid} maxWidth="md">
-          {/* End hero unit */}
-          <Grid container spacing={4}>
-            {cards.map(card => (
-              <TalkPresCard card={card} />
-            ))
-          }
-          </Grid>
-        </Container>
+        {renderTab(chosenTab, classes.cardGrid, cards)}
+        <TalkCardViews className={classes.cardGrid} cards={cards} />
       </main>
-      {/* Footer */}
-      <footer className={classes.footer}>
-        <Typography variant="h6" align="center" gutterBottom>
-          Footer
-        </Typography>
-        <Typography
-          variant="subtitle1"
-          align="center"
-          color="textSecondary"
-          component="p"
-        >
-          Something here to give the footer a purpose!
-        </Typography>
-        <Copyright />
-      </footer>
-      {/* End footer */}
+      <Footer />
     </React.Fragment>
   )
 }
-export default Menu
+export default Menu;
