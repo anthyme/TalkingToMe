@@ -1,40 +1,50 @@
 import React, { useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
+import SwipeableViews from 'react-swipeable-views';
 import AppBar from '@material-ui/core/AppBar';
-import Button from '@material-ui/core/Button';
 import CameraIcon from '@material-ui/icons/PhotoCamera';
-import Card from '@material-ui/core/Card';
-import CardActions from '@material-ui/core/CardActions';
-import CardContent from '@material-ui/core/CardContent';
-import CardMedia from '@material-ui/core/CardMedia';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Grid from '@material-ui/core/Grid';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import Link from '@material-ui/core/Link';
-import TalkPresCard from '../components/TalkPresCard';
 import { getTalks } from '../dataTransfers/DataTalkFetch';
+import { getQuizzes } from '../dataTransfers/DataQuizzFetch';
 import CreateTalkPopUp from '../popUps/popUpCards/CreateTalkPopUp';
 import CreateQuizzPopUp from '../popUps/popUpCards/CreateQuizzPopUp';
+import TalkCardViews from '../menu/TalkCardViews';
+import QuizzCardViews from '../menu/QuizzCardView';
+import Footer from '../static/Footer';
+import Header from '../static/Header';
+import WelcomeMsg from '../static/WelcomeMsg';
+import { green } from '@material-ui/core/colors';
+import { Tabs, Tab, Box, Zoom, Fab } from '@material-ui/core';
 
-function Copyright() {
+function TabPanel(props: any) {
+  const { children, value, index } = props;
+
   return (
-    <Typography variant="body2" color="textSecondary" align="center">
-      {'Copyright © '}
-      <Link color="inherit" href="https://material-ui.com/">
-        Your Website
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
+    <Typography
+      component="div"
+      role="tabpanel"
+      hidden={value !== index}
+      id={`action-tabpanel-${index}`}
+      aria-labelledby={`action-tab-${index}`}
+    >
+      {value === index && <Box p={3}>{children}</Box>}
     </Typography>
   );
 }
 
+TabPanel.propTypes = {
+  children: PropTypes.node,
+  index: PropTypes.any.isRequired,
+  value: PropTypes.any.isRequired,
+};
+
 const useStyles = makeStyles((theme) => ({
-  icon: {
-    marginRight: theme.spacing(2),
-  },
   heroContent: {
     backgroundColor: theme.palette.background.paper,
     padding: theme.spacing(8, 0, 6),
@@ -57,57 +67,76 @@ const useStyles = makeStyles((theme) => ({
   cardContent: {
     flexGrow: 1,
   },
-  footer: {
+  root: {
     backgroundColor: theme.palette.background.paper,
-    padding: theme.spacing(6),
+    width: 500,
+    position: 'relative',
+    minHeight: 200,
+  },
+  fab: {
+    position: 'absolute',
+    bottom: theme.spacing(2),
+    right: theme.spacing(2),
+  },
+  fabGreen: {
+    color: theme.palette.common.white,
+    backgroundColor: green[500],
+    '&:hover': {
+      backgroundColor: green[600],
+    },
   },
 }));
 
+function renderTab(value: number, classes: string, cards: any) {
+  switch (value) {
+    case 0:
+      return <QuizzCardViews className={classes} cards={cards} />;
+    case 1:
+      return <TalkCardViews className={classes} cards={cards} />;
+  }
+}
 //TODO - CHANGE THIS TO CONNECTED USER ID
 function Menu() {
   const [cards, setCards] = useState([]);
   const [quizzCards, setQuizzCards] = useState([]);
-  const [shouldRedirectToTalk, setShouldRedirectToTalk] = useState(false);
+  const [talkCards, setTalkCards] = useState([]);
+  const [chosenTab, setChosenTab] = useState(0);
+  const [indexTab, setIndexTab] = useState(0);
 
   const classes = useStyles();
+  const theme = useTheme();
+
+  function a11yProps(index: number) {
+    return {
+      id: `action-tab-${index}`,
+      'aria-controls': `action-tabpanel-${index}`,
+    };
+  }
+
   useEffect(() => {
     getTalks(1).then((json) => {
       setCards(json);
     });
+    getQuizzes(1).then((json) => {
+      setQuizzCards(json);
+    });
   }, []);
+
+  const handleChange = (event: any, newValue: any) => {
+    setChosenTab(newValue);
+  };
+  const handleChangeIndex = (index: number) => {
+    setIndexTab(index);
+  };
+
   return (
     <React.Fragment>
       <CssBaseline />
-      <AppBar position="relative">
-        <Toolbar>
-          <CameraIcon className={classes.icon} />
-          <Typography variant="h6" color="inherit" noWrap>
-            Menu TalkingToMe
-          </Typography>
-        </Toolbar>
-      </AppBar>
+      <Header />
       <main>
-        {/* Hero unit */}
         <div className={classes.heroContent}>
           <Container maxWidth="sm">
-            <Typography
-              component="h1"
-              variant="h2"
-              align="center"
-              color="textPrimary"
-              gutterBottom
-            >
-              Home
-            </Typography>
-            <Typography
-              variant="h5"
-              align="center"
-              color="textSecondary"
-              paragraph
-            >
-              Welcome on the home page, here you will be able to see and manage
-              your talks.
-            </Typography>
+            <WelcomeMsg />
             <div className={classes.heroButtons}>
               <Grid container spacing={2} justify="center">
                 <Grid item>
@@ -120,31 +149,33 @@ function Menu() {
             </div>
           </Container>
         </div>
-        <Container className={classes.cardGrid} maxWidth="md">
-          {/* End hero unit */}
-          <Grid container spacing={4}>
-            {cards.map((card, key) => (
-              <TalkPresCard card={card} key={key} />
-            ))}
-          </Grid>
-        </Container>
-      </main>
-      {/* Footer */}
-      <footer className={classes.footer}>
-        <Typography variant="h6" align="center" gutterBottom>
-          Footer
-        </Typography>
-        <Typography
-          variant="subtitle1"
-          align="center"
-          color="textSecondary"
-          component="p"
+        <AppBar position="static" color="default">
+          <Tabs
+            value={chosenTab}
+            onChange={handleChange}
+            indicatorColor="primary"
+            textColor="primary"
+            variant="fullWidth"
+            aria-label="action tabs example"
+          >
+            <Tab label="Talks" {...a11yProps(0)} />
+            <Tab label="Quizzes" {...a11yProps(1)} />
+          </Tabs>
+        </AppBar>
+        <SwipeableViews
+          axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
+          index={chosenTab}
+          onChangeIndex={handleChangeIndex}
         >
-          Something here to give the footer a purpose!
-        </Typography>
-        <Copyright />
-      </footer>
-      {/* End footer */}
+          <TabPanel value={chosenTab} index={0}>
+            <TalkCardViews className={classes.cardGrid} cards={cards} />
+          </TabPanel>
+          <TabPanel value={chosenTab} index={1}>
+            <QuizzCardViews className={classes.cardGrid} cards={quizzCards} />
+          </TabPanel>
+        </SwipeableViews>
+      </main>
+      <Footer />
     </React.Fragment>
   );
 }
