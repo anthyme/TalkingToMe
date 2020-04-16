@@ -24,3 +24,13 @@ export const putTalk= async (jsonTalk : any)=>{
   let json = response.json();
   console.log(json);
 }
+
+export const deleteTalk= async (id : number)=>{
+  const requestOptions = {
+    method: 'DELETE',
+    headers: { 'Content-Type': 'application/json' },
+  };
+  let response = await fetch(constants.urlDataBase+"Talks/"+id, requestOptions);
+  let json = response.json();
+  console.log(json);
+}
