@@ -65,14 +65,17 @@ const QuizzQuestion: React.FC<IProps> = (props) =>  {
 
   const handleQuestionTypeChange = (event:any) => {
     setSelectedValue(event.target.value);
+    rootDispatcher.setQuestionIdRdx(props.questionId);
   };
 
   const handleRadioChange = (event:any) => {
     setValue(event.target.value);
+    rootDispatcher.setQuestionIdRdx(props.questionId);
   };
 
   const handleQuestionChange = (event:any) => {
     setQuestionValue(event.target.value);
+    rootDispatcher.setQuestionIdRdx(props.questionId);
     console.log(value);
   };
 
@@ -173,12 +176,11 @@ const QuizzQuestion: React.FC<IProps> = (props) =>  {
             <Paper variant="outlined">
               <Grid container spacing={3}>
                 <Grid item xs={12}>
-                  <TextField
+                <TextField
                     required
                     id={props.questionId.toString()}
                     name={questionValue}
                     label="Question"
-                    value=""
                     fullWidth
                     autoComplete="fname"
                     onChange={handleQuestionChange}

@@ -13,9 +13,10 @@ import Typography from '@material-ui/core/Typography'
 import { makeStyles } from '@material-ui/core/styles'
 import Container from '@material-ui/core/Container'
 import Link from '@material-ui/core/Link'
-import TalkPresCard from './TalkPresCard'
-import PopUp from '../popUps/PopUp'
+import TalkPresCard from '../components/TalkPresCard'
 import {getTalks} from "../dataTransfers/DataTalkFetch"
+import CreateTalkPopUp from '../popUps/popUpCards/CreateTalkPopUp'
+import CreateQuizzPopUp from '../popUps/popUpCards/CreateQuizzPopUp'
 
 function Copyright() {
   return (
@@ -106,12 +107,10 @@ function Menu() {
             <div className={classes.heroButtons}>
               <Grid container spacing={2} justify="center">
                 <Grid item>
-                  <PopUp />
+                  <CreateTalkPopUp />
                 </Grid>
                 <Grid item>
-                  <Button variant="outlined" color="primary">
-                    Create new Quizz
-                  </Button>
+                  <CreateQuizzPopUp/>
                 </Grid>
               </Grid>
             </div>

@@ -2,7 +2,7 @@ import * as constants from '../constants';
 import _ from 'lodash';
 
 export const postTalk= async (jsonTalk : any)=>{
-    let sentJson = [...jsonTalk]
+    let sentJson = jsonTalk
     const requestOptions = {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },

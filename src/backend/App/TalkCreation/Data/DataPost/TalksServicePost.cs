@@ -26,8 +26,8 @@ namespace App.TalkCreation.Data
             {
                 Talk newTalk = new Talk
                 {
-                    Name = data.Name,
-                    Description = data.Description
+                    Name = data.name,
+                    Description = data.description
                 };
                 context.Talks.Add(newTalk);
                 context.SaveChanges();
