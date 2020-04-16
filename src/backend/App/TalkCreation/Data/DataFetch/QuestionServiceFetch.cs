@@ -26,7 +26,10 @@ namespace App.TalkCreation.Data
             optionsBuilder.UseSqlServer(_connectionString);
             using (TalkContext context = new TalkContext(optionsBuilder.Options))
             {
-                var response = await context.Questions.Where(p => p.QuizzId == quizzId).ToListAsync();
+                var response = await context.Questions
+                    .Where(p => p.QuizzId == quizzId)
+                    .Include(p => p.Answers)
+                    .ToListAsync();
                 return response;
             }
         }
