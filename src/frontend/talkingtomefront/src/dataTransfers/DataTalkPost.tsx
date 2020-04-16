@@ -25,7 +25,7 @@ export const putTalk= async (jsonTalk : any)=>{
   console.log(json);
 }
 
-export const deleteTalk= async (id : number)=>{
+export const deleteTalkById= async (id : number)=>{
   const requestOptions = {
     method: 'DELETE',
     headers: { 'Content-Type': 'application/json' },

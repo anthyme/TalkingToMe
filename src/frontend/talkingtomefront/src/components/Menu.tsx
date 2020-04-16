@@ -76,7 +76,7 @@ function Menu() {
         <Toolbar>
           <CameraIcon className={classes.icon} />
           <Typography variant="h6" color="inherit" noWrap>
-            Album layout
+            Menu TalkingToMe
           </Typography>
         </Toolbar>
       </AppBar>

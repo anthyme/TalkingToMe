@@ -7,15 +7,12 @@ import CardActions from '@material-ui/core/CardActions'
 import CardContent from '@material-ui/core/CardContent'
 import CardMedia from '@material-ui/core/CardMedia'
 import DeleteIcon from '@material-ui/icons/Delete';
-import CssBaseline from '@material-ui/core/CssBaseline'
 import Grid from '@material-ui/core/Grid'
-import Toolbar from '@material-ui/core/Toolbar'
 import Typography from '@material-ui/core/Typography'
 import { makeStyles } from '@material-ui/core/styles'
-import Container from '@material-ui/core/Container'
-import Link from '@material-ui/core/Link'
 import EditTalkPopUp from '../popUps/popUpCards/EditTalkPopUp'
 import { Tooltip, IconButton } from '@material-ui/core'
+import {deleteTalkById} from "../dataTransfers/DataTalkPost"
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -41,19 +38,22 @@ interface IProps {
   card :any
 }
 
-const deleteTalk =() =>{
-  console.log("Hello");
+const deleteTalk =(id : number) =>{
+  console.log(id);
+  deleteTalkById(id);
 }
+
 // TODO -Change Image and Add onclickModifier
 const TalkPresCard: React.FC<IProps> = (props) => {
   //const classes = useStyles()
   const card = props.card;
+
   return (
     <Grid item key={card.id} xs={12} sm={6} md={4} >
     <Card>
     <Grid container justify="flex-end">
     <Tooltip title={"Delete "+card.name} placement="right">
-        <IconButton aria-label="delete"  onClick={deleteTalk}>
+        <IconButton aria-label="delete"  onClick={()=>{deleteTalk(card.id)}}>
           <DeleteIcon color="secondary" fontSize="small"/>
         </IconButton >
       </Tooltip>
