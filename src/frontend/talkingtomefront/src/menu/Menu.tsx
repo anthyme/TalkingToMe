@@ -118,7 +118,7 @@ function Menu() {
       setCards(json)
     })
     getQuizzes(1).then((json) => {
-      setCards(json)
+      setQuizzCards(json)
     })
   }, [])
 
@@ -168,10 +168,10 @@ function Menu() {
           onChangeIndex={handleChangeIndex}
         >
           <TabPanel value={chosenTab} index={0}>
-            <QuizzCardViews className={classes.cardGrid} cards={cards} />
+          <TalkCardViews className={classes.cardGrid} cards={cards} />
           </TabPanel>
           <TabPanel value={chosenTab} index={1}>
-            <TalkCardViews className={classes.cardGrid} cards={cards} />
+            <QuizzCardViews className={classes.cardGrid} cards={quizzCards} />
           </TabPanel>
         </SwipeableViews>
       </main>
