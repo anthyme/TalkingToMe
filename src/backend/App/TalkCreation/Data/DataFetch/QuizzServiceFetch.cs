@@ -60,9 +60,11 @@ namespace App.TalkCreation.Data.DataFetch
                     .ToListAsync();
                 if (quizzes == null)
                 {
+                    Console.WriteLine("quizzes is null");
                     //TODO - Create return error
                     return null;
                 }
+                Console.WriteLine("quizzes is not null");
                 List<QuizzDTO> quizzesDto = new List<QuizzDTO>();
                 foreach(Quizz quizz in quizzes)
                 {

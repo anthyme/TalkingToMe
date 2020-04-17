@@ -26,8 +26,9 @@ namespace App.TalkCreation.Data
             {
                 Talk newTalk = new Talk
                 {
-                    Name = data.name,
-                    Description = data.description
+                    Name = data[0].name.name,
+                    Description = data[0].description.description,
+                    OwnerId = 1
                 };
                 context.Talks.Add(newTalk);
                 context.SaveChanges();

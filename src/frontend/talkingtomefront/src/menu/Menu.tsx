@@ -1,29 +1,29 @@
-import React, { useEffect, useState } from 'react';
-import PropTypes from 'prop-types';
-import SwipeableViews from 'react-swipeable-views';
-import AppBar from '@material-ui/core/AppBar';
-import CameraIcon from '@material-ui/icons/PhotoCamera';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import Grid from '@material-ui/core/Grid';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
-import { makeStyles, useTheme } from '@material-ui/core/styles';
-import Container from '@material-ui/core/Container';
-import Link from '@material-ui/core/Link';
-import { getTalks } from '../dataTransfers/DataTalkFetch';
-import { getQuizzes } from '../dataTransfers/DataQuizzFetch';
-import CreateTalkPopUp from '../popUps/popUpCards/CreateTalkPopUp';
-import CreateQuizzPopUp from '../popUps/popUpCards/CreateQuizzPopUp';
-import TalkCardViews from '../menu/TalkCardViews';
-import QuizzCardViews from '../menu/QuizzCardView';
-import Footer from '../static/Footer';
-import Header from '../static/Header';
-import WelcomeMsg from '../static/WelcomeMsg';
-import { green } from '@material-ui/core/colors';
-import { Tabs, Tab, Box, Zoom, Fab } from '@material-ui/core';
+import React, { useEffect, useState } from 'react'
+import PropTypes from 'prop-types'
+import SwipeableViews from 'react-swipeable-views'
+import AppBar from '@material-ui/core/AppBar'
+import CssBaseline from '@material-ui/core/CssBaseline'
+import Grid from '@material-ui/core/Grid'
+import Typography from '@material-ui/core/Typography'
+import { makeStyles, useTheme } from '@material-ui/core/styles'
+import Container from '@material-ui/core/Container'
+import { getTalks } from '../dataTransfers/DataTalkFetch'
+import { getQuizzes } from '../dataTransfers/DataQuizzFetch'
+import CreateTalkPopUp from '../popUps/popUpCards/CreateTalkPopUp'
+import CreateQuizzPopUp from '../popUps/popUpCards/CreateQuizzPopUp'
+import TalkCardViews from '../menu/TalkCardViews'
+import QuizzCardViews from '../menu/QuizzCardView'
+import Footer from '../static/Footer'
+import Header from '../static/Header'
+import WelcomeMsg from '../static/WelcomeMsg'
+import { green } from '@material-ui/core/colors'
+import { Tabs, Tab, Box, Zoom, Fab } from '@material-ui/core'
+import { useDispatch, useSelector } from 'react-redux'
+import { InitialState } from '../store/reducers/MainReducer'
+import { RootDispatcher } from '../store/MainDispatcher'
 
 function TabPanel(props: any) {
-  const { children, value, index } = props;
+  const { children, value, index } = props
 
   return (
     <Typography
@@ -35,14 +35,14 @@ function TabPanel(props: any) {
     >
       {value === index && <Box p={3}>{children}</Box>}
     </Typography>
-  );
+  )
 }
 
 TabPanel.propTypes = {
   children: PropTypes.node,
   index: PropTypes.any.isRequired,
   value: PropTypes.any.isRequired,
-};
+}
 
 const useStyles = makeStyles((theme) => ({
   heroContent: {
@@ -85,49 +85,65 @@ const useStyles = makeStyles((theme) => ({
       backgroundColor: green[600],
     },
   },
-}));
+}))
 
 function renderTab(value: number, classes: string, cards: any) {
   switch (value) {
     case 0:
-      return <QuizzCardViews className={classes} cards={cards} />;
+      return <QuizzCardViews className={classes} cards={cards} />
     case 1:
-      return <TalkCardViews className={classes} cards={cards} />;
+      return <TalkCardViews className={classes} cards={cards} />
   }
 }
+
+interface StateProps {
+  userIdRdx: string
+}
+
 //TODO - CHANGE THIS TO CONNECTED USER ID
 function Menu() {
-  const [cards, setCards] = useState([]);
-  const [quizzCards, setQuizzCards] = useState([]);
-  const [talkCards, setTalkCards] = useState([]);
-  const [chosenTab, setChosenTab] = useState(0);
-  const [indexTab, setIndexTab] = useState(0);
+  const [cards, setCards] = useState([])
+  const [quizzCards, setQuizzCards] = useState([])
+  const [talkCards, setTalkCards] = useState([])
+  const [chosenTab, setChosenTab] = useState(0)
+  const [indexTab, setIndexTab] = useState(0)
 
-  const classes = useStyles();
-  const theme = useTheme();
+  const classes = useStyles()
+  const theme = useTheme()
+
+  const { userIdRdx } = useSelector<InitialState, StateProps>(
+    (state: InitialState) => {
+      return {
+        userIdRdx: state.userIdRdx,
+      }
+    },
+  )
+  const dispatch = useDispatch()
+  const rootDispatcher = new RootDispatcher(dispatch)
 
   function a11yProps(index: number) {
     return {
       id: `action-tab-${index}`,
       'aria-controls': `action-tabpanel-${index}`,
-    };
+    }
   }
 
   useEffect(() => {
-    getTalks(1).then((json) => {
-      setCards(json);
-    });
-    getQuizzes(1).then((json) => {
-      setQuizzCards(json);
-    });
-  }, []);
+    let userId = userIdRdx
+    getTalks(userId).then((json) => {
+      setCards(json)
+    })
+    getQuizzes(userId).then((json) => {
+      setQuizzCards(json)
+    })
+  }, [])
 
   const handleChange = (event: any, newValue: any) => {
-    setChosenTab(newValue);
-  };
+    setChosenTab(newValue)
+  }
   const handleChangeIndex = (index: number) => {
-    setIndexTab(index);
-  };
+    setIndexTab(index)
+  }
 
   return (
     <React.Fragment>
@@ -177,6 +193,6 @@ function Menu() {
       </main>
       <Footer />
     </React.Fragment>
-  );
+  )
 }
-export default Menu;
+export default Menu

@@ -12,3 +12,15 @@ export const putQuizz = async (questionsJson:any, quizzId:number)=>{
     console.log(json);
     return "";
 }
+
+export const postQuizz = async (questionsJson:any, userId:string)=>{
+  let sentJson = [...questionsJson,{Name:"TestQuizz", OwnerId:{userId}}]
+  const requestOptions = {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(sentJson)
+  };
+  let response = await fetch(constants.urlDataBase+"Quizz", requestOptions);
+  let json = response.json();
+  console.log(json);
+}

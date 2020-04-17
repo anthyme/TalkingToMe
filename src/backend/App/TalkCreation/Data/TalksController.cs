@@ -73,7 +73,6 @@ namespace App.TalkCreation.Data
         public async Task<ActionResult<string>> PostTalk([FromBody]dynamic talk)
         {
             var parsedTalk = JArray.Parse(talk.ToString());
-            Console.WriteLine(parsedTalk);
             string returnQuizz = _talkServicePost.AddNewTalk(parsedTalk);
             Console.WriteLine(returnQuizz);
             return returnQuizz;
