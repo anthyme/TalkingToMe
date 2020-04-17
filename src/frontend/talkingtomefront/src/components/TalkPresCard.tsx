@@ -13,6 +13,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import EditTalkPopUp from '../popUps/popUpCards/EditTalkPopUp';
 import { Tooltip, IconButton } from '@material-ui/core';
 import { deleteTalkById } from '../dataTransfers/DataTalkPost';
+import { useHistory } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -46,7 +47,15 @@ const deleteTalk = (id: number) => {
 // TODO -Change Image and Add onclickModifier
 const TalkPresCard: React.FC<IProps> = (props) => {
   //const classes = useStyles()
+
   const card = props.card;
+
+  const history = useHistory();
+
+  const goToTalk = () => {
+    history.push(`/Talk?talkId=${card.id}`);
+  };
+
   return (
     <>
       <Grid item key={card.id} xs={12} sm={6} md={4}>
@@ -76,7 +85,7 @@ const TalkPresCard: React.FC<IProps> = (props) => {
           </CardContent>
           <CardActions>
             <EditTalkPopUp talk={card} />
-            <Button size="small" color="primary">
+            <Button size="small" color="primary" onClick={goToTalk}>
               start
             </Button>
           </CardActions>

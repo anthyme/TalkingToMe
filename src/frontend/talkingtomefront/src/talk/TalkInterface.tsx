@@ -7,24 +7,23 @@ import { Typography, CssBaseline, AppBar, Toolbar } from '@material-ui/core';
 import { loadTalkNQuizzes } from '../dataTransfers/DataTalkFetch';
 import { loadQuizzContent } from '../dataTransfers/DataQuestionFetch';
 import QuestionInterface from './questionsPreview/QuestionInterface';
-import { Redirect } from 'react-router-dom';
+import { useHistory, RouteComponentProps } from 'react-router-dom';
 
 const TalkInterface = () => {
-  const [quizzId, setQuizzId] = useState(0);
-  const [shouldRedirect, setShouldRedirect] = useState(false);
-  const [initRequestFailed, setInitRequestFailed] = useState(false);
-  const [questRequestFailed, setQuestRequestFailed] = useState(false);
+  const [quizzId, setQuizzId] = useState('0');
   const [listQuizzes, setListQuizzes] = useState([{}]);
   const [talkName, setTalkName] = useState('');
   const [showQuestion, setShowQuestion] = useState(false);
   const [questionsData, setQuestionsData] = useState([{}]);
 
-  const TalkId: number = 1;
+  const url = new URL(window.location.href);
+  const TalkId: string | null = url.searchParams.get('talkId');
   const UserId: number = 1; //These two const should come from props but for development purpose, they're set like that for now
+  const history = useHistory();
 
   //Buttons
   const backToMenu = () => {
-    setShouldRedirect(true);
+    history.push('/Menu');
   };
 
   const startQuizz = () => {
@@ -32,17 +31,15 @@ const TalkInterface = () => {
   };
 
   //Data Fetching
-  const onChangeQuizz = async (value: number) => {
+  const onChangeQuizz = async (value: string) => {
     setQuizzId(value);
     const responseData = await loadQuizzContent(value);
-    responseData ? showQuestions(responseData) : setQuestRequestFailed(true);
+    responseData && showQuestions(responseData);
   };
 
   const loadInit = async () => {
     const responseData = await loadTalkNQuizzes(TalkId);
-    responseData
-      ? showInitialFetchedData(responseData)
-      : setInitRequestFailed(true);
+    responseData && showInitialFetchedData(responseData);
   };
 
   //Data Showing
@@ -106,73 +103,69 @@ const TalkInterface = () => {
           </Button>
         </Toolbar>
       </AppBar>
-      {shouldRedirect ? (
-        <Redirect to="/Menu" push />
-      ) : (
-        <div className={classes.fragmentMargin}>
-          <Typography
-            component="h2"
-            variant="h3"
-            align="center"
-            color="textPrimary"
-            gutterBottom
+      <div className={classes.fragmentMargin}>
+        <Typography
+          component="h2"
+          variant="h3"
+          align="center"
+          color="textPrimary"
+          gutterBottom
+        >
+          {talkName}
+        </Typography>
+        <div className={classes.selectNStart}>
+          <Select
+            labelId="label"
+            id="select"
+            value={quizzId}
+            onChange={(e: any) => onChangeQuizz(e.target.value)}
           >
-            {talkName}
-          </Typography>
-          <div className={classes.selectNStart}>
-            <Select
-              labelId="label"
-              id="select"
-              value={quizzId}
-              onChange={(e: any) => onChangeQuizz(e.target.value)}
-            >
-              {!showQuestion && (
-                <MenuItem value="0" disabled={true}>
-                  Select a quizz
-                </MenuItem>
-              )}
-              {listQuizzes.map(
-                (quizz: any) =>
-                  quizz.name && (
-                    <MenuItem value={quizz.id} key={quizz.id}>
-                      {quizz.name}
-                    </MenuItem>
-                  ),
-              )}
-            </Select>
-            <Button
-              variant="outlined"
-              color="primary"
-              onClick={startQuizz}
-              className={classes.button}
-            >
-              Start Quizz
-            </Button>
-          </div>
-          <div className={classes.quizzNQuest}>
-            {showQuestion && <h3 className={classes.title}>Quizz preview</h3>}
-            {showQuestion &&
-              questionsData.map(
-                (question: any) =>
-                  question && (
-                    <QuestionInterface
-                      key={question.id}
-                      quest={question.quest}
-                      typeQuest={question.type}
-                      answers={question.answers.map(
-                        (ans: {
-                          id: number;
-                          questionId: number;
-                          response: string;
-                        }) => ans.response,
-                      )}
-                      correctAn={question.correctAn}
-                    />
-                  ),
-              )}
-          </div>
+            {!showQuestion && (
+              <MenuItem value="0" disabled={true}>
+                Select a quizz
+              </MenuItem>
+            )}
+            {listQuizzes.map(
+              (quizz: any) =>
+                quizz.name && (
+                  <MenuItem value={quizz.id} key={quizz.id}>
+                    {quizz.name}
+                  </MenuItem>
+                ),
+            )}
+          </Select>
+          <Button
+            variant="outlined"
+            color="primary"
+            onClick={startQuizz}
+            className={classes.button}
+          >
+            Start Quizz
+          </Button>
         </div>
-      )}
+        <div className={classes.quizzNQuest}>
+          {showQuestion && <h3 className={classes.title}>Quizz preview</h3>}
+          {showQuestion &&
+            questionsData.map(
+              (question: any) =>
+                question && (
+                  <QuestionInterface
+                    key={question.id}
+                    quest={question.quest}
+                    typeQuest={question.type}
+                    answers={question.answers.map(
+                      (ans: {
+                        id: number;
+                        questionId: number;
+                        response: string;
+                      }) => ans.response,
+                    )}
+                    correctAn={question.correctAn}
+                  />
+                ),
+            )}
+        </div>
+      </div>
     </React.Fragment>
   );
 };

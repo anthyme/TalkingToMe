@@ -1,7 +1,7 @@
 import * as constants from '../constants';
 import _ from 'lodash';
 
-export const loadQuizzContent = async (quizzId: number) => {
+export const loadQuizzContent = async (quizzId: string) => {
   const response = await fetch(
     constants.urlDataBase + 'Question/fetchQuestionsByQuizzId/' + quizzId,
     {
