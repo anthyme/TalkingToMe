@@ -91,7 +91,7 @@ export default function QuizzEdit() {
     console.log(questionsJson);
   };
 
-  const PostQuizz = ()=>{
+  const PutQuizz = ()=>{
     putQuizz(questionsJson,quizzId);
   }
 
@@ -119,7 +119,7 @@ export default function QuizzEdit() {
       <Button variant="outlined" onClick={ShowJson}>
         Show Json
       </Button>
-      <Button variant="outlined" onClick={PostQuizz}>
+      <Button variant="outlined" onClick={PutQuizz}>
         Validate Quizz
       </Button>
     </React.Fragment>

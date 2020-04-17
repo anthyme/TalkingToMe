@@ -13,7 +13,7 @@ const TalkCardView: React.FC<IProps> = (props) =>  {
     <Container className={props.className} maxWidth="md">
       {/* End hero unit */}
       <Grid container spacing={4}>
-        {props.cards.map((card: any) => (
+        {props.cards && props.cards.map((card: any) => (
           <TalkPresCard card={card} />
         ))}
       </Grid>
