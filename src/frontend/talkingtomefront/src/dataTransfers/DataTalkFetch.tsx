@@ -1,7 +1,7 @@
 import * as constants from '../constants';
 import _ from 'lodash';
 
-export const getTalks = async (userId: number) => {
+export const getTalks = async (userId: string) => {
   const requestOptions = {
     method: 'GET',
     headers: { 'Content-Type': 'application/json' },
