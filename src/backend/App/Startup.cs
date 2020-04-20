@@ -62,8 +62,6 @@ namespace App
 
             app.UseRouting();
 
-            app.UseCors("ReactPolicy");
-
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
