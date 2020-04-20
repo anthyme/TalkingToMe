@@ -56,7 +56,7 @@ namespace App
                 app.UseCors("ReactPolicy");
             }
 
-            talkContext.Database.Migrate();
+            //talkContext.Database.Migrate();
 
             app.UseHttpsRedirection();
 
