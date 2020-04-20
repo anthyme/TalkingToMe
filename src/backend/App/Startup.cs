@@ -11,6 +11,7 @@ using App.TalkCreation.Data;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Mvc.NewtonsoftJson;
 using App.TalkCreation.Data.DataFetch;
+using Microsoft.Extensions.Logging;
 
 namespace App
 {
@@ -39,7 +40,7 @@ namespace App
                        .AllowCredentials();
             }));
             services.AddDbContext<TalkContext>(options =>
-           options.UseSqlServer(Configuration.GetConnectionString("DBString")));
+                options.UseSqlServer(Configuration.GetConnectionString("DBString")));
             services.AddControllers();
             services.AddControllersWithViews()
             .AddNewtonsoftJson(options =>
@@ -48,15 +49,13 @@ namespace App
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, TalkContext talkContext)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseDeveloperExceptionPage();
             if (env.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage();
                 app.UseCors("ReactPolicy");
             }
-
-            //talkContext.Database.Migrate();
 
             app.UseHttpsRedirection();
 
@@ -68,8 +67,6 @@ namespace App
             {
                 endpoints.MapControllers();
             });
-
         }
-
     }
 }

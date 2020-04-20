@@ -9,6 +9,8 @@ using Microsoft.EntityFrameworkCore;
 using App.TalkCreation.Context;
 using App.TalkCreation.Models;
 using Newtonsoft.Json.Linq;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
 namespace App.TalkCreation.Data
 {
@@ -17,12 +19,36 @@ namespace App.TalkCreation.Data
     public class QuestionController : ControllerBase
     {
         private readonly TalkContext _context;
+        private readonly IConfiguration configuration;
+        private readonly ILogger<QuestionController> log;
         private readonly QuestionServiceFetch _questionServiceFetch;
 
-        public QuestionController(TalkContext context, QuestionServiceFetch questionServiceFetch)
+        public QuestionController(TalkContext context, IConfiguration configuration, ILogger<QuestionController> log, QuestionServiceFetch questionServiceFetch)
         {
+            this.configuration = configuration;
+            this.log = log;
             _context = context;
             _questionServiceFetch = questionServiceFetch;
+        }
+
+        [Route("migrate")]
+        public IActionResult Migrate()
+        {
+            string _connectionString = configuration.GetConnectionString("DBString");
+            var optionsBuilder = new DbContextOptionsBuilder<TalkContext>();
+            optionsBuilder.UseSqlServer(_connectionString);
+            using var context = new TalkContext(optionsBuilder.Options);
+            //using var context = talkContextFactory.Create();
+
+            try
+            {
+                context.Database.Migrate();
+                return Ok("OK");
+            }
+            catch (System.Exception ex)
+            {
+                return Ok(ex);
+            }
         }
 
         [HttpGet]

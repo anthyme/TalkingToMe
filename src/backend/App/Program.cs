@@ -15,16 +15,16 @@ namespace App
     {
         public static void Main(string[] args)
         {
-          
-
             CreateHostBuilder(args).Build().Run();
-        }//
+        }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
         Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(webBuilder =>
-                {
-                    webBuilder.UseStartup<Startup>();
-                }).ConfigureLogging(logging => { logging.ClearProviders(); logging.AddConsole(); }).ConfigureWebHostDefaults(webBuilder => { webBuilder.UseStartup<Startup>(); });
+            .ConfigureLogging(logging => { logging.ClearProviders(); logging.AddConsole(); })
+            .ConfigureAppConfiguration((hostingContext, config) =>
+            {
+                config.AddEnvironmentVariables();
+            })
+            .ConfigureWebHostDefaults(webBuilder => { webBuilder.UseStartup<Startup>(); });
     }
 }
