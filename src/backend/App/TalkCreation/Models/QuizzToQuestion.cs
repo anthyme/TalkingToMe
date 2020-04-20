@@ -5,16 +5,12 @@ using System.Threading.Tasks;
 
 namespace App.TalkCreation.Models
 {
-    public class Question
+    public class QuizzToQuestion
     {
         public int Id { get; set; }
         public int QuizzId { get; set; }
         public Quizz Quizz { get; set; }
-        public String Quest { get; set; }
-        public String Type { get; set; }
-        public ICollection<Answer> Answers { get; set; }
-        public String CorrectAn { get; set; }
-
-
+        public int QuestionId { get; set; }
+        public Question Question { get; set; }
     }
 }

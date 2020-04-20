@@ -26,3 +26,10 @@ export const setQuestion = (newQuestion:Object) => ({
     value: newQuestion,
   },
 });
+
+export const setUserId = (newUserId:Object) => ({
+  type: types.UPDATE_USERID_VALUE,
+  payload: {
+    value: newUserId,
+  },
+});

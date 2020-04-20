@@ -1,19 +1,16 @@
-﻿using System;
+﻿using App.TalkCreation.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace App.TalkCreation.Models
+namespace App.TalkCreation.Data.DataFetch.Dto
 {
-    public class Quizz
+    public class QuizzDTO
     {
         public int Id { get; set; }
         public int OwnerId { get; set; }
-#nullable enable
-        public List<QuizzToTalk>? Talks { get; set; }
-#nullable disable
         public String Name { get; set; }
         public ICollection<Question> Questions { get; set; }
-
     }
 }

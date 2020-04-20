@@ -12,6 +12,7 @@ import { RootDispatcher } from '../store/MainDispatcher';
 //import {withSearchValue} from "../enhancers/WithSearchValue";
 interface IProps {
   answerId: number,
+  answer: any,
   questionId: number
 }
 interface StateProps { 
@@ -22,7 +23,7 @@ interface StateProps {
 }
 
 const Answer: React.FC<IProps> = (props) => {
-  const [value, setValue] = useState('');
+  const [value, setValue] = useState(props.answer.Reponse);
   const [show, setShow] = useState(true);
   const {currentAnswerRdx, currentAnswerIdRdx,questionIdRdx,questionRdx} = useSelector<InitialState, StateProps>((state: InitialState) => {
     return {
@@ -59,6 +60,7 @@ const Answer: React.FC<IProps> = (props) => {
             <TextField
               placeholder={'Answer' + props.answerId}
               inputProps={{ 'aria-label': 'description' }}
+              value = {value}
               onChange={(event: ChangeEvent<HTMLInputElement>) => {
                 onInputChange(event);
               }}

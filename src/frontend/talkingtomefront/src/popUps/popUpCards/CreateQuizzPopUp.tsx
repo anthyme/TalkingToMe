@@ -8,8 +8,9 @@ import DialogContentText from '@material-ui/core/DialogContentText'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import { postTalk } from '../../dataTransfers/DataTalkPost'
 import DropZone from './DropZone'
+import QuizzCreator from "../../quizzCreation/QuizzCreator"
 
-function CreateTalkPopUp() {
+function CreateQuizzPopUp() {
   const [name, setName] = useState('')
   const [description, setDescription] = useState('')
   const [open, setOpen] = React.useState(false)
@@ -40,46 +41,22 @@ function CreateTalkPopUp() {
   return (
     <div>
       <Button variant="outlined" color="primary" onClick={handleClickOpen}>
-        Create new Talk
+        Create new Quizz
       </Button>
       <Dialog
         open={open}
         onClose={handleClose}
         aria-labelledby="form-dialog-title"
       >
-        <DialogTitle id="form-dialog-title">Create new Talk</DialogTitle>
+        <DialogTitle id="form-dialog-title">Create new Quizz</DialogTitle>
         <DialogContent>
           <>
             <DialogContent>
               <DialogContentText>
-                Creating a new Talk, please enter its name and ulpload your
+                Creating a new Quizz, please enter its name and ulpload your
                 presentation (ppt format)
               </DialogContentText>
-              <TextField
-                autoFocus
-                margin="dense"
-                id="name"
-                label="Talk name"
-                type="text"
-                onChange={(event: ChangeEvent<HTMLInputElement>) => {
-                  onNameChange(event)
-                }}
-                fullWidth
-              />
-              <TextField
-                autoFocus
-                margin="dense"
-                id="description"
-                label="Description"
-                type="text"
-                onChange={(event: ChangeEvent<HTMLInputElement>) => {
-                  onDescriptionChange(event)
-                }}
-                fullWidth
-              />
-              <p>
-                <DropZone />
-              </p>
+              <QuizzCreator/>
             </DialogContent>
           </>
         </DialogContent>
@@ -101,4 +78,4 @@ function CreateTalkPopUp() {
     </div>
   )
 }
-export default CreateTalkPopUp
+export default CreateQuizzPopUp

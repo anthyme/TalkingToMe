@@ -4,13 +4,15 @@ export interface InitialState {
     currentAnswerRdx: string,
     currentAnswerIdRdx: number,
     questionIdRdx: number,
-    questionRdx: Object
+    questionRdx: Object,
+    userIdRdx : string
 }
 const initialState:InitialState = {
     currentAnswerRdx: "",
-    currentAnswerIdRdx: 23,
-    questionIdRdx: 1,
-    questionRdx: {}
+    currentAnswerIdRdx: 0,
+    questionIdRdx: -1,
+    questionRdx: {Name: "QuizzTest"},
+    userIdRdx: "1",
    
 };
 
@@ -27,6 +29,8 @@ export const mainReducer: Reducer<InitialState, DispatchAction> = (state = initi
         return { ...state, questionIdRdx: action.payload.questionIdRdx || 0};
     } else if (action.type === actions.UPDATE_QUESTION_VALUE) {
         return { ...state, questionRdx: action.payload.questionRdx|| {}};
+    } else if (action.type === actions.UPDATE_USERID_VALUE) {
+        return { ...state, userIdRdx: action.payload.userIdRdx || ""};
     } else return state;
 };
 

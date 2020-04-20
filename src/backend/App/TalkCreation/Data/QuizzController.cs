@@ -1,4 +1,5 @@
 ﻿using System;
+using App.TalkCreation.Data;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -7,6 +8,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using App.TalkCreation.Context;
 using App.TalkCreation.Models;
+using Newtonsoft.Json.Linq;
+using App.TalkCreation.Data.DataFetch;
+using App.TalkCreation.Data.DataFetch.Dto;
 
 namespace App.TalkCreation.Data
 {
@@ -15,36 +19,36 @@ namespace App.TalkCreation.Data
     public class QuizzController : ControllerBase
     {
         private readonly TalkContext _context;
+        private readonly QuizzServicePost _quizzService;
+        private readonly QuizzServiceFetch _quizzServiceFetch;
 
-        public QuizzController(TalkContext context)
+        public QuizzController(TalkContext context, QuizzServicePost quizzService, QuizzServiceFetch quizzServiceFetch)
         {
             _context = context;
+            _quizzService = quizzService;
+            _quizzServiceFetch = quizzServiceFetch;
         }
 
-        // GET: api/ChannelsControllerTest
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Quizz>>> GetQuizzes()
         {
             return await _context.Quizzes.ToListAsync();
         }
 
-        // GET: api/ChannelsControllerTest/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Quizz>> GetQuizz(int id)
+        public async Task<ActionResult<QuizzDTO>> GetQuizz(int id)
         {
-            var channel = await _context.Quizzes.FindAsync(id);
-
-            if (channel == null)
-            {
-                return NotFound();
-            }
-
-            return channel;
+            QuizzDTO quizz = await _quizzServiceFetch.returnQuizzById(id);
+            return quizz;
         }
 
-        // PUT: api/ChannelsControllerTest/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
-        // more details see https://aka.ms/RazorPagesCRUD.
+        [HttpGet("GetByUser/{id}")]
+        public async Task<ActionResult<List<QuizzDTO>>> GetQuizzesByUserId(int id)
+        {
+            List<QuizzDTO> quizzes = await _quizzServiceFetch.returnQuizzByUserId(id);
+            return quizzes;
+        }
+
         [HttpPut("{id}")]
         public async Task<IActionResult> PutQuizz(int id, Quizz channel)
         {
@@ -79,19 +83,15 @@ namespace App.TalkCreation.Data
             throw new NotImplementedException();
         }
 
-        // POST: api/ChannelsControllerTest
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
-        // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPost]
-        public async Task<ActionResult<Quizz>> PostQuizz(Quizz channel)
+        public async Task<ActionResult<string>> PostQuizz([FromBody]dynamic quizz)
         {
-            _context.Quizzes.Add(channel);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetChannel", new { id = channel.Id }, channel);
+            var parsedQuizz = JArray.Parse(quizz.ToString());
+            string returnQuizz= _quizzService.AddNewQuizzNoTalk(parsedQuizz);
+            Console.WriteLine(returnQuizz);
+            return returnQuizz;
         }
 
-        // DELETE: api/ChannelsControllerTest/5
         [HttpDelete("{id}")]
         public async Task<ActionResult<Quizz>> DeleteQuizz(int id)
         {

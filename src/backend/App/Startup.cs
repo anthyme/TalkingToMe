@@ -4,8 +4,13 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
+using App.TalkCreation.Data;
+using Newtonsoft.Json;
+using Microsoft.AspNetCore.Mvc.NewtonsoftJson;
+using App.TalkCreation.Data.DataFetch;
 
 namespace App
 {
@@ -21,6 +26,11 @@ namespace App
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddScoped<QuizzServiceFetch>();
+            services.AddScoped<QuizzServicePost>();
+            services.AddScoped<TalksServiceFetch>();
+            services.AddScoped<TalksServicePost>();
+            services.AddScoped<QuestionServiceFetch>();
             services.AddCors(o => o.AddPolicy("ReactPolicy", builder =>
             {
                 builder.WithOrigins("http://localhost:3000")
@@ -31,10 +41,14 @@ namespace App
             services.AddDbContext<TalkContext>(options =>
            options.UseSqlServer(Configuration.GetConnectionString("DBString")));
             services.AddControllers();
+            services.AddControllersWithViews()
+            .AddNewtonsoftJson(options =>
+              options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+ );
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, BaseContext baseContext)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, TalkContext talkContext)
         {
             if (env.IsDevelopment())
             {
@@ -42,11 +56,13 @@ namespace App
                 app.UseCors("ReactPolicy");
             }
 
-            baseContext.Database.Migrate();
+            talkContext.Database.Migrate();
 
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseCors("ReactPolicy");
 
             app.UseAuthorization();
 

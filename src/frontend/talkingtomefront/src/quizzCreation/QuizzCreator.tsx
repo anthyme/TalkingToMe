@@ -1,41 +1,37 @@
 import React, { useState, useEffect ,useCallback} from 'react'
 import { useSelector, useDispatch} from 'react-redux'
-import Grid from '@material-ui/core/Grid'
 import Typography from '@material-ui/core/Typography'
-import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
-import FormControlLabel from '@material-ui/core/FormControlLabel'
-import Checkbox from '@material-ui/core/Checkbox'
 import QuizzQuestion from './QuizzQuestion'
 import _ from 'lodash'
 import { RootDispatcher } from '../store/MainDispatcher'
 import { InitialState } from '../store/reducers/MainReducer'
+import * as constants from "../constants"
+import {postQuizz} from "../dataTransfers/DataQuizzPost"
 
 interface StateProps { 
   currentAnswerRdx: string,
   currentAnswerIdRdx: number,
   questionIdRdx: number,
-  questionRdx: Object
+  questionRdx: Object,
+  userIdRdx: string
 }
 
 export default function QuizzCreator() {
   const [cardIds, setCardIds] = useState([])
   const [questionsID, setQuestionsId] = useState([0])
   const [questionsJson, setQuestionsJson] = useState([{}])
-  const {currentAnswerRdx, currentAnswerIdRdx,questionIdRdx,questionRdx} = useSelector<InitialState, StateProps>((state: InitialState) => {
+  const {currentAnswerRdx, currentAnswerIdRdx,questionIdRdx,questionRdx, userIdRdx} = useSelector<InitialState, StateProps>((state: InitialState) => {
     return {
       currentAnswerRdx: state.currentAnswerRdx,
       currentAnswerIdRdx: state.currentAnswerIdRdx,
       questionIdRdx: state.questionIdRdx,
-      questionRdx: state.questionRdx
+      questionRdx: state.questionRdx,
+      userIdRdx: state.userIdRdx
     }
 });
   const dispatch = useDispatch();
   const rootDispatcher = new RootDispatcher(dispatch);
-  /*const questionIdRdx = useSelector(state => state.questionId);
-  const questionRdx = useSelector(state => state.question);
-  const currentAnswerRdx = useSelector(state => state.currentAnswer);
-  const currentAnswerIdRdx = useSelector(state => state.currentAnswerId);*/
 
   const debounceRedux = useCallback(_.debounce(setNewQuestion, 1000), []);
 
@@ -46,9 +42,9 @@ export default function QuizzCreator() {
   }
 
   useEffect(() => {
-    if (questionRdx) {
-      console.log('questions changed');
-      debounceRedux();
+    if (questionIdRdx!==-1) {
+      console.log('creator changed!');
+      //debounceRedux();
       let newQuestionJson = questionsJson;
       newQuestionJson[questionIdRdx] = questionRdx;
       setQuestionsJson(newQuestionJson);
@@ -66,8 +62,12 @@ export default function QuizzCreator() {
   }
   
   const ShowJson = ()=>{
-    console.log(questionRdx);
+    console.log(questionsJson);
   };
+
+  const PostQuizz = async ()=>{
+    postQuizz(questionsJson, userIdRdx);
+}
 
   return (
     <React.Fragment>
@@ -84,6 +84,9 @@ export default function QuizzCreator() {
       </Button>
       <Button variant="outlined" onClick={ShowJson}>
         Show Json
+      </Button>
+      <Button variant="outlined" onClick={PostQuizz}>
+        Validate Quizz
       </Button>
     </React.Fragment>
   );

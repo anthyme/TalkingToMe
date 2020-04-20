@@ -3,7 +3,8 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { UserProvider } from './constants/UserContext';
 import SignIn from './components/Login';
 import QuizzCreator from './quizzCreation/QuizzCreator';
-import Menu from './components/Menu';
+import Menu from './menu/Menu';
+import TalkInterface from './talk/TalkInterface';
 import './App.css';
 
 function App() {
@@ -14,7 +15,7 @@ function App() {
           <Switch>
             <Route exact path="/" render={() => <SignIn />} />
             <Route exact path="/Menu" render={() => <Menu />} />
-            <Route exact path="/Quizz" render={() => <QuizzCreator />} />
+            <Route exact path="/Talk" render={() => <TalkInterface />} />
           </Switch>
         </div>
       </Router>
@@ -23,3 +24,4 @@ function App() {
 }
 
 export default App;
+

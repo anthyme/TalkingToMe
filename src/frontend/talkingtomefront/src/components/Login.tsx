@@ -12,6 +12,10 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
+import { useSelector, useDispatch } from 'react-redux';
+import { InitialState } from '../store/reducers/MainReducer';
+import { RootDispatcher } from '../store/MainDispatcher';
+import { useHistory } from 'react-router-dom';
 
 function Copyright() {
   return (
@@ -49,8 +53,26 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+interface StateProps { 
+  userIdRdx :string
+}
+
 export default function SignIn() {
   const classes = useStyles();
+  const history = useHistory();
+  const {userIdRdx} = useSelector<InitialState, StateProps>((state: InitialState) => {
+    return {
+      userIdRdx :state.userIdRdx     
+    }
+});
+  const dispatch = useDispatch();
+  const rootDispatcher = new RootDispatcher(dispatch);
+
+  const EnterOnClick=async ()=>{
+    await rootDispatcher.setUserIdRdx("1");
+    console.log(userIdRdx)
+    history.push('/Menu')
+ }
 
   return (
     <Container component="main" maxWidth="xs">
@@ -94,11 +116,11 @@ export default function SignIn() {
             label="Remember me"
           />
           <Button
-            type="submit"
             fullWidth
             variant="contained"
             color="primary"
             className={classes.submit}
+            onClick={EnterOnClick}
           >
             Sign In
           </Button>
