@@ -15,7 +15,6 @@ function App() {
           <Switch>
             <Route exact path="/" render={() => <SignIn />} />
             <Route exact path="/Menu" render={() => <Menu />} />
-            <Route exact path="/Quizz" render={() => <QuizzCreator />} />
             <Route exact path="/Talk" render={() => <TalkInterface />} />
           </Switch>
         </div>
