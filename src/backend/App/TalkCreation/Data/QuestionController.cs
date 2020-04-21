@@ -18,12 +18,12 @@ namespace App.TalkCreation.Data
     [ApiController]
     public class QuestionController : ControllerBase
     {
-        private readonly TalkContext _context;
+        private readonly TalkService _context;
         private readonly IConfiguration configuration;
         private readonly ILogger<QuestionController> log;
         private readonly QuestionServiceFetch _questionServiceFetch;
 
-        public QuestionController(TalkContext context, IConfiguration configuration, ILogger<QuestionController> log, QuestionServiceFetch questionServiceFetch)
+        public QuestionController(TalkService context, IConfiguration configuration, ILogger<QuestionController> log, QuestionServiceFetch questionServiceFetch)
         {
             this.configuration = configuration;
             this.log = log;
@@ -35,9 +35,9 @@ namespace App.TalkCreation.Data
         public IActionResult Migrate()
         {
             string _connectionString = configuration.GetConnectionString("DBString");
-            var optionsBuilder = new DbContextOptionsBuilder<TalkContext>();
+            var optionsBuilder = new DbContextOptionsBuilder<TalkService>();
             optionsBuilder.UseSqlServer(_connectionString);
-            using var context = new TalkContext(optionsBuilder.Options);
+            using var context = new TalkService(optionsBuilder.Options);
             //using var context = talkContextFactory.Create();
 
             try

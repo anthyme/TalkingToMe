@@ -17,11 +17,11 @@ namespace App.TalkCreation.Data
     [ApiController]
     public class TalksController : ControllerBase
     {
-        private readonly TalkContext _context;
+        private readonly TalkService _context;
         private readonly TalksServicePost _talkServicePost;
         private readonly TalksServiceFetch _talkServiceFetch;
 
-        public TalksController(TalkContext context, TalksServicePost talksService, TalksServiceFetch talksServiceFetch)
+        public TalksController(TalkService context, TalksServicePost talksService, TalksServiceFetch talksServiceFetch)
         {
             _context = context;
             _talkServicePost = talksService;

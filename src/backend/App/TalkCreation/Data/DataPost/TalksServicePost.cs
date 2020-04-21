@@ -20,9 +20,9 @@ namespace App.TalkCreation.Data
         }
         public string AddNewTalk(dynamic data)
         {
-            var optionsBuilder = new DbContextOptionsBuilder<TalkContext>();
+            var optionsBuilder = new DbContextOptionsBuilder<TalkService>();
             optionsBuilder.UseSqlServer(_connectionString);
-            using (TalkContext context = new TalkContext(optionsBuilder.Options))
+            using (TalkService context = new TalkService(optionsBuilder.Options))
             {
                 Talk newTalk = new Talk
                 {
@@ -61,9 +61,9 @@ namespace App.TalkCreation.Data
 
         public void ChangeTalk(dynamic data)
         {
-            var optionsBuilder = new DbContextOptionsBuilder<TalkContext>();
+            var optionsBuilder = new DbContextOptionsBuilder<TalkService>();
             optionsBuilder.UseSqlServer(_connectionString);
-            using (TalkContext context = new TalkContext(optionsBuilder.Options))
+            using (TalkService context = new TalkService(optionsBuilder.Options))
             {
                 Talk changeTalk = new Talk
                 {

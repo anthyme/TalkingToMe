@@ -22,9 +22,9 @@ namespace App.TalkCreation.Data
         }
         public async Task<IEnumerable<Question>> getQuestionsByQuizzId(int quizzId)
         {
-            var optionsBuilder = new DbContextOptionsBuilder<TalkContext>();
+            var optionsBuilder = new DbContextOptionsBuilder<TalkService>();
             optionsBuilder.UseSqlServer(_connectionString);
-            using (TalkContext context = new TalkContext(optionsBuilder.Options))
+            using (TalkService context = new TalkService(optionsBuilder.Options))
             {
                 var response = await context.Questions
                     .Where(p => p.QuizzId == quizzId)

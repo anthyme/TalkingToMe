@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using TalkingToMe.BaseMigration.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,9 +7,9 @@ using App.TalkCreation.Models;
 
 namespace App.TalkCreation.Context
 {
-    public class TalkContext : DbContext
+    public class TalkService : DbContext
     {
-        public TalkContext(DbContextOptions<TalkContext> options) : base(options)
+        public TalkService(DbContextOptions<TalkService> options) : base(options)
         { }
 
         public DbSet<Quizz> Quizzes { get; set; }
