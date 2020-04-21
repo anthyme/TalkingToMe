@@ -34,6 +34,7 @@ namespace App.TalkCreation.Data
         {
             return await _context.Talks.Include( p => p.Quizzes).ToListAsync();
         }
+        // THIS IS AN AZURE TEST, IF YOU SEE THIS LINE IN THE CODE, DELETE ME
 
         // GET: api/ChannelsControllerTest/5
         [HttpGet("{id}")]
