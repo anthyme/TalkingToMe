@@ -21,9 +21,9 @@ namespace App.TalkCreation.Data
         //TODO - Change syntax for fetch
         public string AddNewQuizzNoTalk(dynamic data)
         {
-            var optionsBuilder = new DbContextOptionsBuilder<TalkService>();
+            var optionsBuilder = new DbContextOptionsBuilder<TalkContext>();
             optionsBuilder.UseSqlServer(_connectionString);
-            using (TalkService context = new TalkService(optionsBuilder.Options))
+            using (TalkContext context = new TalkContext(optionsBuilder.Options))
             {
                 Console.WriteLine(data);
                 var QuizzInfo= data[data.Count-1];

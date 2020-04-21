@@ -46,11 +46,12 @@ namespace App
             }));
 
             services.AddHealthChecks()
-                .AddDbContextCheck<TalkService>()
+                .AddDbContextCheck<TalkContext>()
                 .AddCheck<TalkHealthCheck>("TalksGet")
                 .AddCheck<QuizzHealthCheck>("QuizzGet");
+            services.AddHealthChecksUI();
 
-            services.AddDbContext<TalkService>(options =>
+            services.AddDbContext<TalkContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DBString")));
 
             services.AddControllers();
@@ -76,6 +77,8 @@ namespace App
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseHealthChecksUI();
 
             app.UseAuthorization();
 
