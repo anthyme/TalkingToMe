@@ -23,9 +23,9 @@ namespace App.TalkCreation.Data
 
         public async Task<TalkAndQuizzesDTO> getTalkAndQuizzes(int id)
         {
-            var optionsBuilder = new DbContextOptionsBuilder<TalkService>();
+            var optionsBuilder = new DbContextOptionsBuilder<TalkContext>();
             optionsBuilder.UseSqlServer(_connectionString);
-            using (TalkService context = new TalkService(optionsBuilder.Options))
+            using (TalkContext context = new TalkContext(optionsBuilder.Options))
             {
                 var response = await context.Talks
                     .Where(p => p.Id == id)
@@ -52,9 +52,9 @@ namespace App.TalkCreation.Data
 
         public async Task<List<Talk>> getTalksByUserId(int id)
         {
-            var optionsBuilder = new DbContextOptionsBuilder<TalkService>();
+            var optionsBuilder = new DbContextOptionsBuilder<TalkContext>();
             optionsBuilder.UseSqlServer(_connectionString);
-            using (TalkService context = new TalkService(optionsBuilder.Options))
+            using (TalkContext context = new TalkContext(optionsBuilder.Options))
             {
                 var talks = await context.Talks.Where(p => p.OwnerId==id).ToListAsync();
                 return talks;
@@ -63,9 +63,9 @@ namespace App.TalkCreation.Data
 
         public async Task<string> deleteTalk(int id)
         {
-            var optionsBuilder = new DbContextOptionsBuilder<TalkService>();
+            var optionsBuilder = new DbContextOptionsBuilder<TalkContext>();
             optionsBuilder.UseSqlServer(_connectionString);
-            using (TalkService context = new TalkService(optionsBuilder.Options))
+            using (TalkContext context = new TalkContext(optionsBuilder.Options))
             {
             var talk = await context.Talks.FindAsync(id);
             if (talk == null)

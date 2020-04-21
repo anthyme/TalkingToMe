@@ -22,6 +22,7 @@ namespace App
                 {
                     logging.ClearProviders();
 
+                    logging.AddConsole();
                     logging.AddDebug();
                     logging.AddAzureWebAppDiagnostics();
                 })

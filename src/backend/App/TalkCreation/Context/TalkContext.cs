@@ -7,9 +7,9 @@ using App.TalkCreation.Models;
 
 namespace App.TalkCreation.Context
 {
-    public class TalkService : DbContext
+    public class TalkContext : DbContext
     {
-        public TalkService(DbContextOptions<TalkService> options) : base(options)
+        public TalkContext(DbContextOptions<TalkContext> options) : base(options)
         { }
 
         public DbSet<Quizz> Quizzes { get; set; }

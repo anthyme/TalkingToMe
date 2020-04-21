@@ -20,12 +20,12 @@ namespace App.TalkCreation.Context
             _configuration = configuration;
             this.log = log;
         }
-        public TalkService create()
+        public TalkContext create()
         {
             string _connectionString = _configuration.GetConnectionString("DBString");
-            var optionsBuilder = new DbContextOptionsBuilder<TalkService>();
+            var optionsBuilder = new DbContextOptionsBuilder<TalkContext>();
             optionsBuilder.UseSqlServer(_connectionString);
-            var context = new TalkService(optionsBuilder.Options);
+            var context = new TalkContext(optionsBuilder.Options);
             return context;
         }
 
