@@ -10,6 +10,7 @@ using App.TalkCreation.Context;
 using App.TalkCreation.Models;
 using Newtonsoft.Json.Linq;
 using App.TalkCreation.Data.DataFetch.Dto;
+using Microsoft.Extensions.Logging;
 
 namespace App.TalkCreation.Data
 {
@@ -20,12 +21,15 @@ namespace App.TalkCreation.Data
         private readonly TalkContext _context;
         private readonly TalksServicePost _talkServicePost;
         private readonly TalksServiceFetch _talkServiceFetch;
+        private readonly ILogger _logger;
 
-        public TalksController(TalkContext context, TalksServicePost talksService, TalksServiceFetch talksServiceFetch)
+
+        public TalksController(TalkContext context, TalksServicePost talksService, TalksServiceFetch talksServiceFetch, ILogger<TalksController> logger)
         {
             _context = context;
             _talkServicePost = talksService;
             _talkServiceFetch = talksServiceFetch;
+            _logger = logger;
         }
 
         // GET: api/ChannelsControllerTest
@@ -47,6 +51,8 @@ namespace App.TalkCreation.Data
         [HttpGet("fetchTalkAndQuizzes/{id}")] //Fetch custom for specific DTO
         public async Task<TalkAndQuizzesDTO> fetchTalkAndQuizzes(int id)
         {
+            var Message = $"This is a test log at {DateTime.UtcNow.ToLongTimeString()}";
+            _logger.LogInformation("Message displayed: {Message}", Message);
             Task<TalkAndQuizzesDTO> talk = _talkServiceFetch.getTalkAndQuizzes(id);
             return await talk;
         }

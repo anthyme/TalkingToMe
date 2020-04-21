@@ -14,7 +14,7 @@ namespace App
         public static void Main(string[] args)
         {
             CreateHostBuilder(args).Build().Run();
-        }//
+        }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
         Host.CreateDefaultBuilder(args)
@@ -22,10 +22,8 @@ namespace App
                 {
                     logging.ClearProviders();
 
-                    logging.AddConsole();
                     logging.AddDebug();
-                    logging.AddEventLog();
-                    logging.AddEventSourceLogger();
+                    logging.AddAzureWebAppDiagnostics();
                 })
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
