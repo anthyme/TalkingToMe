@@ -46,6 +46,7 @@ namespace App
             .AddNewtonsoftJson(options =>
               options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
  );
+            //_logger.LogInformation(LoggingEvents.Step1KickedOff, "Step {stepId} Kicked Off.", 1);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

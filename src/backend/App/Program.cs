@@ -24,7 +24,12 @@ namespace App
         Host.CreateDefaultBuilder(args)
                 .ConfigureLogging(logging =>
                 {
-                    logging.ClearProviders(); logging.AddConsole();
+                    logging.ClearProviders();
+
+                    logging.AddConsole();
+                    logging.AddDebug();
+                    logging.AddEventLog();
+                    logging.AddEventSourceLogger();
                 })
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
