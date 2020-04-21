@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace App.Migrations
 {
-    [DbContext(typeof(TalkContext))]
+    [DbContext(typeof(TalkService))]
     [Migration("20200415124018_Answer_added")]
     partial class Answer_added
     {

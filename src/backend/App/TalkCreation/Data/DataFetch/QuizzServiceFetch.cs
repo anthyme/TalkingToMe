@@ -22,9 +22,9 @@ namespace App.TalkCreation.Data.DataFetch
         //TODO - Change syntax for fetch
         public async Task<QuizzDTO> returnQuizzById(int id)
         {
-            var optionsBuilder = new DbContextOptionsBuilder<TalkContext>();
+            var optionsBuilder = new DbContextOptionsBuilder<TalkService>();
             optionsBuilder.UseSqlServer(_connectionString);
-            using (TalkContext context = new TalkContext(optionsBuilder.Options))
+            using (TalkService context = new TalkService(optionsBuilder.Options))
             {
                 var quizz = await context.Quizzes
                     .Where(p => p.Id == id)
@@ -49,9 +49,9 @@ namespace App.TalkCreation.Data.DataFetch
 
         public async Task<List<QuizzDTO>> returnQuizzByUserId(int id)
         {
-            var optionsBuilder = new DbContextOptionsBuilder<TalkContext>();
+            var optionsBuilder = new DbContextOptionsBuilder<TalkService>();
             optionsBuilder.UseSqlServer(_connectionString);
-            using (TalkContext context = new TalkContext(optionsBuilder.Options))
+            using (TalkService context = new TalkService(optionsBuilder.Options))
             {
                 var quizzes = await context.Quizzes
                     .Where(p => p.OwnerId == id)

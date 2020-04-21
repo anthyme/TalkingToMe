@@ -18,11 +18,11 @@ namespace App.TalkCreation.Data
     [ApiController]
     public class QuizzController : ControllerBase
     {
-        private readonly TalkContext _context;
+        private readonly TalkService _context;
         private readonly QuizzServicePost _quizzService;
         private readonly QuizzServiceFetch _quizzServiceFetch;
 
-        public QuizzController(TalkContext context, QuizzServicePost quizzService, QuizzServiceFetch quizzServiceFetch)
+        public QuizzController(TalkService context, QuizzServicePost quizzService, QuizzServiceFetch quizzServiceFetch)
         {
             _context = context;
             _quizzService = quizzService;
