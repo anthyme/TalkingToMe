@@ -35,9 +35,14 @@ namespace App.TalkCreation.Data
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Talk>>> GetTalks()
         {
+            //Test purpose, do not keep forever //
+            var Message = $"This is a test log from Louis, I take all responsibilities";
+            _logger.LogWarning("Message displayed: {Message} at {RequestTime}", Message, DateTime.Now);
+            // End of test purpose //
+
+
             return await _context.Talks.Include( p => p.Quizzes).ToListAsync();
         }
-        // THIS IS AN AZURE TEST, IF YOU SEE THIS LINE IN THE CODE, DELETE ME
 
         // GET: api/ChannelsControllerTest/5
         [HttpGet("{id}")]
@@ -50,8 +55,6 @@ namespace App.TalkCreation.Data
         [HttpGet("fetchTalkAndQuizzes/{id}")] //Fetch custom for specific DTO
         public async Task<TalkAndQuizzesDTO> fetchTalkAndQuizzes(int id)
         {
-            var Message = $"This is a test log at {DateTime.UtcNow.ToLongTimeString()}";
-            _logger.LogInformation("Message displayed: {Message}", Message);
             Task<TalkAndQuizzesDTO> talk = _talkServiceFetch.getTalkAndQuizzes(id);
             return await talk;
         }
