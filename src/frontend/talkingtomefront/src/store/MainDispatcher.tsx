@@ -18,4 +18,6 @@ export class RootDispatcher {
     setQuestionRdx = (questionRdx :Object) => this.dispatch({type: actions.UPDATE_QUESTION_VALUE, payload: {questionRdx}})
 
     setUserIdRdx = (userIdRdx :string) => this.dispatch({type: actions.UPDATE_USERID_VALUE, payload: {userIdRdx}})
+
+    setChangeRequestRdx = (changeRequestRdx :number) => this.dispatch({type: actions.UPDATE_CHANGEREQUEST_VALUE, payload: {changeRequestRdx}})
 }

@@ -21,12 +21,12 @@ namespace App.TalkCreation.Data
         //TODO - Change syntax for fetch
         public string AddNewQuizzNoTalk(dynamic data)
         {
-            var optionsBuilder = new DbContextOptionsBuilder<TalkContext>();
-            optionsBuilder.UseSqlServer(_connectionString);
-            using (TalkContext context = new TalkContext(optionsBuilder.Options))
+            TalkContextFactory talkFactory = new TalkContextFactory(_connectionString);
+            using TalkContext context = talkFactory.create();
+            Console.WriteLine(data);
+            try
             {
-                Console.WriteLine(data);
-                var QuizzInfo= data[data.Count-1];
+                var QuizzInfo = data[data.Count - 1];
                 Quizz addQuizz = new Quizz
                 {
                     Name = QuizzInfo.Name
@@ -34,7 +34,7 @@ namespace App.TalkCreation.Data
                 context.Quizzes.Add(addQuizz);
                 context.SaveChanges();
                 int quizzId = addQuizz.Id;
-                data.RemoveAt(data.Count-1);
+                data.RemoveAt(data.Count - 1);
                 foreach (dynamic question in data)
                 {
                     Question addQuestion = new Question
@@ -60,6 +60,10 @@ namespace App.TalkCreation.Data
 
                 }
                 return "{\"response\":\"New Quizz Saved\"}";
+            }
+            catch (ArgumentOutOfRangeException e)
+            {
+                return "{\"response\":\"New Quizz failed to save\"}";
             }
         }
     }

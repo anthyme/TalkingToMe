@@ -10,24 +10,22 @@ import * as constants from "../constants"
 import {postQuizz} from "../dataTransfers/DataQuizzPost"
 
 interface StateProps { 
-  currentAnswerRdx: string,
-  currentAnswerIdRdx: number,
   questionIdRdx: number,
   questionRdx: Object,
-  userIdRdx: string
+  userIdRdx: string,
+  changeRequestRdx: number
 }
 
 export default function QuizzCreator() {
   const [cardIds, setCardIds] = useState([])
   const [questionsID, setQuestionsId] = useState([0])
   const [questionsJson, setQuestionsJson] = useState([{}])
-  const {currentAnswerRdx, currentAnswerIdRdx,questionIdRdx,questionRdx, userIdRdx} = useSelector<InitialState, StateProps>((state: InitialState) => {
+  const {questionIdRdx,questionRdx, userIdRdx,changeRequestRdx} = useSelector<InitialState, StateProps>((state: InitialState) => {
     return {
-      currentAnswerRdx: state.currentAnswerRdx,
-      currentAnswerIdRdx: state.currentAnswerIdRdx,
       questionIdRdx: state.questionIdRdx,
       questionRdx: state.questionRdx,
-      userIdRdx: state.userIdRdx
+      userIdRdx: state.userIdRdx,
+      changeRequestRdx: state.changeRequestRdx
     }
 });
   const dispatch = useDispatch();
@@ -66,7 +64,8 @@ export default function QuizzCreator() {
   };
 
   const PostQuizz = async ()=>{
-    postQuizz(questionsJson, userIdRdx);
+    await postQuizz(questionsJson, userIdRdx);
+    rootDispatcher.setChangeRequestRdx(changeRequestRdx+1);
 }
 
   return (

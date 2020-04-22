@@ -13,7 +13,7 @@ import Typography from '@material-ui/core/Typography'
 import { makeStyles } from '@material-ui/core/styles'
 import Container from '@material-ui/core/Container'
 import Link from '@material-ui/core/Link'
-import TalkPresCard from '../components/TalkPresCard'
+import PresCard from '../components/PresCard'
 import {getTalks} from "../dataTransfers/DataTalkFetch"
 import CreateTalkPopUp from '../popUps/popUpCards/CreateTalkPopUp'
 import CreateQuizzPopUp from '../popUps/popUpCards/CreateQuizzPopUp'
@@ -29,7 +29,7 @@ const QuizzCardView: React.FC<IProps> = (props) =>  {
       {/* End hero unit */}
       <Grid container spacing={4}>
         {props.cards && props.cards.map((card: any) => (
-          <TalkPresCard card={card}/>
+          <PresCard card={card} type="Quizz"/>
         ))}
       </Grid>
     </Container>

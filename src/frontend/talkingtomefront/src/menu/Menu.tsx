@@ -97,7 +97,8 @@ function renderTab(value: number, classes: string, cards: any) {
 }
 
 interface StateProps {
-  userIdRdx: string
+  userIdRdx: string,
+  changeRequestRdx: number
 }
 
 //TODO - CHANGE THIS TO CONNECTED USER ID
@@ -111,10 +112,11 @@ function Menu() {
   const classes = useStyles()
   const theme = useTheme()
 
-  const { userIdRdx } = useSelector<InitialState, StateProps>(
+  const { userIdRdx, changeRequestRdx } = useSelector<InitialState, StateProps>(
     (state: InitialState) => {
       return {
         userIdRdx: state.userIdRdx,
+        changeRequestRdx: state.changeRequestRdx
       }
     },
   )
@@ -136,7 +138,7 @@ function Menu() {
     getQuizzes(userId).then((json) => {
       setQuizzCards(json)
     })
-  }, [])
+  }, [changeRequestRdx])
 
   const handleChange = (event: any, newValue: any) => {
     setChosenTab(newValue)

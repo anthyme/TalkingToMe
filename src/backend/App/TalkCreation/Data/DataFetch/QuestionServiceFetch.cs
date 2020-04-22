@@ -22,15 +22,18 @@ namespace App.TalkCreation.Data
         }
         public async Task<IEnumerable<Question>> getQuestionsByQuizzId(int quizzId)
         {
-            var optionsBuilder = new DbContextOptionsBuilder<TalkContext>();
-            optionsBuilder.UseSqlServer(_connectionString);
-            using (TalkContext context = new TalkContext(optionsBuilder.Options))
+            TalkContextFactory talkFactory = new TalkContextFactory(_connectionString);
+            using TalkContext context = talkFactory.create();
+            try
             {
                 var response = await context.Questions
-                    .Where(p => p.QuizzId == quizzId)
-                    .Include(p => p.Answers)
-                    .ToListAsync();
+                        .Where(p => p.QuizzId == quizzId)
+                        .Include(p => p.Answers)
+                        .ToListAsync();
                 return response;
+            } catch (ArgumentOutOfRangeException e)
+            {
+                return null;
             }
         }
     }

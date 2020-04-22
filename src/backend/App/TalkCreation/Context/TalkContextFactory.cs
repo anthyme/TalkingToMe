@@ -11,18 +11,13 @@ namespace App.TalkCreation.Context
 
     public class TalkContextFactory
     {
-        private IConfiguration _configuration;
-        private string _connectionString;
-        private readonly ILogger<TalkContextFactory> log;
-        public TalkContextFactory(IConfiguration configuration, ILogger<TalkContextFactory> log)
+        string _connectionString;
+        public TalkContextFactory(string connectionString)
         {
-            this._connectionString = configuration.GetConnectionString("DBString");
-            _configuration = configuration;
-            this.log = log;
+            _connectionString = connectionString;
         }
         public TalkContext create()
         {
-            string _connectionString = _configuration.GetConnectionString("DBString");
             var optionsBuilder = new DbContextOptionsBuilder<TalkContext>();
             optionsBuilder.UseSqlServer(_connectionString);
             var context = new TalkContext(optionsBuilder.Options);

@@ -33,3 +33,10 @@ export const setUserId = (newUserId:Object) => ({
     value: newUserId,
   },
 });
+
+export const setChangeRequest = (changeRequest:Object) => ({
+  type: types.UPDATE_USERID_VALUE,
+  payload: {
+    value: changeRequest,
+  },
+});

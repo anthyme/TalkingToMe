@@ -1,19 +1,17 @@
 import React, { useState } from 'react';
-import AppBar from '@material-ui/core/AppBar';
 import Button from '@material-ui/core/Button';
-import CameraIcon from '@material-ui/icons/PhotoCamera';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
-import DeleteIcon from '@material-ui/icons/Delete';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import EditTalkPopUp from '../popUps/popUpCards/EditTalkPopUp';
-import { Tooltip, IconButton } from '@material-ui/core';
+import { Tooltip } from '@material-ui/core';
 import { deleteTalkById } from '../dataTransfers/DataTalkPost';
 import { useHistory } from 'react-router-dom';
+import PopupDelete from '../editQuizz/PopupDelete'
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -37,6 +35,7 @@ const useStyles = makeStyles((theme) => ({
 
 interface IProps {
   card: any;
+  type: string;
 }
 
 const deleteTalk = (id: number) => {
@@ -45,11 +44,9 @@ const deleteTalk = (id: number) => {
 };
 
 // TODO -Change Image and Add onclickModifier
-const TalkPresCard: React.FC<IProps> = (props) => {
-  //const classes = useStyles()
-
+const PresCard: React.FC<IProps> = (props) => {
   const card = props.card;
-
+  const type = props.type;
   const history = useHistory();
 
   const goToTalk = () => {
@@ -62,14 +59,7 @@ const TalkPresCard: React.FC<IProps> = (props) => {
         <Card>
           <Grid container justify="flex-end">
             <Tooltip title={'Delete ' + card.name} placement="right">
-              <IconButton
-                aria-label="delete"
-                onClick={() => {
-                  deleteTalk(card.id);
-                }}
-              >
-                <DeleteIcon color="secondary" fontSize="small" />
-              </IconButton>
+             <PopupDelete card={card} type={type}/>
             </Tooltip>
           </Grid>
 
@@ -94,4 +84,4 @@ const TalkPresCard: React.FC<IProps> = (props) => {
     </>
   );
 };
-export default TalkPresCard;
+export default PresCard;
