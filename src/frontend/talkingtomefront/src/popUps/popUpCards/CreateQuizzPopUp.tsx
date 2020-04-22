@@ -62,13 +62,7 @@ function CreateQuizzPopUp() {
         <DialogTitle id="form-dialog-title">Create new Quizz</DialogTitle>
         <DialogContent>
           <>
-            <DialogContent>
-              <DialogContentText>
-                Creating a new Quizz, please enter its name and ulpload your
-                presentation (ppt format)
-              </DialogContentText>
               <QuizzCreator/>
-            </DialogContent>
           </>
         </DialogContent>
         <DialogActions>

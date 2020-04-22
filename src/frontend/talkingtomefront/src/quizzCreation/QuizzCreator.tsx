@@ -1,4 +1,4 @@
-import React, { useState, useEffect ,useCallback} from 'react'
+import React, { useState, useEffect ,useCallback, ChangeEvent} from 'react'
 import { useSelector, useDispatch} from 'react-redux'
 import Typography from '@material-ui/core/Typography'
 import Button from '@material-ui/core/Button'
@@ -8,6 +8,7 @@ import { RootDispatcher } from '../store/MainDispatcher'
 import { InitialState } from '../store/reducers/MainReducer'
 import * as constants from "../constants"
 import {postQuizz} from "../dataTransfers/DataQuizzPost"
+import { TextField } from '@material-ui/core'
 
 interface StateProps { 
   questionIdRdx: number,
@@ -19,6 +20,7 @@ interface StateProps {
 export default function QuizzCreator() {
   const [cardIds, setCardIds] = useState([])
   const [questionsID, setQuestionsId] = useState([0])
+  const [quizzName, setQuizzName] = useState('')
   const [questionsJson, setQuestionsJson] = useState([{}])
   const {questionIdRdx,questionRdx, userIdRdx,changeRequestRdx} = useSelector<InitialState, StateProps>((state: InitialState) => {
     return {
@@ -64,15 +66,22 @@ export default function QuizzCreator() {
   };
 
   const PostQuizz = async ()=>{
-    await postQuizz(questionsJson, userIdRdx);
+    await postQuizz(questionsJson, userIdRdx, quizzName);
     rootDispatcher.setChangeRequestRdx(changeRequestRdx+1);
 }
+ const handleQuestionChange = (event: ChangeEvent<HTMLInputElement>)=>{
+    setQuizzName(event.target.value)
+ }
 
   return (
     <React.Fragment>
-      <Typography variant="h6" gutterBottom>
-        Quizz Creation
-      </Typography>
+      <TextField
+          required
+          label="Quizz Name"
+          fullWidth
+          autoComplete="fname"
+          onChange={handleQuestionChange}
+      />
       <div>
         {questionsID.map((qId) => (
           <QuizzQuestion questionId={qId} />
