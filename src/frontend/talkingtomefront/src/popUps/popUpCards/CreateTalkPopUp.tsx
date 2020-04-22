@@ -1,4 +1,5 @@
 import React, { useState, ChangeEvent } from 'react'
+import { useSelector, useDispatch } from 'react-redux';
 import Button from '@material-ui/core/Button'
 import TextField from '@material-ui/core/TextField'
 import Dialog from '@material-ui/core/Dialog'
@@ -8,11 +9,25 @@ import DialogContentText from '@material-ui/core/DialogContentText'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import { postTalk } from '../../dataTransfers/DataTalkPost'
 import DropZone from './DropZone'
+import { InitialState } from '../../store/reducers/MainReducer';
+import { RootDispatcher } from '../../store/MainDispatcher';
+
+interface StateProps { 
+  changeRequestRdx: number
+}
 
 function CreateTalkPopUp() {
   const [name, setName] = useState('')
   const [description, setDescription] = useState('')
   const [open, setOpen] = React.useState(false)
+
+  const {changeRequestRdx} = useSelector<InitialState, StateProps>((state: InitialState) => {
+    return {
+      changeRequestRdx: state.changeRequestRdx
+    }
+});
+  const dispatch = useDispatch();
+  const rootDispatcher = new RootDispatcher(dispatch);
 
   const TalkJson = [
     {
@@ -27,6 +42,12 @@ function CreateTalkPopUp() {
 
   const onNameChange = (event: ChangeEvent<HTMLInputElement>) => {
     setName(event.target.value)
+  }
+
+  const postNewTalk = async () => {
+    setOpen(false)
+    await postTalk(TalkJson);
+    rootDispatcher.setChangeRequestRdx(changeRequestRdx+1);
   }
 
   const handleClickOpen = () => {
@@ -90,9 +111,7 @@ function CreateTalkPopUp() {
           <Button
               color="primary"
               variant="outlined"
-              onClick={() => {
-                postTalk(TalkJson)
-              }}
+              onClick={postNewTalk}
             >
               Create Talk
             </Button>

@@ -12,7 +12,6 @@ namespace App.TalkCreation.Data
 {
     public class TalksServicePost
     {
-        private IConfiguration configuration;
         private string _connectionString;
         public TalksServicePost(IConfiguration configuration)
         {
@@ -20,10 +19,11 @@ namespace App.TalkCreation.Data
         }
         public string AddNewTalk(dynamic data)
         {
-            var optionsBuilder = new DbContextOptionsBuilder<TalkContext>();
-            optionsBuilder.UseSqlServer(_connectionString);
-            using (TalkContext context = new TalkContext(optionsBuilder.Options))
+            TalkContextFactory talkFactory = new TalkContextFactory(_connectionString);
+            using TalkContext context = talkFactory.create();
+            try
             {
+                Console.WriteLine(data);
                 Talk newTalk = new Talk
                 {
                     Name = data[0].name.name,
@@ -34,7 +34,7 @@ namespace App.TalkCreation.Data
                 context.SaveChanges();
                 int talkId = newTalk.Id;
 
-                Quizz tempQuizz = context.Quizzes.Where(p => p.Id == 0).FirstOrDefault();
+                /*Quizz tempQuizz = context.Quizzes.Where(p => p.Id == 0).FirstOrDefault();
                 context.Quizzes.Add(tempQuizz);
                 context.SaveChanges();
                 int quizzId = tempQuizz.Id;
@@ -54,25 +54,31 @@ namespace App.TalkCreation.Data
                     context.Questions.Add(question);
                     context.SaveChanges();
 
-                }
+                }*/
                 return "{\"response\":\"New Talk created\"}";
+            } catch(Exception e)
+            {
+                return "{\"response\":\"New Talk failed to create\"}";
             }
         }
 
         public void ChangeTalk(dynamic data)
         {
-            var optionsBuilder = new DbContextOptionsBuilder<TalkContext>();
-            optionsBuilder.UseSqlServer(_connectionString);
-            using (TalkContext context = new TalkContext(optionsBuilder.Options))
+            TalkContextFactory talkFactory = new TalkContextFactory(_connectionString);
+            using TalkContext context = talkFactory.create();
+            try
             {
                 Talk changeTalk = new Talk
                 {
-                    Id= data.id,
+                    Id = data.id,
                     Name = data.name,
                     Description = data.description
                 };
                 context.Talks.Add(changeTalk);
                 context.SaveChanges();
+            } catch (ArgumentOutOfRangeException e)
+            {
+
             }
         }
     }

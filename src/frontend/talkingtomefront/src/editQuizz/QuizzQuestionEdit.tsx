@@ -23,7 +23,8 @@ interface StateProps {
   currentAnswerRdx : string,
   currentAnswerIdRdx : number,
   questionIdRdx : number,
-  questionRdx : Object
+  questionRdx : Object,
+  changeRequestRdx: number
 }
 //TODO - Keep changes upon revert, aka : Num of questions & content of each question
 const QuizzQuestionEdit: React.FC<IProps> = (props) =>  {
@@ -34,12 +35,13 @@ const QuizzQuestionEdit: React.FC<IProps> = (props) =>  {
   const [show, setShow] = useState(true);
   const [answers, setAnswers] = useState(props.qJson.Answers);
 
-  const {currentAnswerRdx, currentAnswerIdRdx,questionIdRdx,questionRdx} = useSelector<InitialState, StateProps>((state: InitialState) => {
+  const {currentAnswerRdx, currentAnswerIdRdx,questionIdRdx,questionRdx,changeRequestRdx} = useSelector<InitialState, StateProps>((state: InitialState) => {
     return {
       currentAnswerRdx: state.currentAnswerRdx,
       currentAnswerIdRdx: state.currentAnswerIdRdx,
       questionIdRdx: state.questionIdRdx,
-      questionRdx: state.questionRdx
+      questionRdx: state.questionRdx,
+      changeRequestRdx: state.changeRequestRdx
     }
 });
   const dispatch = useDispatch();

@@ -24,3 +24,16 @@ export const postQuizz = async (questionsJson:any, userId:string)=>{
   let json = response.json();
   console.log(json);
 }
+
+export const deleteQuizzById = async (id: number) => {
+  const requestOptions = {
+    method: 'DELETE',
+    headers: { 'Content-Type': 'application/json' },
+  }
+  let response = await fetch(
+    constants.urlDataBase + 'Quizz/' + id,
+    requestOptions,
+  )
+  let json = response.json()
+  console.log(json)
+}

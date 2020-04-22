@@ -1,4 +1,4 @@
-import React, { useState, ChangeEvent } from 'react'
+import React, { useState, ChangeEvent,useEffect } from 'react'
 import Button from '@material-ui/core/Button'
 import TextField from '@material-ui/core/TextField'
 import Dialog from '@material-ui/core/Dialog'
@@ -9,18 +9,29 @@ import DialogTitle from '@material-ui/core/DialogTitle'
 import { postTalk } from '../../dataTransfers/DataTalkPost'
 import DropZone from './DropZone'
 import QuizzCreator from "../../quizzCreation/QuizzCreator"
+import { InitialState } from '../../store/reducers/MainReducer';
+import { RootDispatcher } from '../../store/MainDispatcher';
+import { useSelector, useDispatch } from 'react-redux';
+
+interface StateProps { 
+  changeRequestRdx: number
+}
 
 function CreateQuizzPopUp() {
   const [name, setName] = useState('')
   const [description, setDescription] = useState('')
   const [open, setOpen] = React.useState(false)
 
-  const TalkJson = [
-    {
-      name: { name },
-      description: { description },
-    },
-  ]
+  const {changeRequestRdx} = useSelector<InitialState, StateProps>((state: InitialState) => {
+    return {
+      changeRequestRdx: state.changeRequestRdx
+    }
+  });
+  const dispatch = useDispatch();
+  
+  useEffect(() => {
+    setOpen(false)
+  }, [changeRequestRdx]);
 
   const onDescriptionChange = (event: ChangeEvent<HTMLInputElement>) => {
     setDescription(event.target.value)
@@ -64,15 +75,6 @@ function CreateQuizzPopUp() {
           <Button onClick={handleClose} color="primary">
             Cancel
           </Button>
-          <Button
-              color="primary"
-              variant="outlined"
-              onClick={() => {
-                postTalk(TalkJson)
-              }}
-            >
-              Create Talk
-            </Button>
         </DialogActions>
       </Dialog>
     </div>

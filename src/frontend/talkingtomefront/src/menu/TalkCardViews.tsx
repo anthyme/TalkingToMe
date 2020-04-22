@@ -1,7 +1,7 @@
 import React, {useEffect, useState}from 'react'
 import Grid from '@material-ui/core/Grid'
 import Container from '@material-ui/core/Container'
-import TalkPresCard from '../components/TalkPresCard'
+import PresCard from '../components/PresCard'
 
 interface IProps{
     cards: number[],
@@ -14,7 +14,7 @@ const TalkCardView: React.FC<IProps> = (props) =>  {
       {/* End hero unit */}
       <Grid container spacing={4}>
         {props.cards && props.cards.map((card: any) => (
-          <TalkPresCard card={card} />
+          <PresCard card={card} type="Talk"/>
         ))}
       </Grid>
     </Container>

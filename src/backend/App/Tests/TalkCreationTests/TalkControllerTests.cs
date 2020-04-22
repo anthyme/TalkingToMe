@@ -1,5 +1,8 @@
-﻿using App.TalkCreation.Data;
+﻿using App.TalkCreation.Context;
+using App.TalkCreation.Data;
+using App.TalkCreation.Models;
 using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -18,7 +21,7 @@ namespace App.Tests.TalkCreationTests
             IConfigurationBuilder configurationBuilder = new ConfigurationBuilder();
             IConfiguration configuration = configurationBuilder.Build();
             TalksServiceFetch _talksServiceFetch = new TalksServiceFetch(configuration);
-            Assert.ThrowsAsync<IOException>(async ()=> await _talksServiceFetch.getTalkAndQuizzes(5000));
+            Assert.ThrowsAsync<ArgumentOutOfRangeException>(async () => await _talksServiceFetch.getTalkAndQuizzes(5000));
         }
 
         [Fact]
@@ -28,6 +31,26 @@ namespace App.Tests.TalkCreationTests
             IConfiguration configuration = configurationBuilder.Build();
             TalksServiceFetch _talksServiceFetch = new TalksServiceFetch(configuration);
             Assert.NotNull(_talksServiceFetch.getTalkAndQuizzes(1));
+        }
+
+        [Fact]
+        public void ThrowDeleteTalkId()
+        {
+            IConfigurationBuilder configurationBuilder = new ConfigurationBuilder();
+            IConfiguration configuration = configurationBuilder.Build();
+            TalksServiceFetch _talksServiceFetch = new TalksServiceFetch(configuration);
+            Assert.ThrowsAsync<ArgumentOutOfRangeException>(async () => _talksServiceFetch.deleteTalk(1000000));
+        }
+
+        [Fact]
+        public void ThrowCreateTalk()
+        {
+            IConfigurationBuilder configurationBuilder = new ConfigurationBuilder();
+            IConfiguration configuration = configurationBuilder.Build();
+            TalksServicePost _talksServicePost = new TalksServicePost(configuration);
+            var newTalk = "[{\"description\":{\"description\":\"test\"}}]";
+            var parsedTalk = JArray.Parse(newTalk);
+            Assert.ThrowsAsync<Exception>(async() => _talksServicePost.AddNewTalk(parsedTalk).ToString());
         }
     }
 }

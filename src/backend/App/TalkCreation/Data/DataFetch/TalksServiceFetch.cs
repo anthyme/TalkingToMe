@@ -25,75 +25,71 @@ namespace App.TalkCreation.Data
 
         public async Task<TalkAndQuizzesDTO> getTalkAndQuizzes(int id)
         {
-            var optionsBuilder = new DbContextOptionsBuilder<TalkContext>();
-            optionsBuilder.UseSqlServer(_connectionString);
-            using (TalkContext context = new TalkContext(optionsBuilder.Options))
+            TalkContextFactory talkFactory = new TalkContextFactory(_connectionString);
+            using TalkContext context = talkFactory.create();
+            try
             {
-                try
-                {
-                    var response = await context.Talks
-                        .Where(p => p.Id == id)
-                        .Include(p => p.Quizzes)
-                        .ThenInclude(p => p.Quizz)
-                        .ToListAsync();
+                var response = await context.Talks
+                    .Where(p => p.Id == id)
+                    .Include(p => p.Quizzes)
+                    .ThenInclude(p => p.Quizz)
+                    .ToListAsync();
 
-                    TalkAndQuizzesDTO talkNQuizzes = new TalkAndQuizzesDTO();
-                    talkNQuizzes.idTalk = id;
-                    talkNQuizzes.talkName = response[0].Name;
-                    talkNQuizzes.talkUrl = response[0].Url;
-                    talkNQuizzes.Quizzes = new List<Quizz>();
-                    foreach (QuizzToTalk qtt in response[0].Quizzes)
-                    {
-                        Quizz qtemp = new Quizz();
-                        qtemp.Id = qtt.Quizz.Id;
-                        qtemp.Name = qtt.Quizz.Name;
-                        talkNQuizzes.Quizzes
-                            .Add(qtemp);
-                    }
-                    return talkNQuizzes;
-                }catch (ArgumentOutOfRangeException e)
+                TalkAndQuizzesDTO talkNQuizzes = new TalkAndQuizzesDTO();
+                talkNQuizzes.idTalk = id;
+                talkNQuizzes.talkName = response[0].Name;
+                talkNQuizzes.talkUrl = response[0].Url;
+                talkNQuizzes.Quizzes = new List<Quizz>();
+                foreach (QuizzToTalk qtt in response[0].Quizzes)
                 {
-                    Console.WriteLine("The Desired Talk does not exist");
-                    return null;
+                    Quizz qtemp = new Quizz();
+                    qtemp.Id = qtt.Quizz.Id;
+                    qtemp.Name = qtt.Quizz.Name;
+                    talkNQuizzes.Quizzes
+                        .Add(qtemp);
                 }
+                return talkNQuizzes;
+            }
+            catch (ArgumentOutOfRangeException e)
+            {
+                Console.WriteLine("The Desired Talk does not exist");
+                return null;
             }
         }
 
+
+
         public async Task<List<Talk>> getTalksByUserId(int id)
         {
-            var optionsBuilder = new DbContextOptionsBuilder<TalkContext>();
-            optionsBuilder.UseSqlServer(_connectionString);
-            using (TalkContext context = new TalkContext(optionsBuilder.Options))
+            TalkContextFactory talkFactory = new TalkContextFactory(_connectionString);
+            using TalkContext context = talkFactory.create();
+            try
             {
-                try
-                {
-                    var talks = await context.Talks.Where(p => p.OwnerId == id).ToListAsync();
-                    return talks;
-                } catch (ArgumentOutOfRangeException e)
-                {
-                    return null;
-                }
-               
+                var talks = await context.Talks.Where(p => p.OwnerId == id).ToListAsync();
+                return talks;
+            }
+            catch (ArgumentOutOfRangeException e)
+            {
+                return null;
             }
         }
 
         public async Task<string> deleteTalk(int id)
         {
-            var optionsBuilder = new DbContextOptionsBuilder<TalkContext>();
-            optionsBuilder.UseSqlServer(_connectionString);
-            using (TalkContext context = new TalkContext(optionsBuilder.Options))
+            TalkContextFactory talkFactory = new TalkContextFactory(_connectionString);
+            using TalkContext context = talkFactory.create();
+            try
             {
-                try {
-                    var talk = await context.Talks.FindAsync(id);
-                    context.Talks.Remove(talk);
-                    await context.SaveChangesAsync();
-                    return "{\"response\":\"Remove sucessful\"}";
-                } catch(ArgumentOutOfRangeException e)
-                {
-                    return "{\"response\":\"Remove failed\"}";
-                }
-
+                var talk = await context.Talks.FindAsync(id);
+                context.Talks.Remove(talk);
+                await context.SaveChangesAsync();
+                return "{\"response\":\"Remove sucessful\"}";
             }
+            catch (ArgumentOutOfRangeException e)
+            {
+                return "{\"response\":\"Remove failed\"}";
+            }
+
         }
     }
 }
