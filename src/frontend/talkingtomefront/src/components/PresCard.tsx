@@ -11,7 +11,7 @@ import EditTalkPopUp from '../popUps/popUpCards/EditTalkPopUp';
 import { Tooltip } from '@material-ui/core';
 import { deleteTalkById } from '../dataTransfers/DataTalkPost';
 import { useHistory } from 'react-router-dom';
-import PopupDelete from '../editQuizz/PopupDelete'
+import PopupDelete from '../editQuizz/PopupDelete';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -59,7 +59,7 @@ const PresCard: React.FC<IProps> = (props) => {
         <Card>
           <Grid container justify="flex-end">
             <Tooltip title={'Delete ' + card.name} placement="right">
-             <PopupDelete card={card} type={type}/>
+              <PopupDelete card={card} type={type} />
             </Tooltip>
           </Grid>
 
