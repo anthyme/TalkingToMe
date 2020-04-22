@@ -32,8 +32,6 @@ export const loadTalkNQuizzes = async (talkId: string | null) => {
   }
 };
 
-// THIS IS AN AZURE TEST, IF YOU SEE THIS LINE IN THE CODE, DELETE ME
-
 export const getQuizz = async (userId: number) => {
   const requestOptions = {
     method: 'GET',

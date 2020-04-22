@@ -53,26 +53,28 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-interface StateProps { 
-  userIdRdx :string
+interface StateProps {
+  userIdRdx: string;
 }
 
 export default function SignIn() {
   const classes = useStyles();
   const history = useHistory();
-  const {userIdRdx} = useSelector<InitialState, StateProps>((state: InitialState) => {
-    return {
-      userIdRdx :state.userIdRdx     
-    }
-});
+  const { userIdRdx } = useSelector<InitialState, StateProps>(
+    (state: InitialState) => {
+      return {
+        userIdRdx: state.userIdRdx,
+      };
+    },
+  );
   const dispatch = useDispatch();
   const rootDispatcher = new RootDispatcher(dispatch);
 
-  const EnterOnClick=async ()=>{
-    await rootDispatcher.setUserIdRdx("1");
-    console.log(userIdRdx)
-    history.push('/Menu')
- }
+  const EnterOnClick = async () => {
+    await rootDispatcher.setUserIdRdx('1');
+    console.log(userIdRdx);
+    history.push('/Menu');
+  };
 
   return (
     <Container component="main" maxWidth="xs">
@@ -99,6 +101,7 @@ export default function SignIn() {
             name="email"
             autoComplete="email"
             autoFocus
+            className="email"
           />
           <TextField
             variant="outlined"
@@ -110,6 +113,7 @@ export default function SignIn() {
             type="password"
             id="password"
             autoComplete="current-password"
+            className="password"
           />
           <FormControlLabel
             control={<Checkbox value="remember" color="primary" />}
