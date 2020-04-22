@@ -13,8 +13,8 @@ export const putQuizz = async (questionsJson:any, quizzId:number)=>{
     return "";
 }
 
-export const postQuizz = async (questionsJson:any, userId:string)=>{
-  let sentJson = [...questionsJson,{Name:"TestQuizz", OwnerId:{userId}}]
+export const postQuizz = async (questionsJson:any, userId:string, quizzName:string)=>{
+  let sentJson = [...questionsJson,{Name:{quizzName}, OwnerId:{userId}}]
   const requestOptions = {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
