@@ -27,7 +27,7 @@ interface StateProps {
 //TODO - Keep changes upon revert, aka : Num of questions & content of each question
 const QuizzQuestion: React.FC<IProps> = (props) =>  {
   const [answersId, setAnswersId] = useState([0, 1]);
-  const [value, setValue] = useState('');
+  const [value, setValue] = useState(undefined);
   const [questionValue, setQuestionValue] = useState('');
   const [selectedValue, setSelectedValue] = React.useState('UCQ');
   const [show, setShow] = useState(true);
