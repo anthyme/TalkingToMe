@@ -92,7 +92,7 @@ namespace App.TalkCreation.Data
             return returnQuizz;
         }
 
-        [HttpPost("AddQuizzToTalk"]
+        [HttpPost("AddQuizzToTalk")]
         public async Task<ActionResult<string>> PostQuizzToTalk([FromBody]dynamic ids)
         {
             var parsedIds = JArray.Parse(ids.ToString());

@@ -33,28 +33,6 @@ namespace App.TalkCreation.Data
                 context.Talks.Add(newTalk);
                 context.SaveChanges();
                 int talkId = newTalk.Id;
-
-                /*Quizz tempQuizz = context.Quizzes.Where(p => p.Id == 0).FirstOrDefault();
-                context.Quizzes.Add(tempQuizz);
-                context.SaveChanges();
-                int quizzId = tempQuizz.Id;
-
-                QuizzToTalk quizzToTalk = new QuizzToTalk
-                {
-                    TalkId = talkId,
-                    QuizzId = quizzId
-                };
-                context.QuizzToTalks.Add(quizzToTalk);
-                context.SaveChanges();
-
-                Question[] questions = context.Questions.Where(p => p.QuizzId == 0).ToArray();
-                foreach (Question question in questions)
-                {
-                    question.Id = quizzId;
-                    context.Questions.Add(question);
-                    context.SaveChanges();
-
-                }*/
                 return "{\"response\":\"New Talk created\"}";
             } catch(Exception e)
             {

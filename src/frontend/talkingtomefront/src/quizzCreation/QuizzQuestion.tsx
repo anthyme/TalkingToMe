@@ -37,13 +37,11 @@ const QuizzQuestion: React.FC<IProps> = (props) =>  {
     currentAnswerRdx,
     currentAnswerIdRdx,
     questionIdRdx,
-    questionRdx,
   } = useSelector<InitialState, StateProps>((state: InitialState) => {
     return {
       currentAnswerRdx: state.currentAnswerRdx,
       currentAnswerIdRdx: state.currentAnswerIdRdx,
       questionIdRdx: state.questionIdRdx,
-      questionRdx: state.questionRdx,
     };
   });
   const dispatch = useDispatch();
@@ -55,13 +53,6 @@ const QuizzQuestion: React.FC<IProps> = (props) =>  {
     answers: { answers },
     rightAnswer: { value },
   };
-
-  const showJson =() =>{
-    console.log(questionJson);
-    console.log("answers length" + answersId.length);
-    console.log("Ids: " + answersId);
-    console.log("Answers: " + answers);
-  }
 
   const deleteQuestion = (event: any) => {
     //TODO - Change json to empty on quizzcreator
@@ -188,9 +179,6 @@ const QuizzQuestion: React.FC<IProps> = (props) =>  {
                     onClick={deleteQuestion}
                   >
                     Delete Question
-                  </Button>
-                  <Button variant="outlined" onClick={showJson}>
-                    Showjson
                   </Button>
                 </Grid>
               </Grid>

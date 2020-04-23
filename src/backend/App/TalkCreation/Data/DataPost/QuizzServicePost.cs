@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
 namespace App.TalkCreation.Data
 {
@@ -13,9 +14,11 @@ namespace App.TalkCreation.Data
     {
         private IConfiguration configuration;
         private string _connectionString;
-        public QuizzServicePost(IConfiguration configuration)
+        private readonly ILogger _logger;
+        public QuizzServicePost(IConfiguration configuration, ILogger<QuizzServicePost> logger)
         {
             _connectionString = configuration.GetConnectionString("DBString");
+            _logger = logger;
         }
 
         //TODO - Change syntax for fetch
@@ -30,7 +33,7 @@ namespace App.TalkCreation.Data
                 Quizz addQuizz = new Quizz
                 {
                     Name = QuizzInfo.Name.quizzName,
-                    OwnerId= QuizzInfo.OwnerId.userId
+                    OwnerId = QuizzInfo.OwnerId.userId
                 };
                 context.Quizzes.Add(addQuizz);
                 context.SaveChanges();
@@ -65,6 +68,7 @@ namespace App.TalkCreation.Data
             }
             catch (ArgumentOutOfRangeException e)
             {
+                _logger.LogError("The Quizz did get added correctly check Json format", e);
                 return "{\"response\":\"New Quizz failed to save\"}";
             }
         }
@@ -75,32 +79,21 @@ namespace App.TalkCreation.Data
             using TalkContext context = talkFactory.create();
             try
             {
-                int IQuizzId = data.quizzId;
-                Quizz tempQuizz = context.Quizzes.Where(p => p.Id == IQuizzId).FirstOrDefault();
-                context.Quizzes.Add(tempQuizz);
-                context.SaveChanges();
-                int quizzId = tempQuizz.Id;
-
-                QuizzToTalk quizzToTalk = new QuizzToTalk
+                foreach(int quizzId in data.Quizzids)
                 {
-                    TalkId = data.talkId,
-                    QuizzId = quizzId
-                };
-                context.QuizzToTalks.Add(quizzToTalk);
-                context.SaveChanges();
-
-                Question[] questions = context.Questions.Where(p => p.QuizzId == 0).Include(p=>p.Answers).ToArray();
-                foreach (Question question in questions)
-                {
-                    question.Id = quizzId;
-                    context.Questions.Add(question);
+                    QuizzToTalk quizzToTalk = new QuizzToTalk
+                    {
+                        TalkId = data.talkId,
+                        QuizzId = quizzId
+                    };
+                    context.QuizzToTalks.Add(quizzToTalk);
                     context.SaveChanges();
-
-                }
+                }            
                 return "{\"response\":\"New Quizz added to Talk\"}";
             }
-            catch (ArgumentOutOfRangeException e)
+            catch (Exception e)
             {
+                _logger.LogError("The Quizz did not get added to Talk", e);
                 return "{\"response\":\"New Quizz failed to add to talk\"}";
             }
         }
