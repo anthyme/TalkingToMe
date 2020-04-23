@@ -33,8 +33,6 @@ export default function QuizzCreator() {
   const dispatch = useDispatch();
   const rootDispatcher = new RootDispatcher(dispatch);
 
-  const debounceRedux = useCallback(_.debounce(setNewQuestion, 1000), []);
-
   function setNewQuestion() {
     let newQuestionJson = questionsJson;
     newQuestionJson[questionIdRdx] = questionRdx;
@@ -67,6 +65,9 @@ export default function QuizzCreator() {
 
   const PostQuizz = async ()=>{
     await postQuizz(questionsJson, userIdRdx, quizzName);
+    setQuestionsId([0]);
+    setQuizzName('');
+    setQuestionsJson([{}]);
     rootDispatcher.setChangeRequestRdx(changeRequestRdx+1);
 }
  const handleQuestionChange = (event: ChangeEvent<HTMLInputElement>)=>{
