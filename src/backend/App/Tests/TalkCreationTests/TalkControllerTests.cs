@@ -21,7 +21,7 @@ namespace App.Tests.TalkCreationTests
             IConfigurationBuilder configurationBuilder = new ConfigurationBuilder();
             IConfiguration configuration = configurationBuilder.Build();
             TalksServiceFetch _talksServiceFetch = new TalksServiceFetch(configuration);
-            Assert.ThrowsAsync<ArgumentOutOfRangeException>(async () => await _talksServiceFetch.getTalkAndQuizzes(5000));
+            Assert.ThrowsAsync<ArgumentOutOfRangeException>(async () => await _talksServiceFetch.getTalkAndQuizzes(-1));
         }
 
         [Fact]
@@ -39,7 +39,7 @@ namespace App.Tests.TalkCreationTests
             IConfigurationBuilder configurationBuilder = new ConfigurationBuilder();
             IConfiguration configuration = configurationBuilder.Build();
             TalksServiceFetch _talksServiceFetch = new TalksServiceFetch(configuration);
-            Assert.ThrowsAsync<ArgumentOutOfRangeException>(async () => _talksServiceFetch.deleteTalk(1000000));
+            Assert.ThrowsAsync<ArgumentOutOfRangeException>(async () => await _talksServiceFetch.deleteTalk(-1));
         }
 
         [Fact]

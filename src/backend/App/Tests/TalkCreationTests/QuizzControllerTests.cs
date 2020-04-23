@@ -22,7 +22,7 @@ namespace App.Tests.TalkCreationTests
             IConfigurationBuilder configurationBuilder = new ConfigurationBuilder();
             IConfiguration configuration = configurationBuilder.Build();
             QuizzServiceFetch _quizzServiceFetch = new QuizzServiceFetch(configuration);
-            Assert.ThrowsAsync<ArgumentOutOfRangeException>(async () => await _quizzServiceFetch.returnQuizzById(5000));
+            Assert.ThrowsAsync<ArgumentOutOfRangeException>(async () => await _quizzServiceFetch.returnQuizzById(-1));
         }
 
         [Fact]
@@ -31,7 +31,7 @@ namespace App.Tests.TalkCreationTests
             IConfigurationBuilder configurationBuilder = new ConfigurationBuilder();
             IConfiguration configuration = configurationBuilder.Build();
             QuizzServiceFetch _quizzServiceFetch = new QuizzServiceFetch(configuration);
-            Assert.ThrowsAsync<ArgumentOutOfRangeException>(async () => _quizzServiceFetch.returnQuizzByUserId(1000000));
+            Assert.ThrowsAsync<ArgumentOutOfRangeException>(async () => await _quizzServiceFetch.returnQuizzByUserId(-1));
         }
 
     }
