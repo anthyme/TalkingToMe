@@ -1,5 +1,4 @@
 import * as constants from '../constants';
-import _ from 'lodash';
 
 export const getTalks = async (userId: string) => {
   const requestOptions = {

@@ -1,5 +1,5 @@
 describe('Creating a talk card and deleting it afterwards', () => {
-  it('Logins, create a talk and delete it', () => {
+  it('Logins, create a talk and deletes it', () => {
     cy.visit('/');
     cy.get('.email').type('test@test.com');
     cy.get('.password').type('monmotdepasse');

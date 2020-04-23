@@ -5,48 +5,41 @@ import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import DeleteIcon from '@material-ui/icons/Delete';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-import * as actions from '../store/ActionsTypes';
 import { InitialState } from '../store/reducers/MainReducer';
-import { Action } from 'redux';
 import { RootDispatcher } from '../store/MainDispatcher';
 //import {withSearchValue} from "../enhancers/WithSearchValue";
 interface IProps {
-  answerId: number,
-  answer: any,
-  questionId: number
+  questionId: number;
+  answerIndex: number;
 }
-interface StateProps { 
-  currentAnswerRdx: string,
-  currentAnswerIdRdx: number,
-  questionIdRdx: number | null,
-  questionRdx: Object
+interface StateProps {
+  currentAnswerIdRdx: number;
 }
 
 const Answer: React.FC<IProps> = (props) => {
-  const [value, setValue] = useState(props.answer.Reponse);
+  const [value, setValue] = useState('');
   const [show, setShow] = useState(true);
-  const {currentAnswerRdx, currentAnswerIdRdx,questionIdRdx,questionRdx} = useSelector<InitialState, StateProps>((state: InitialState) => {
+  const {
+    currentAnswerIdRdx,
+  } = useSelector<InitialState, StateProps>((state: InitialState) => {
     return {
-      currentAnswerRdx: state.currentAnswerRdx,
       currentAnswerIdRdx: state.currentAnswerIdRdx,
-      questionIdRdx: state.questionIdRdx,
-      questionRdx: state.questionRdx
-    }
-});
+    };
+  });
   const dispatch = useDispatch();
   const rootDispatcher = new RootDispatcher(dispatch);
 
-
-  const deleteAnswer = () => {
-    rootDispatcher.setAnswerIdRdx(props.answerId);
-    rootDispatcher.setQuestionIdRdx(props.questionId);
-    rootDispatcher.setAnswerRdx("");
-    setShow(false);
+  const deleteAnswer = async () => {
+    await rootDispatcher.setAnswerIdRdx(props.answerIndex);
+    await rootDispatcher.setQuestionIdRdx(props.questionId);
+    console.log(currentAnswerIdRdx);
+    rootDispatcher.setAnswerRdx('###---DelAn0982373123---###');
+    //setShow(false);
   };
 
-  const onInputChange = (event:ChangeEvent<HTMLInputElement>) => {
+  const onInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     setValue(event.target.value);
-    rootDispatcher.setAnswerIdRdx(props.answerId);
+    rootDispatcher.setAnswerIdRdx(props.answerIndex);
     rootDispatcher.setQuestionIdRdx(props.questionId);
     rootDispatcher.setAnswerRdx(event.target.value);
   };
@@ -56,21 +49,21 @@ const Answer: React.FC<IProps> = (props) => {
       return (
         <React.Fragment>
           <Grid item>
-            <FormControlLabel value={value} control={<Radio />} label="label" />
+            <FormControlLabel className ="formControlLabel" value={value} control={<Radio />} label="label" />
             <TextField
-              placeholder={'Answer' + props.answerId}
+              placeholder='Answer'
               inputProps={{ 'aria-label': 'description' }}
-              value = {value}
+              className="answerText"
               onChange={(event: ChangeEvent<HTMLInputElement>) => {
                 onInputChange(event);
               }}
             />
-            <DeleteIcon onClick={deleteAnswer} style={{ cursor: 'pointer' }} />
+            <DeleteIcon className="deleteAnswer" onClick={deleteAnswer} style={{ cursor: 'pointer' }} />
           </Grid>
         </React.Fragment>
       );
     case false:
       return <></>;
   }
-}
+};
 export default Answer;

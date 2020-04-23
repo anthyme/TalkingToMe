@@ -5,9 +5,7 @@ import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import DeleteIcon from '@material-ui/icons/Delete';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-import * as actions from '../store/ActionsTypes';
 import { InitialState } from '../store/reducers/MainReducer';
-import { Action } from 'redux';
 import { RootDispatcher } from '../store/MainDispatcher';
 //import {withSearchValue} from "../enhancers/WithSearchValue";
 interface IProps {
@@ -51,15 +49,16 @@ const Answer: React.FC<IProps> = (props) => {
       return (
         <React.Fragment>
           <Grid item>
-            <FormControlLabel value={value} control={<Radio />} label="label" />
+            <FormControlLabel className ="formControlLabel" value={value} control={<Radio />} label="label" />
             <TextField
-              placeholder={'Answer ' + String(props.answerIndex + 1)}
+              placeholder='Answer'
               inputProps={{ 'aria-label': 'description' }}
+              className="answerText"
               onChange={(event: ChangeEvent<HTMLInputElement>) => {
                 onInputChange(event);
               }}
             />
-            <DeleteIcon onClick={deleteAnswer} style={{ cursor: 'pointer' }} />
+            <DeleteIcon className="deleteAnswer" onClick={deleteAnswer} style={{ cursor: 'pointer' }} />
           </Grid>
         </React.Fragment>
       );

@@ -1,12 +1,9 @@
-import React, { useState, useEffect, useCallback, ChangeEvent } from 'react';
+import React, { useState, useEffect, ChangeEvent } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import QuizzQuestion from './QuizzQuestion';
-import _ from 'lodash';
 import { RootDispatcher } from '../store/MainDispatcher';
 import { InitialState } from '../store/reducers/MainReducer';
-import * as constants from '../constants';
 import { postQuizz } from '../dataTransfers/DataQuizzPost';
 import { TextField } from '@material-ui/core';
 
@@ -18,7 +15,6 @@ interface StateProps {
 }
 
 export default function QuizzCreator() {
-  const [cardIds, setCardIds] = useState([]);
   const [questionsID, setQuestionsId] = useState([0]);
   const [quizzName, setQuizzName] = useState('');
   const [questionsJson, setQuestionsJson] = useState([{}]);
@@ -38,12 +34,6 @@ export default function QuizzCreator() {
   const dispatch = useDispatch();
   const rootDispatcher = new RootDispatcher(dispatch);
 
-  function setNewQuestion() {
-    let newQuestionJson = questionsJson;
-    newQuestionJson[questionIdRdx] = questionRdx;
-    setQuestionsJson(newQuestionJson);
-  }
-
   useEffect(() => {
     if (questionIdRdx !== -1) {
       let newQuestionJson = questionsJson;
@@ -56,10 +46,6 @@ export default function QuizzCreator() {
     let newQuestionId = questionsID[questionsID.length - 1] + 1;
     let newTable = [...questionsID, newQuestionId];
     setQuestionsId(newTable);
-  };
-
-  const ChangeId = (qId: any) => {
-    console.log(qId);
   };
 
   const PostQuizz = async () => {
@@ -80,9 +66,10 @@ export default function QuizzCreator() {
         label="Quizz Name"
         fullWidth
         autoComplete="fname"
+        className="quizzName"
         onChange={handleQuestionChange}
       />
-      <div>
+      <div className="questionsPanel">
         {questionsID.map((qId) => (
           <QuizzQuestion questionId={qId} />
         ))}

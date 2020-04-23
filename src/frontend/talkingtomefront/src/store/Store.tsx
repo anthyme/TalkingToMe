@@ -1,4 +1,4 @@
-import { createStore, combineReducers } from 'redux';
+import { createStore } from 'redux';
 import {DispatchAction, InitialState, mainReducer} from "./reducers/MainReducer";
 
 //const rootReducer = combineReducers({

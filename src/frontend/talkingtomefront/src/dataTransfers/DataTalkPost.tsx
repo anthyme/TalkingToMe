@@ -1,8 +1,4 @@
 import * as constants from '../constants'
-import _ from 'lodash'
-import { useDispatch, useSelector } from 'react-redux'
-import { InitialState } from '../store/reducers/MainReducer'
-import { RootDispatcher } from '../store/MainDispatcher'
 
 export const postTalk = async (jsonTalk: any) => {
   let sentJson = jsonTalk

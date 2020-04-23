@@ -1,45 +1,40 @@
-import React, { useState, useEffect ,useCallback, SetStateAction} from 'react'
-import { useSelector, useDispatch} from 'react-redux'
-import Grid from '@material-ui/core/Grid'
-import Typography from '@material-ui/core/Typography'
-import TextField from '@material-ui/core/TextField'
-import Button from '@material-ui/core/Button'
-import FormControlLabel from '@material-ui/core/FormControlLabel'
-import Checkbox from '@material-ui/core/Checkbox'
-import QuizzQuestionEdit from './QuizzQuestionEdit'
-import _ from 'lodash'
-import { RootDispatcher } from '../store/MainDispatcher'
-import { InitialState } from '../store/reducers/MainReducer'
-import { getQuizz } from "../dataTransfers/DataTalkFetch"
-import * as constants from "../constants"
-import { putQuizz } from '../dataTransfers/DataQuizzPost'
-import { putTalk } from '../dataTransfers/DataTalkPost'
+import React, { useState, useEffect, useCallback, ChangeEvent } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import Button from '@material-ui/core/Button';
+import QuizzQuestionEdit from './QuizzQuestionEdit';
+import { RootDispatcher } from '../store/MainDispatcher';
+import { InitialState } from '../store/reducers/MainReducer';
+import { putQuizz } from '../dataTransfers/DataQuizzPost';
+import { TextField } from '@material-ui/core';
+import { getQuizzById } from '../dataTransfers/DataQuizzFetch';
 
-interface StateProps { 
-  currentAnswerRdx: string,
-  currentAnswerIdRdx: number,
-  questionIdRdx: number,
-  questionRdx: any
+interface StateProps {
+  questionIdRdx: number;
+  questionRdx: Object;
+  changeRequestRdx: number;
+}
+interface IProps{
+  quizzId:number;
 }
 
-export default function QuizzEdit() {
-  const [cardIds, setCardIds] = useState([])
-  const [title, setTitle] = useState("")
-  const [quizzId, setQuizzId] = useState(0)
-  const [questionsID, setQuestionsId] = useState([0])
-  const [questionsJson, setQuestionsJson] = useState([{id:1}])
-  const {currentAnswerRdx, currentAnswerIdRdx,questionIdRdx,questionRdx} = useSelector<InitialState, StateProps>((state: InitialState) => {
+const QuizzEdit: React.FC<IProps> = (props) => {
+  const [questionsID, setQuestionsId] = useState([0]);
+  const [quizzName, setQuizzName] = useState('');
+  const [questionsJson, setQuestionsJson] = useState([{}]);
+  const quizzId = props.quizzId;
+  const {
+    questionIdRdx,
+    questionRdx,
+    changeRequestRdx,
+  } = useSelector<InitialState, StateProps>((state: InitialState) => {
     return {
-      currentAnswerRdx: state.currentAnswerRdx,
-      currentAnswerIdRdx: state.currentAnswerIdRdx,
       questionIdRdx: state.questionIdRdx,
-      questionRdx: state.questionRdx
-    }
-});
+      questionRdx: state.questionRdx,
+      changeRequestRdx: state.changeRequestRdx,
+    };
+  });
   const dispatch = useDispatch();
   const rootDispatcher = new RootDispatcher(dispatch);
-
-  const debounceRedux = useCallback(_.debounce(setNewQuestion, 1000), []);
 
   function setNewQuestion() {
     let newQuestionJson = questionsJson;
@@ -47,14 +42,8 @@ export default function QuizzEdit() {
     setQuestionsJson(newQuestionJson);
   }
 
-  const handleTitleChange = (event:any) => {
-    setTitle(event.target.value);
-  };
-
   useEffect(() => {
-    if (questionIdRdx!==-1) {
-      console.log('creator changed!');
-      //debounceRedux();
+    if (questionIdRdx !== -1) {
       let newQuestionJson = questionsJson;
       newQuestionJson[questionIdRdx] = questionRdx;
       setQuestionsJson(newQuestionJson);
@@ -62,20 +51,9 @@ export default function QuizzEdit() {
   }, [questionRdx]);
 
   useEffect(() => {
-    //TODO - Change to edited id
-    getQuizz(1).then((json)=>{
-      setQuestionsJson(json.Questions);
-      setQuizzId(json.Id)
-    });
-    let first = [0];
-    setQuestionsId(first);
-    for(let i=1; i<questionsJson.length;i++){
-      let newTable = [...questionsID, i];
-      setQuestionsId(newTable);
-    }
-    console.log("questionsId table:" + questionsID)
-}, []);
+    var response = getQuizzById(quizzId).then();
 
+  }, []);
 
   const AddNewQuestion = () => {
     let newQuestionId = questionsID[questionsID.length - 1] + 1;
@@ -85,39 +63,36 @@ export default function QuizzEdit() {
 
   const ChangeId = (qId: any) => {
     console.log(qId);
-  }
-  
-  const ShowJson = ()=>{
-    console.log(questionsJson);
   };
 
-  const PutQuizz = ()=>{
-    putQuizz(questionsJson,quizzId);
-  }
-
+  const PutQuizz = async () => {
+    await putQuizz(questionsJson, 1);
+    setQuestionsId([0]);
+    setQuizzName('');
+    setQuestionsJson([{}]);
+    rootDispatcher.setChangeRequestRdx(changeRequestRdx + 1);
+  };
+  const handleQuestionChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setQuizzName(event.target.value);
+  };
 
   return (
     <React.Fragment>
       <TextField
-                    required
-                    label="Quizz Title"
-                    fullWidth
-                    autoComplete="fname"
-                    value = {title}
-                    onChange={handleTitleChange}
-                  />
-      <div>
-        {questionsID.map((qId) => {
-          return(
-            <QuizzQuestionEdit questionId={qId}  qJson={questionsJson[qId]}/>
-          );
-  })}
+        required
+        label="Quizz Name"
+        fullWidth
+        autoComplete="fname"
+        className="quizzName"
+        onChange={handleQuestionChange}
+      />
+      <div className="questionsPanel">
+        {questionsID.map((qId) => (
+          <QuizzQuestionEdit questionId={qId} />
+        ))}
       </div>
       <Button variant="outlined" onClick={AddNewQuestion}>
-        Question
-      </Button>
-      <Button variant="outlined" onClick={ShowJson}>
-        Show Json
+        Add Question
       </Button>
       <Button variant="outlined" onClick={PutQuizz}>
         Validate Quizz
@@ -125,3 +100,4 @@ export default function QuizzEdit() {
     </React.Fragment>
   );
 }
+export default QuizzEdit;
