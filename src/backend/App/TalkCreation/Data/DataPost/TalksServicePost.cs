@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
 
 namespace App.TalkCreation.Data
@@ -33,10 +34,37 @@ namespace App.TalkCreation.Data
                 context.Talks.Add(newTalk);
                 context.SaveChanges();
                 int talkId = newTalk.Id;
+
+                AddQuizzesToTalk(data[0].quizzesId.selectedQuizzes, talkId);
+
                 return "{\"response\":\"New Talk created\"}";
             } catch(Exception e)
             {
                 return "{\"response\":\"New Talk failed to create\"}";
+            }
+        }
+
+        public string AddQuizzesToTalk(dynamic quizzesId, int talkId)
+        {
+            TalkContextFactory talkFactory = new TalkContextFactory(_connectionString);
+            using TalkContext context = talkFactory.create();
+            try
+            {
+                foreach (int quizzId in quizzesId)
+                {
+                    QuizzToTalk quizzToTalk = new QuizzToTalk
+                    {
+                        TalkId = talkId,
+                        QuizzId = quizzId
+                    };
+                    context.QuizzToTalks.Add(quizzToTalk);
+                    context.SaveChanges();
+                }
+                return "{\"response\":\"New Quizz added to Talk\"}";
+            }
+            catch (Exception e)
+            {
+                return "{\"response\":\"New Quizz failed to add to talk\"}";
             }
         }
 

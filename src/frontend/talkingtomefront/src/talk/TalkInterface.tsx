@@ -7,7 +7,7 @@ import { Typography, CssBaseline, AppBar, Toolbar } from '@material-ui/core';
 import { loadTalkNQuizzes } from '../dataTransfers/DataTalkFetch';
 import { loadQuizzContent } from '../dataTransfers/DataQuestionFetch';
 import QuestionInterface from './questionsPreview/QuestionInterface';
-import { useHistory, RouteComponentProps } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 
 const TalkInterface = () => {
   const [quizzId, setQuizzId] = useState('0');
@@ -18,7 +18,6 @@ const TalkInterface = () => {
 
   const url = new URL(window.location.href);
   const TalkId: string | null = url.searchParams.get('talkId');
-  const UserId: number = 1; //These two const should come from props but for development purpose, they're set like that for now
   const history = useHistory();
 
   //Buttons
