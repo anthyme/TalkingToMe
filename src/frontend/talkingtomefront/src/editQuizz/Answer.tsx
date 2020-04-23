@@ -8,7 +8,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import { InitialState } from '../store/reducers/MainReducer';
 import { RootDispatcher } from '../store/MainDispatcher';
 //import {withSearchValue} from "../enhancers/WithSearchValue";
-interface IProps {
+interface IProps { 
   questionId: number;
   answerIndex: number;
 }

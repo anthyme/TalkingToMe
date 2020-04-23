@@ -66,7 +66,7 @@ const PopupDelete: React.FC<IProps> = (props) => {
       >
         <DeleteIcon color="secondary" fontSize="small" />
       </IconButton>
-      <Dialog
+      <Dialog 
         open={open}
         onClose={handleClose}
         aria-labelledby="alert-dialog-title"

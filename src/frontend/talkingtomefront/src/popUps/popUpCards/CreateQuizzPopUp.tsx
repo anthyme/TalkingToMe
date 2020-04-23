@@ -7,9 +7,12 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import QuizzCreator from '../../quizzCreation/QuizzCreator';
 import { InitialState } from '../../store/reducers/MainReducer';
 import { useSelector, useDispatch } from 'react-redux';
+import { RootDispatcher } from '../../store/MainDispatcher';
 
 interface StateProps {
   changeRequestRdx: number;
+  questionIdRdx: number;
+  
 }
 
 function CreateQuizzPopUp() {
@@ -21,10 +24,12 @@ function CreateQuizzPopUp() {
     (state: InitialState) => {
       return {
         changeRequestRdx: state.changeRequestRdx,
+        questionIdRdx: state.questionIdRdx
       };
     },
   );
   const dispatch = useDispatch();
+  const rootDispatcher = new RootDispatcher(dispatch);
 
   useEffect(() => {
     setOpen(false);
@@ -36,6 +41,7 @@ function CreateQuizzPopUp() {
 
   const handleClose = () => {
     setOpen(false);
+    rootDispatcher.setQuestionIdRdx(-1);
   };
 
   return (

@@ -54,6 +54,7 @@ export default function QuizzCreator() {
     setQuizzName('');
     setQuestionsJson([{}]);
     rootDispatcher.setChangeRequestRdx(changeRequestRdx + 1);
+    rootDispatcher.setQuestionIdRdx(-1)
   };
   const handleQuestionChange = (event: ChangeEvent<HTMLInputElement>) => {
     setQuizzName(event.target.value);

@@ -35,12 +35,30 @@ namespace App.TalkCreation.Data.DataFetch
                     //TODO - Create return error
                     return null;
                 }
+                List<QuestionDto> questionDTOList = new List<QuestionDto>();
+                foreach(Question question in quizz.Questions)
+                {
+                    List<string> answerList = new List<string>();
+                    foreach(Answer answer in question.Answers)
+                    {
+                        answerList.Add(answer.Response);
+                    }
+                    QuestionDto questionDto = new QuestionDto
+                    {
+                        Id = question.Id,
+                        CorrectAn = question.CorrectAn,
+                        Type = question.Type,
+                        Question = question.Quest,
+                        Answers = answerList
+                    };
+                    questionDTOList.Add(questionDto);
+                }
                 QuizzDTO quizzDto = new QuizzDTO
                 {
                     Id = quizz.Id,
                     OwnerId = quizz.OwnerId,
                     Name = quizz.Name,
-                    Questions = quizz.Questions
+                    Questions = questionDTOList
                 };
                 return quizzDto;
             }

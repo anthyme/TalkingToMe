@@ -18,7 +18,7 @@ interface IProps{
 }
 
 const QuizzEdit: React.FC<IProps> = (props) => {
-  const [questionsID, setQuestionsId] = useState([0]);
+  const [questionsID, setQuestionsId] = useState([-1]);
   const [quizzName, setQuizzName] = useState('');
   const [questionsJson, setQuestionsJson] = useState([{}]);
   const quizzId = props.quizzId;
@@ -51,19 +51,39 @@ const QuizzEdit: React.FC<IProps> = (props) => {
   }, [questionRdx]);
 
   useEffect(() => {
-    var response = getQuizzById(quizzId).then();
+    getQuizzById(quizzId).then((response)=>{
+      console.log(response);
+      console.log(questionsJson);
+      var count:number = 0;
+      response.questions.forEach((element: any) => {
+        if(count!==0){
+          let newTable = [...questionsID, count];
+          let newQuestionJson = questionsJson;
+          newQuestionJson.push({});
+          newQuestionJson[count] = element;
+          setQuestionsId(newTable);
+          setQuestionsJson(newQuestionJson);
+          count++;
+        } else {
+          let newQuestionJson = questionsJson;
+          newQuestionJson[count] = element;
+          setQuestionsJson(newQuestionJson);
+          setQuestionsId([0]);
+          count++;
+        }
+      });  
+      console.log(questionsJson);
+    })
+      ;
 
-  }, []);
+  }, []); 
 
   const AddNewQuestion = () => {
     let newQuestionId = questionsID[questionsID.length - 1] + 1;
     let newTable = [...questionsID, newQuestionId];
     setQuestionsId(newTable);
   };
-
-  const ChangeId = (qId: any) => {
-    console.log(qId);
-  };
+;
 
   const PutQuizz = async () => {
     await putQuizz(questionsJson, 1);
@@ -88,7 +108,7 @@ const QuizzEdit: React.FC<IProps> = (props) => {
       />
       <div className="questionsPanel">
         {questionsID.map((qId) => (
-          <QuizzQuestionEdit questionId={qId} />
+          <QuizzQuestionEdit questionId={qId} questionsJson={questionsJson[questionsID.indexOf(qId)]}/>
         ))}
       </div>
       <Button variant="outlined" onClick={AddNewQuestion}>

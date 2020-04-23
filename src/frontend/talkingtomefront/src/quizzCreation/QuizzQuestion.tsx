@@ -50,6 +50,9 @@ const QuizzQuestion: React.FC<IProps> = (props) =>  {
     rightAnswer: { value },
   };
 
+  const ShowJson= () =>{
+    console.log(questionJson);
+  }
   const deleteQuestion = (event: any) => {
     //TODO - Change json to empty on quizzcreator
     rootDispatcher.setQuestionRdx({});
@@ -178,6 +181,9 @@ const QuizzQuestion: React.FC<IProps> = (props) =>  {
                     onClick={deleteQuestion}
                   >
                     Delete Question
+                  </Button>
+                  <Button variant="outlined" onClick={ShowJson}>
+                    json
                   </Button>
                 </Grid>
               </Grid>

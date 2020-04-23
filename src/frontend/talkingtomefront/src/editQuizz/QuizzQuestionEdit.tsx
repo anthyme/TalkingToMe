@@ -14,6 +14,7 @@ import { RootDispatcher } from '../store/MainDispatcher';
 //hello
 interface IProps {
   questionId: number;
+  questionsJson: any;
 }
 
 interface StateProps {
@@ -29,6 +30,7 @@ const QuizzQuestionEdit: React.FC<IProps> = (props) =>  {
   const [show, setShow] = useState(true);
   const [answersId, setAnswersId] = useState([0, 1]);
   const [answers, setAnswers] = useState(['', '']);
+  const questionsJson = props.questionsJson;
 
   const {
     currentAnswerRdx,
@@ -50,6 +52,10 @@ const QuizzQuestionEdit: React.FC<IProps> = (props) =>  {
     answers: { answers },
     rightAnswer: { value },
   };
+
+  const ShowJson= () =>{
+    console.log(questionJson);
+  }
 
   const deleteQuestion = (event: any) => {
     //TODO - Change json to empty on quizzcreator
@@ -113,6 +119,16 @@ const QuizzQuestionEdit: React.FC<IProps> = (props) =>  {
   }
   }, [currentAnswerRdx,currentAnswerIdRdx, questionValue, value]);
 
+  useEffect(() => {
+    if(questionIdRdx===-1){
+      console.log(questionsJson)
+      setQuestionValue(questionsJson.question);
+      setSelectedValue(questionsJson.type);
+      setAnswers(questionsJson.answers);
+      setValue(questionsJson.rightAn);
+    }
+  }, [questionsJson]); 
+
   if (show === true) {
     switch (selectedValue) {
       case 'UCQ':
@@ -125,6 +141,7 @@ const QuizzQuestionEdit: React.FC<IProps> = (props) =>  {
                     required
                     id={props.questionId.toString()}
                     name={questionValue}
+                    value={questionValue}
                     label="Question"
                     fullWidth
                     className="questionText"
@@ -180,6 +197,9 @@ const QuizzQuestionEdit: React.FC<IProps> = (props) =>  {
                   >
                     Delete Question
                   </Button>
+                  <Button variant="outlined" onClick={ShowJson}>
+                    Json
+                  </Button>
                 </Grid>
               </Grid>
             </Paper>
@@ -207,7 +227,7 @@ const QuizzQuestionEdit: React.FC<IProps> = (props) =>  {
                         name="gender1"
                         value={selectedValue}
                         onChange={handleQuestionTypeChange}
-                      >
+                      > 
                         <FormControlLabel
                           value="UCQ"
                           control={<Radio />}

@@ -91,9 +91,6 @@ switch(type){
             </CardContent>
             <CardActions>
               <EditQuizzPopUp quizz={card} />
-              <Button size="small" color="primary" onClick={goToTalk}>
-                start
-              </Button>
             </CardActions>
           </Card>
         </Grid>
