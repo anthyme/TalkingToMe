@@ -146,7 +146,6 @@ function Menu() {
   const handleChangeIndex = (index: number) => {
     setIndexTab(index);
   };
-
   return (
     <React.Fragment>
       <CssBaseline />
@@ -158,7 +157,7 @@ function Menu() {
             <div className={classes.heroButtons}>
               <Grid container spacing={2} justify="center">
                 <Grid item>
-                  <CreateTalkPopUp />
+                  <CreateTalkPopUp quizzes={quizzCards} />
                 </Grid>
                 <Grid item>
                   <CreateQuizzPopUp />

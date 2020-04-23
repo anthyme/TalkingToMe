@@ -22,7 +22,7 @@ namespace App.TalkCreation.Data
         }
 
         //TODO - Change syntax for fetch
-        public string AddNewQuizzNoTalk(dynamic data)
+        public string AddNewQuizzToTalk(dynamic data)
         {
             TalkContextFactory talkFactory = new TalkContextFactory(_connectionString);
             using TalkContext context = talkFactory.create();
@@ -73,29 +73,5 @@ namespace App.TalkCreation.Data
             }
         }
 
-        public string AddQuizzToTalk(dynamic data)
-        {
-            TalkContextFactory talkFactory = new TalkContextFactory(_connectionString);
-            using TalkContext context = talkFactory.create();
-            try
-            {
-                foreach(int quizzId in data.Quizzids)
-                {
-                    QuizzToTalk quizzToTalk = new QuizzToTalk
-                    {
-                        TalkId = data.talkId,
-                        QuizzId = quizzId
-                    };
-                    context.QuizzToTalks.Add(quizzToTalk);
-                    context.SaveChanges();
-                }            
-                return "{\"response\":\"New Quizz added to Talk\"}";
-            }
-            catch (Exception e)
-            {
-                _logger.LogError("The Quizz did not get added to Talk", e);
-                return "{\"response\":\"New Quizz failed to add to talk\"}";
-            }
-        }
     }
 }

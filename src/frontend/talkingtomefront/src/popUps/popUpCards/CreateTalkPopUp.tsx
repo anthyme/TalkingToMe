@@ -8,18 +8,24 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import { postTalk } from '../../dataTransfers/DataTalkPost';
-import DropZone from './DropZone';
 import { InitialState } from '../../store/reducers/MainReducer';
 import { RootDispatcher } from '../../store/MainDispatcher';
+import { Checkbox, FormGroup, FormControlLabel } from '@material-ui/core';
+import QuizzCreator from '../../quizzCreation/QuizzCreator';
 
 interface StateProps {
   changeRequestRdx: number;
 }
 
-function CreateTalkPopUp() {
+interface IProps {
+  quizzes: number[];
+}
+
+const CreateTalkPopUp: React.FC<IProps> = (props) => {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [open, setOpen] = React.useState(false);
+  const [selectedQuizzes, setSelectedQuizzes] = useState<string[]>([]);
 
   const { changeRequestRdx } = useSelector<InitialState, StateProps>(
     (state: InitialState) => {
@@ -35,6 +41,7 @@ function CreateTalkPopUp() {
     {
       name: { name },
       description: { description },
+      quizzesId: { selectedQuizzes },
     },
   ];
 
@@ -58,8 +65,16 @@ function CreateTalkPopUp() {
 
   const handleClose = () => {
     setOpen(false);
+    setSelectedQuizzes([]);
   };
 
+  const onCheckQuizz = async (value: string) => {
+    if (selectedQuizzes.includes(value)) {
+      setSelectedQuizzes(selectedQuizzes.filter((val) => val !== value));
+    } else {
+      setSelectedQuizzes([...selectedQuizzes, value]);
+    }
+  };
   return (
     <div>
       <Button variant="outlined" color="primary" onClick={handleClickOpen}>
@@ -102,9 +117,27 @@ function CreateTalkPopUp() {
                 }}
                 fullWidth
               />
-              <p>
-                <DropZone />
-              </p>
+              {props.quizzes && (
+                <>
+                  <div>Add one or more quizzes to your talk:</div>
+
+                  <FormGroup>
+                    {props.quizzes.map(
+                      (quizz: any) =>
+                        quizz.name && (
+                          <FormControlLabel
+                            control={
+                              <Checkbox value={quizz.id} color="primary" />
+                            }
+                            label={quizz.name}
+                            key={quizz.id}
+                            onChange={(e: any) => onCheckQuizz(e.target.value)}
+                          />
+                        ),
+                    )}
+                  </FormGroup>
+                </>
+              )}
             </DialogContent>
           </>
         </DialogContent>
@@ -119,5 +152,5 @@ function CreateTalkPopUp() {
       </Dialog>
     </div>
   );
-}
+};
 export default CreateTalkPopUp;

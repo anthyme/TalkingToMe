@@ -32,13 +32,13 @@ export const loadTalkNQuizzes = async (talkId: string | null) => {
   }
 };
 
-export const getQuizz = async (userId: number) => {
+export const getQuizz = async (quizzId: number) => {
   const requestOptions = {
     method: 'GET',
     headers: { 'Content-Type': 'application/json' },
   };
   let response = await fetch(
-    constants.urlDataBase + 'Quizz/' + userId,
+    constants.urlDataBase + 'Quizz/' + quizzId,
     requestOptions,
   ).then((response) => {
     return response.json();

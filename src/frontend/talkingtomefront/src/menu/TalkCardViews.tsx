@@ -14,7 +14,9 @@ const TalkCardView: React.FC<IProps> = (props) => {
       {/* End hero unit */}
       <Grid container spacing={4} className="talkPanel">
         {props.cards &&
-          props.cards.map((card: any) => <PresCard card={card} type="Talk" />)}
+          props.cards.map((card: any, index: number) => (
+            <PresCard card={card} type="Talk" key={index} />
+          ))}
       </Grid>
     </Container>
   );

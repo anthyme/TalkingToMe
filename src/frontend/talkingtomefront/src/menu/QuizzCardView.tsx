@@ -29,7 +29,9 @@ const QuizzCardView: React.FC<IProps> = (props) => {
       {/* End hero unit */}
       <Grid container spacing={4}>
         {props.cards &&
-          props.cards.map((card: any) => <PresCard card={card} type="Quizz" />)}
+          props.cards.map((card: any, index: number) => (
+            <PresCard card={card} type="Quizz" key={index} />
+          ))}
       </Grid>
     </Container>
   );
