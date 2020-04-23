@@ -11,39 +11,44 @@ import { Action } from 'redux';
 import { RootDispatcher } from '../store/MainDispatcher';
 //import {withSearchValue} from "../enhancers/WithSearchValue";
 interface IProps {
-  answerId: number,
-  questionId: number
+  answerId: number;
+  questionId: number;
+  questIndex: number;
 }
-interface StateProps { 
-  currentAnswerRdx: string,
-  currentAnswerIdRdx: number,
-  questionIdRdx: number | null,
-  questionRdx: Object
+interface StateProps {
+  currentAnswerRdx: string;
+  currentAnswerIdRdx: number;
+  questionIdRdx: number | null;
+  questionRdx: Object;
 }
 
 const Answer: React.FC<IProps> = (props) => {
   const [value, setValue] = useState('');
   const [show, setShow] = useState(true);
-  const {currentAnswerRdx, currentAnswerIdRdx,questionIdRdx,questionRdx} = useSelector<InitialState, StateProps>((state: InitialState) => {
+  const {
+    currentAnswerRdx,
+    currentAnswerIdRdx,
+    questionIdRdx,
+    questionRdx,
+  } = useSelector<InitialState, StateProps>((state: InitialState) => {
     return {
       currentAnswerRdx: state.currentAnswerRdx,
       currentAnswerIdRdx: state.currentAnswerIdRdx,
       questionIdRdx: state.questionIdRdx,
-      questionRdx: state.questionRdx
-    }
-});
+      questionRdx: state.questionRdx,
+    };
+  });
   const dispatch = useDispatch();
   const rootDispatcher = new RootDispatcher(dispatch);
-
 
   const deleteAnswer = () => {
     rootDispatcher.setAnswerIdRdx(props.answerId);
     rootDispatcher.setQuestionIdRdx(props.questionId);
-    rootDispatcher.setAnswerRdx("");
+    rootDispatcher.setAnswerRdx('');
     setShow(false);
   };
 
-  const onInputChange = (event:ChangeEvent<HTMLInputElement>) => {
+  const onInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     setValue(event.target.value);
     rootDispatcher.setAnswerIdRdx(props.answerId);
     rootDispatcher.setQuestionIdRdx(props.questionId);
@@ -57,7 +62,7 @@ const Answer: React.FC<IProps> = (props) => {
           <Grid item>
             <FormControlLabel value={value} control={<Radio />} label="label" />
             <TextField
-              placeholder={'Answer' + props.answerId}
+              placeholder={'Answer ' + String(props.questIndex + 1)}
               inputProps={{ 'aria-label': 'description' }}
               onChange={(event: ChangeEvent<HTMLInputElement>) => {
                 onInputChange(event);
@@ -70,5 +75,5 @@ const Answer: React.FC<IProps> = (props) => {
     case false:
       return <></>;
   }
-}
+};
 export default Answer;

@@ -65,10 +65,6 @@ function CreateQuizzPopUp() {
         <DialogContent>
           <>
             <DialogContent>
-              <DialogContentText>
-                Creating a new Quizz, please enter its name and as many
-                questions as wanted
-              </DialogContentText>
               <QuizzCreator />
             </DialogContent>
           </>

@@ -15,17 +15,22 @@ import { InitialState } from '../store/reducers/MainReducer';
 import { RootDispatcher } from '../store/MainDispatcher';
 //hello
 interface IProps {
-  questionId: number,
+  questionId: number;
 }
 
-interface StateProps { 
-  currentAnswerRdx: string,
-  currentAnswerIdRdx: number,
-  questionIdRdx: number,
-  questionRdx: Object
+interface StateProps {
+  currentAnswerRdx: string;
+  currentAnswerIdRdx: number;
+  questionIdRdx: number;
+  questionRdx: Object;
 }
 //TODO - Keep changes upon revert, aka : Num of questions & content of each question
+<<<<<<< HEAD
 const QuizzQuestion: React.FC<IProps> = (props) =>  {
+=======
+const QuizzQuestion: React.FC<IProps> = (props) => {
+  const [answersId, setAnswersId] = useState([0, 1]);
+>>>>>>> f0369c972a6609015453a9d19dd920d7c7aa0bc5
   const [value, setValue] = useState(undefined);
   const [questionValue, setQuestionValue] = useState('');
   const [selectedValue, setSelectedValue] = React.useState('UCQ');
@@ -33,17 +38,21 @@ const QuizzQuestion: React.FC<IProps> = (props) =>  {
   const [answersId, setAnswersId] = useState([0, 1]);
   const [answers, setAnswers] = useState(['', '']);
 
-  const {currentAnswerRdx, currentAnswerIdRdx,questionIdRdx,questionRdx} = useSelector<InitialState, StateProps>((state: InitialState) => {
+  const {
+    currentAnswerRdx,
+    currentAnswerIdRdx,
+    questionIdRdx,
+    questionRdx,
+  } = useSelector<InitialState, StateProps>((state: InitialState) => {
     return {
       currentAnswerRdx: state.currentAnswerRdx,
       currentAnswerIdRdx: state.currentAnswerIdRdx,
       questionIdRdx: state.questionIdRdx,
-      questionRdx: state.questionRdx
-    }
-});
+      questionRdx: state.questionRdx,
+    };
+  });
   const dispatch = useDispatch();
   const rootDispatcher = new RootDispatcher(dispatch);
-
 
   const questionJson = {
     question: { questionValue },
@@ -52,28 +61,23 @@ const QuizzQuestion: React.FC<IProps> = (props) =>  {
     rightAnswer: { value },
   };
 
-  const ShowJson = () => {
-    console.log(questionRdx);
-    console.log(questionIdRdx);
-  };
-
-  const deleteQuestion = (event:any) => {
+  const deleteQuestion = (event: any) => {
     //TODO - Change json to empty on quizzcreator
     rootDispatcher.setQuestionRdx({});
     setShow(false);
   };
 
-  const handleQuestionTypeChange = (event:any) => {
+  const handleQuestionTypeChange = (event: any) => {
     setSelectedValue(event.target.value);
     rootDispatcher.setQuestionIdRdx(props.questionId);
   };
 
-  const handleRadioChange = (event:any) => {
+  const handleRadioChange = (event: any) => {
     setValue(event.target.value);
     rootDispatcher.setQuestionIdRdx(props.questionId);
   };
 
-  const handleQuestionChange = (event:any) => {
+  const handleQuestionChange = (event: any) => {
     setQuestionValue(event.target.value);
     rootDispatcher.setQuestionIdRdx(props.questionId);
     console.log(value);
@@ -89,8 +93,7 @@ const QuizzQuestion: React.FC<IProps> = (props) =>  {
   };
 
   useEffect(() => {
-    if (props.questionId === questionIdRdx && questionIdRdx!==-1) {
-      console.log('Changed question!');
+    if (props.questionId === questionIdRdx && questionIdRdx !== -1) {
       let newAnswers = answers;
       newAnswers[currentAnswerIdRdx] = currentAnswerRdx;
       let newJson = questionJson;
@@ -100,6 +103,7 @@ const QuizzQuestion: React.FC<IProps> = (props) =>  {
   }, [currentAnswerRdx, questionValue, value]);
 
   if (show === true) {
+    console.log('Louis asId', currentAnswerRdx);
     switch (selectedValue) {
       case 'UCQ':
         return (
@@ -147,8 +151,12 @@ const QuizzQuestion: React.FC<IProps> = (props) =>  {
                     onChange={handleRadioChange}
                   >
                     <div>
-                      {answersId.map((qId) => (
-                        <Answer answerId={qId} questionId={props.questionId} />
+                      {answersId.map((qId, index: number) => (
+                        <Answer
+                          answerId={qId}
+                          questionId={props.questionId}
+                          questIndex={index}
+                        />
                       ))}
                     </div>
                   </RadioGroup>
@@ -164,9 +172,6 @@ const QuizzQuestion: React.FC<IProps> = (props) =>  {
                   </Button>
                 </Grid>
               </Grid>
-              <Button variant="outlined" onClick={ShowJson}>
-                Show Json
-              </Button>
             </Paper>
           </React.Fragment>
         );
@@ -176,7 +181,7 @@ const QuizzQuestion: React.FC<IProps> = (props) =>  {
             <Paper variant="outlined">
               <Grid container spacing={3}>
                 <Grid item xs={12}>
-                <TextField
+                  <TextField
                     required
                     id={props.questionId.toString()}
                     name={questionValue}
@@ -186,7 +191,7 @@ const QuizzQuestion: React.FC<IProps> = (props) =>  {
                     onChange={handleQuestionChange}
                   />
                   <div>
-                    <TextField value="question Type :" />
+                    <div>Question Type</div>
                     <Grid item xs={1}>
                       <RadioGroup
                         name="gender1"
@@ -224,5 +229,5 @@ const QuizzQuestion: React.FC<IProps> = (props) =>  {
   } else {
     return <></>;
   }
-}
+};
 export default QuizzQuestion; // = withSearchValue(QuizzQuestion);
