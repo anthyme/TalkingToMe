@@ -22,7 +22,6 @@ interface StateProps {
   currentAnswerRdx: string;
   currentAnswerIdRdx: number;
   questionIdRdx: number;
-  questionRdx: Object;
 }
 //TODO - Keep changes upon revert, aka : Num of questions & content of each question
 const QuizzQuestion: React.FC<IProps> = (props) =>  {
