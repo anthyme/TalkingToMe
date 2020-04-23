@@ -4,8 +4,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.AzureAppServices;
 
 namespace App
 {
@@ -13,7 +15,12 @@ namespace App
     {
         public static void Main(string[] args)
         {
-            CreateHostBuilder(args).Build().Run();
+            var host = CreateHostBuilder(args).Build();
+
+            var logger = host.Services.GetRequiredService<ILogger<Program>>();
+            logger.LogInformation("Created the host and logs providers");  
+
+            host.Run();
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
@@ -22,6 +29,7 @@ namespace App
                 {
                     logging.ClearProviders();
 
+                    logging.AddConsole();
                     logging.AddDebug();
                     logging.AddAzureWebAppDiagnostics();
                 })
