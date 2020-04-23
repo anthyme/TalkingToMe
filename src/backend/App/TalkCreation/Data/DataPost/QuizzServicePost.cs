@@ -23,18 +23,20 @@ namespace App.TalkCreation.Data
         {
             TalkContextFactory talkFactory = new TalkContextFactory(_connectionString);
             using TalkContext context = talkFactory.create();
-            Console.WriteLine(data);
             try
             {
                 var QuizzInfo = data[data.Count - 1];
+                Console.WriteLine(QuizzInfo);
                 Quizz addQuizz = new Quizz
                 {
-                    Name = QuizzInfo.Name
+                    Name = QuizzInfo.Name.quizzName,
+                    OwnerId= QuizzInfo.OwnerId.userId
                 };
                 context.Quizzes.Add(addQuizz);
                 context.SaveChanges();
                 int quizzId = addQuizz.Id;
                 data.RemoveAt(data.Count - 1);
+                Console.WriteLine(data);
                 foreach (dynamic question in data)
                 {
                     Question addQuestion = new Question
