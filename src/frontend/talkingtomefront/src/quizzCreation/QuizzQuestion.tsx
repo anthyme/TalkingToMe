@@ -89,7 +89,6 @@ const QuizzQuestion: React.FC<IProps> = (props) => {
 
   useEffect(() => {
     if (props.questionId === questionIdRdx && questionIdRdx !== -1) {
-      console.log('Changed question!');
       let newAnswers = answers;
       newAnswers[currentAnswerIdRdx] = currentAnswerRdx;
       let newJson = questionJson;
@@ -99,6 +98,7 @@ const QuizzQuestion: React.FC<IProps> = (props) => {
   }, [currentAnswerRdx, questionValue, value]);
 
   if (show === true) {
+    console.log('Louis asId', currentAnswerRdx);
     switch (selectedValue) {
       case 'UCQ':
         return (
