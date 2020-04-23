@@ -1,5 +1,4 @@
 import * as constants from '../constants';
-import _ from 'lodash';
 
 export const loadQuizzContent = async (quizzId: string) => {
   const response = await fetch(

@@ -8,9 +8,6 @@ import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import Paper from '@material-ui/core/Paper';
 import Answer from './Answer';
-import * as actions from '../store/ActionsTypes';
-import _ from 'lodash';
-import { CardActions } from '@material-ui/core';
 import { InitialState } from '../store/reducers/MainReducer';
 import { RootDispatcher } from '../store/MainDispatcher';
 //hello
@@ -64,6 +61,7 @@ const QuizzQuestion: React.FC<IProps> = (props) =>  {
     rootDispatcher.setQuestionIdRdx(props.questionId);
   };
 
+  // Delete first Element in answers and answersId, sets redux to -1
   const deleteAnswer = (index:number) =>{
     const answerId = answersId.indexOf(currentAnswerIdRdx);
     const resultAnswers = answers;
@@ -72,6 +70,7 @@ const QuizzQuestion: React.FC<IProps> = (props) =>  {
     resultAnswersId.splice(answerId,1);
     setAnswers(resultAnswers);
     setAnswersId(resultAnswersId);
+    rootDispatcher.setAnswerIdRdx(-1);
   };
 
   const handleRadioChange = (event: any) => {
@@ -100,7 +99,7 @@ const QuizzQuestion: React.FC<IProps> = (props) =>  {
   };
 
   useEffect(() => {
-    if (props.questionId === questionIdRdx && questionIdRdx !== -1) {
+    if (props.questionId === questionIdRdx && questionIdRdx !== -1 && currentAnswerIdRdx !==-1) {
       if(currentAnswerRdx==='###---DelAn0982373123---###'){
         deleteAnswer(currentAnswerIdRdx);
       } else {
@@ -127,6 +126,7 @@ const QuizzQuestion: React.FC<IProps> = (props) =>  {
                     name={questionValue}
                     label="Question"
                     fullWidth
+                    className="questionText"
                     autoComplete="fname"
                     onChange={handleQuestionChange}
                   />
@@ -160,7 +160,7 @@ const QuizzQuestion: React.FC<IProps> = (props) =>  {
                     value={value}
                     onChange={handleRadioChange}
                   >
-                    <div>
+                    <div className="answersPanel">
                       {answersId.map((qId, index: number) => (
                         <Answer
                           questionId={props.questionId}

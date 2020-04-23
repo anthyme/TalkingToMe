@@ -17,10 +17,9 @@ import Footer from '../static/Footer';
 import Header from '../static/Header';
 import WelcomeMsg from '../static/WelcomeMsg';
 import { green } from '@material-ui/core/colors';
-import { Tabs, Tab, Box, Zoom, Fab } from '@material-ui/core';
+import { Tabs, Tab, Box } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
 import { InitialState } from '../store/reducers/MainReducer';
-import { RootDispatcher } from '../store/MainDispatcher';
 
 function TabPanel(props: any) {
   const { children, value, index } = props;
@@ -87,15 +86,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function renderTab(value: number, classes: string, cards: any) {
-  switch (value) {
-    case 0:
-      return <QuizzCardViews className={classes} cards={cards} />;
-    case 1:
-      return <TalkCardViews className={classes} cards={cards} />;
-  }
-}
-
 interface StateProps {
   userIdRdx: string;
   changeRequestRdx: number;
@@ -105,7 +95,6 @@ interface StateProps {
 function Menu() {
   const [cards, setCards] = useState([]);
   const [quizzCards, setQuizzCards] = useState([]);
-  const [talkCards, setTalkCards] = useState([]);
   const [chosenTab, setChosenTab] = useState(0);
   const [indexTab, setIndexTab] = useState(0);
 
@@ -121,7 +110,7 @@ function Menu() {
     },
   );
   const dispatch = useDispatch();
-  const rootDispatcher = new RootDispatcher(dispatch);
+  //const rootDispatcher = new RootDispatcher(dispatch);
 
   function a11yProps(index: number) {
     return {
