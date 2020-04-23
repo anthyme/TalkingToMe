@@ -20,15 +20,10 @@ namespace App.TalkCreation.Data
         }
         public string AddNewTalk(dynamic data)
         {
-<<<<<<< HEAD
             TalkContextFactory talkFactory = new TalkContextFactory(_connectionString);
             using TalkContext context = talkFactory.create();
             try
-=======
-            var optionsBuilder = new DbContextOptionsBuilder<TalkContext>();
-            optionsBuilder.UseSqlServer(_connectionString);
-            using (TalkContext context = new TalkContext(optionsBuilder.Options))
->>>>>>> 3479fcc81837b3fe6539fa3b971b2a7eb2f7b330
+
             {
                 Console.WriteLine(data);
                 Talk newTalk = new Talk

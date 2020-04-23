@@ -23,10 +23,6 @@ namespace App.TalkCreation.Data
         private readonly TalksServiceFetch _talkServiceFetch;
         private readonly ILogger _logger;
 
-<<<<<<< HEAD
-
-=======
->>>>>>> 3479fcc81837b3fe6539fa3b971b2a7eb2f7b330
         public TalksController(TalkContext context, TalksServicePost talksService, TalksServiceFetch talksServiceFetch, ILogger<TalksController> logger)
         {
             _context = context;
