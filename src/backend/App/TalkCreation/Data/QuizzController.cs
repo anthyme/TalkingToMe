@@ -92,6 +92,13 @@ namespace App.TalkCreation.Data
             return returnQuizz;
         }
 
+        [HttpPost("AddQuizzToTalk"]
+        public async Task<ActionResult<string>> PostQuizzToTalk([FromBody]dynamic ids)
+        {
+            var parsedIds = JArray.Parse(ids.ToString());
+            string returnResponse = _quizzService.AddNewQuizzNoTalk(parsedIds);
+            return returnResponse;
+        }
         [HttpDelete("{id}")]
         public async Task<ActionResult<Quizz>> DeleteQuizz(int id)
         {

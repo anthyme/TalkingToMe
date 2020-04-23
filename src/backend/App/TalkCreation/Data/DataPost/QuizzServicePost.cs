@@ -68,5 +68,41 @@ namespace App.TalkCreation.Data
                 return "{\"response\":\"New Quizz failed to save\"}";
             }
         }
+
+        public string AddQuizzToTalk(dynamic data)
+        {
+            TalkContextFactory talkFactory = new TalkContextFactory(_connectionString);
+            using TalkContext context = talkFactory.create();
+            try
+            {
+                int IQuizzId = data.quizzId;
+                Quizz tempQuizz = context.Quizzes.Where(p => p.Id == IQuizzId).FirstOrDefault();
+                context.Quizzes.Add(tempQuizz);
+                context.SaveChanges();
+                int quizzId = tempQuizz.Id;
+
+                QuizzToTalk quizzToTalk = new QuizzToTalk
+                {
+                    TalkId = data.talkId,
+                    QuizzId = quizzId
+                };
+                context.QuizzToTalks.Add(quizzToTalk);
+                context.SaveChanges();
+
+                Question[] questions = context.Questions.Where(p => p.QuizzId == 0).Include(p=>p.Answers).ToArray();
+                foreach (Question question in questions)
+                {
+                    question.Id = quizzId;
+                    context.Questions.Add(question);
+                    context.SaveChanges();
+
+                }
+                return "{\"response\":\"New Quizz added to Talk\"}";
+            }
+            catch (ArgumentOutOfRangeException e)
+            {
+                return "{\"response\":\"New Quizz failed to add to talk\"}";
+            }
+        }
     }
 }

@@ -11,46 +11,37 @@ import { Action } from 'redux';
 import { RootDispatcher } from '../store/MainDispatcher';
 //import {withSearchValue} from "../enhancers/WithSearchValue";
 interface IProps {
-  answerId: number;
   questionId: number;
-  questIndex: number;
+  answerIndex: number;
 }
 interface StateProps {
-  currentAnswerRdx: string;
   currentAnswerIdRdx: number;
-  questionIdRdx: number | null;
-  questionRdx: Object;
 }
 
 const Answer: React.FC<IProps> = (props) => {
   const [value, setValue] = useState('');
   const [show, setShow] = useState(true);
   const {
-    currentAnswerRdx,
     currentAnswerIdRdx,
-    questionIdRdx,
-    questionRdx,
   } = useSelector<InitialState, StateProps>((state: InitialState) => {
     return {
-      currentAnswerRdx: state.currentAnswerRdx,
       currentAnswerIdRdx: state.currentAnswerIdRdx,
-      questionIdRdx: state.questionIdRdx,
-      questionRdx: state.questionRdx,
     };
   });
   const dispatch = useDispatch();
   const rootDispatcher = new RootDispatcher(dispatch);
 
-  const deleteAnswer = () => {
-    rootDispatcher.setAnswerIdRdx(props.answerId);
-    rootDispatcher.setQuestionIdRdx(props.questionId);
-    rootDispatcher.setAnswerRdx('');
-    setShow(false);
+  const deleteAnswer = async () => {
+    await rootDispatcher.setAnswerIdRdx(props.answerIndex);
+    await rootDispatcher.setQuestionIdRdx(props.questionId);
+    console.log(currentAnswerIdRdx);
+    rootDispatcher.setAnswerRdx('###---DelAn0982373123---###');
+    //setShow(false);
   };
 
   const onInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     setValue(event.target.value);
-    rootDispatcher.setAnswerIdRdx(props.answerId);
+    rootDispatcher.setAnswerIdRdx(props.answerIndex);
     rootDispatcher.setQuestionIdRdx(props.questionId);
     rootDispatcher.setAnswerRdx(event.target.value);
   };
@@ -62,7 +53,7 @@ const Answer: React.FC<IProps> = (props) => {
           <Grid item>
             <FormControlLabel value={value} control={<Radio />} label="label" />
             <TextField
-              placeholder={'Answer ' + String(props.questIndex + 1)}
+              placeholder={'Answer ' + String(props.answerIndex + 1)}
               inputProps={{ 'aria-label': 'description' }}
               onChange={(event: ChangeEvent<HTMLInputElement>) => {
                 onInputChange(event);

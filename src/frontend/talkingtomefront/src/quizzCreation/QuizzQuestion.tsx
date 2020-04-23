@@ -25,12 +25,7 @@ interface StateProps {
   questionRdx: Object;
 }
 //TODO - Keep changes upon revert, aka : Num of questions & content of each question
-<<<<<<< HEAD
 const QuizzQuestion: React.FC<IProps> = (props) =>  {
-=======
-const QuizzQuestion: React.FC<IProps> = (props) => {
-  const [answersId, setAnswersId] = useState([0, 1]);
->>>>>>> f0369c972a6609015453a9d19dd920d7c7aa0bc5
   const [value, setValue] = useState(undefined);
   const [questionValue, setQuestionValue] = useState('');
   const [selectedValue, setSelectedValue] = React.useState('UCQ');
@@ -61,6 +56,13 @@ const QuizzQuestion: React.FC<IProps> = (props) => {
     rightAnswer: { value },
   };
 
+  const showJson =() =>{
+    console.log(questionJson);
+    console.log("answers length" + answersId.length);
+    console.log("Ids: " + answersId);
+    console.log("Answers: " + answers);
+  }
+
   const deleteQuestion = (event: any) => {
     //TODO - Change json to empty on quizzcreator
     rootDispatcher.setQuestionRdx({});
@@ -70,6 +72,16 @@ const QuizzQuestion: React.FC<IProps> = (props) => {
   const handleQuestionTypeChange = (event: any) => {
     setSelectedValue(event.target.value);
     rootDispatcher.setQuestionIdRdx(props.questionId);
+  };
+
+  const deleteAnswer = (index:number) =>{
+    const answerId = answersId.indexOf(currentAnswerIdRdx);
+    const resultAnswers = answers;
+    resultAnswers.splice(answerId,1);
+    const resultAnswersId = answersId;
+    resultAnswersId.splice(answerId,1);
+    setAnswers(resultAnswers);
+    setAnswersId(resultAnswersId);
   };
 
   const handleRadioChange = (event: any) => {
@@ -84,7 +96,12 @@ const QuizzQuestion: React.FC<IProps> = (props) => {
   };
 
   const addNewAnswer = () => {
-    let newQuestionId = answersId[answersId.length - 1] + 1;
+    let newQuestionId;
+    if(answersId.length !==0){
+      newQuestionId = answersId[answersId.length - 1] + 1;
+    } else {
+      newQuestionId = 0;
+    }
     let newTable = [...answersId, newQuestionId];
     let newAnswersJson = '';
     let newAnswers = [...answers, newAnswersJson];
@@ -94,16 +111,19 @@ const QuizzQuestion: React.FC<IProps> = (props) => {
 
   useEffect(() => {
     if (props.questionId === questionIdRdx && questionIdRdx !== -1) {
-      let newAnswers = answers;
-      newAnswers[currentAnswerIdRdx] = currentAnswerRdx;
-      let newJson = questionJson;
-      setAnswers(newAnswers);
-      rootDispatcher.setQuestionRdx(newJson);
+      if(currentAnswerRdx==='###---DelAn0982373123---###'){
+        deleteAnswer(currentAnswerIdRdx);
+      } else {
+        let newAnswers = answers;
+        newAnswers[answersId.indexOf(currentAnswerIdRdx)] = currentAnswerRdx;
+        let newJson = questionJson;
+        setAnswers(newAnswers);
+        rootDispatcher.setQuestionRdx(newJson);
     }
-  }, [currentAnswerRdx, questionValue, value]);
+  }
+  }, [currentAnswerRdx,currentAnswerIdRdx, questionValue, value]);
 
   if (show === true) {
-    console.log('Louis asId', currentAnswerRdx);
     switch (selectedValue) {
       case 'UCQ':
         return (
@@ -153,9 +173,8 @@ const QuizzQuestion: React.FC<IProps> = (props) => {
                     <div>
                       {answersId.map((qId, index: number) => (
                         <Answer
-                          answerId={qId}
                           questionId={props.questionId}
-                          questIndex={index}
+                          answerIndex={qId}
                         />
                       ))}
                     </div>
@@ -169,6 +188,9 @@ const QuizzQuestion: React.FC<IProps> = (props) => {
                     onClick={deleteQuestion}
                   >
                     Delete Question
+                  </Button>
+                  <Button variant="outlined" onClick={showJson}>
+                    Showjson
                   </Button>
                 </Grid>
               </Grid>
