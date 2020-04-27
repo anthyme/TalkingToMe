@@ -45,6 +45,7 @@ const PresCard: React.FC<IProps> = (props) => {
   const goToTalk = () => {
     history.push(`/Talk?talkId=${card.id}`);
   };
+
   switch (type) {
     case 'Talk':
       return (

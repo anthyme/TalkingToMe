@@ -36,10 +36,10 @@ namespace App.TalkCreation.Data.DataFetch
                     return null;
                 }
                 List<QuestionDto> questionDTOList = new List<QuestionDto>();
-                foreach(Question question in quizz.Questions)
+                foreach (Question question in quizz.Questions)
                 {
                     List<string> answerList = new List<string>();
-                    foreach(Answer answer in question.Answers)
+                    foreach (Answer answer in question.Answers)
                     {
                         answerList.Add(answer.Response);
                     }
@@ -93,6 +93,29 @@ namespace App.TalkCreation.Data.DataFetch
                 }
 
                 return quizzesDto;
+            }
+            catch (ArgumentOutOfRangeException e)
+            {
+                Console.WriteLine("This user does not have any Quizzes");
+                return null;
+            }
+        }
+
+        public async Task<List<String>> returnQuizzByTalkId(int id)
+        {
+            TalkContextFactory talkFactory = new TalkContextFactory(_connectionString);
+            using TalkContext context = talkFactory.create();
+            try
+            {
+                var quizzesToTalk = context.QuizzToTalks
+                    .Where(p => p.TalkId == id)
+                    .ToList();
+                List<String> listQuizzesId = new List<String>();
+                foreach (QuizzToTalk quizzToTalk in quizzesToTalk)
+                {
+                    listQuizzesId.Add(quizzToTalk.QuizzId.ToString());
+                }
+                return listQuizzesId;
             }
             catch (ArgumentOutOfRangeException e)
             {

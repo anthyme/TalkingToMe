@@ -49,6 +49,14 @@ namespace App.TalkCreation.Data
             return quizzes;
         }
 
+        [HttpGet("QuizzByTalk/{id}")]
+        public async Task<ActionResult<List<String>>> GetQuizzesByTalkId(int id)
+        {
+            List<String> quizzes = await _quizzServiceFetch.returnQuizzByTalkId(id);
+            return quizzes;
+        }
+
+
         [HttpPut("{id}")]
         public async Task<IActionResult> PutQuizz(int id, Quizz channel)
         {
