@@ -42,26 +42,7 @@ namespace App.TalkCreation.Data
                 Console.WriteLine(data);
                 foreach (dynamic question in data)
                 {
-                    Question addQuestion = new Question
-                    {
-                        QuizzId = quizzId,
-                        Quest = question.question.questionValue,
-                        Type = question.type.selectedValue,
-                        CorrectAn = question.rightAnswer.value
-                    };
-                    context.Questions.Add(addQuestion);
-                    context.SaveChanges();
-                    int questionId = addQuestion.Id;
-                    foreach (string answerString in question.answers.answers)
-                    {
-                        Answer answer = new Answer
-                        {
-                            QuestionId = questionId,
-                            Response = answerString
-                        };
-                        context.Answers.Add(answer);
-                        context.SaveChanges();
-                    }
+                    createNewQuestion(question, quizzId);
 
                 }
                 return "{\"response\":\"New Quizz Saved\"}";
@@ -72,6 +53,71 @@ namespace App.TalkCreation.Data
                 return "{\"response\":\"New Quizz failed to save\"}";
             }
         }
+        public string updateQuizz(dynamic data)
+        {
+            TalkContextFactory talkFactory = new TalkContextFactory(_connectionString);
+            using TalkContext context = talkFactory.create();
+            try
+            {
+                int quizzId = data.id.id;
+                Quizz modQuizz = context.Quizzes.FirstOrDefault(p => p.Id == quizzId);
+                modQuizz.Name = data.name.name;
+                context.Quizzes.Update(modQuizz);
+                context.SaveChanges();
+                data.RemoveAt(data.Count - 1);
 
+                List<int> listModified;
+                foreach (dynamic question in data)
+                {
+                    if (question.New.isNew == true)
+                    {
+                        createNewQuestion(question, quizzId);
+                    }
+                    else
+                    {
+                        //TODO - Function UPDATE / DELETE
+                        putQuestion(question, quizzId);
+                    }
+                }
+                return "{\"response\":\"New Quizz Saved\"}";
+            }
+            catch (ArgumentOutOfRangeException e)
+            {
+                _logger.LogError("The Quizz did get added correctly check Json format", e);
+                return "{\"response\":\"New Quizz failed to save\"}";
+            }
+        }
+
+
+        private void createNewQuestion(dynamic question, int quizzId)
+        {
+            TalkContextFactory talkFactory = new TalkContextFactory(_connectionString);
+            using TalkContext context = talkFactory.create();
+            Question addQuestion = new Question
+            {
+                QuizzId = quizzId,
+                Quest = question.question.questionValue,
+                Type = question.type.selectedValue,
+                CorrectAn = question.rightAnswer.value
+            };
+            context.Questions.Add(addQuestion);
+            context.SaveChanges();
+            int questionId = addQuestion.Id;
+            foreach (string answerString in question.answers.answers)
+            {
+                Answer answer = new Answer
+                {
+                    QuestionId = questionId,
+                    Response = answerString
+                };
+                context.Answers.Add(answer);
+                context.SaveChanges();
+            }
+        }
+
+        private void putQuestion(dynamic question, int quizzId)
+        {
+
+        }
     }
 }

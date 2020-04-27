@@ -1,7 +1,7 @@
 import * as constants from '../constants';
 
-export const putQuizz = async (questionsJson: any, quizzId: number) => {
-  let sentJson = [...questionsJson, { Name: 'TestQuizz', id: { quizzId } }];
+export const putQuizz = async (questionsJson: any, quizzId: number, name:string) => {
+  let sentJson = [...questionsJson, { Name: {name}, id: { quizzId } }];
   const requestOptions = {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },

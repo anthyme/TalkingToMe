@@ -48,8 +48,6 @@ const QuizzEdit: React.FC<IProps> = (props) => {
 
   useEffect(() => {
     getQuizzById(quizzId).then((response) => {
-      console.log(response);
-      console.log(questionsJson);
       var count: number = 0;
       setQuizzName(response.name);
       response.questions.forEach((element: any) => {
@@ -84,7 +82,7 @@ const QuizzEdit: React.FC<IProps> = (props) => {
     rootDispatcher.setQuestionIdRdx(newQuestionId);
   };
   const PutQuizz = async () => {
-    await putQuizz(questionsJson, 1);
+    await putQuizz(questionsJson, quizzId, quizzName);
     setQuestionsId([0]);
     setQuizzName('');
     setQuestionsJson([{}]);

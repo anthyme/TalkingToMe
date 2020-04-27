@@ -31,6 +31,8 @@ const QuizzQuestionEdit: React.FC<IProps> = (props) => {
   const [updateEnd, setUpdateEnd] = useState(false);
   const [answersId, setAnswersId] = useState([0, 1]);
   const [answers, setAnswers] = useState(['', '']);
+  const [isNew, setIsNew] = useState(true);
+  const [questionId, setQuestionId]=useState(props.questionId);
   const questionsJson = props.questionsJson;
 
   const { currentAnswerRdx, currentAnswerIdRdx, questionIdRdx } = useSelector<
@@ -51,6 +53,8 @@ const QuizzQuestionEdit: React.FC<IProps> = (props) => {
     type: { selectedValue },
     answers: { answers },
     rightAnswer: { value },
+    New: {isNew},
+    questionId: {questionId}
   };
 
   const ShowJson = () => {
@@ -134,7 +138,9 @@ const QuizzQuestionEdit: React.FC<IProps> = (props) => {
     setSelectedValue(questionsJson.type);
     setValue(questionsJson.correctAn);
     setAnswers(questionsJson.answers);
+    setQuestionId(questionsJson.questionId);
     setUpdateEnd(true);
+    setIsNew(false);
   }
   useEffect(() => {
     if (questionIdRdx === -1 && questionsJson.answers!==undefined) {
