@@ -7,7 +7,6 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import EditTalkPopUp from '../popUps/popUpCards/EditTalkPopUp';
 import { Tooltip, Grid } from '@material-ui/core';
-import { deleteTalkById } from '../dataTransfers/DataTalkPost';
 import { useHistory } from 'react-router-dom';
 import PopupDelete from '../editQuizz/PopupDelete';
 import EditQuizzPopUp from '../popUps/popUpCards/EditQuizzPopUp';
@@ -46,61 +45,58 @@ const PresCard: React.FC<IProps> = (props) => {
   const goToTalk = () => {
     history.push(`/Talk?talkId=${card.id}`);
   };
-switch(type){
-  case "Talk":
-    return (
-      <>
-        <Grid item key={card.id} xs={12} sm={6} md={4}>
-          <Card>
-            <Grid container justify="flex-end">
-              <Tooltip title={'Delete ' + card.name} placement="right">
-                <PopupDelete card={card} type={type} />
-              </Tooltip>
-            </Grid>
-            <CardContent>
-              <Typography gutterBottom variant="h5" component="h2">
-                {card.name}
-              </Typography>
-              <Typography>{card.description}</Typography>
-            </CardContent>
-            <CardActions> 
-              <EditTalkPopUp talk={card} />
-              <Button size="small" color="primary" onClick={goToTalk}>
-                start
-              </Button>
-            </CardActions>
-          </Card>
-        </Grid>
-      </>
-    );
-  case "Quizz":
-    return (
-      <>
-        <Grid item key={card.id} xs={12} sm={6} md={4}>
-          <Card>
-            <Grid container justify="flex-end">
-              <Tooltip title={'Delete ' + card.name} placement="right">
-                <PopupDelete card={card} type={type} />
-              </Tooltip>
-            </Grid>
-            <CardContent>
-              <Typography gutterBottom variant="h5" component="h2">
-                {card.name}
-              </Typography>
-              <Typography>{card.description}</Typography>
-            </CardContent>
-            <CardActions>
-              <EditQuizzPopUp quizz={card} />
-            </CardActions>
-          </Card>
-        </Grid>
-      </>
-    );
-  default:
-    return(
-      <>
-      </>
+  switch (type) {
+    case 'Talk':
+      return (
+        <>
+          <Grid item key={card.id} xs={12} sm={6} md={4}>
+            <Card>
+              <Grid container justify="flex-end">
+                <Tooltip title={'Delete ' + card.name} placement="right">
+                  <PopupDelete card={card} type={type} />
+                </Tooltip>
+              </Grid>
+              <CardContent>
+                <Typography gutterBottom variant="h5" component="h2">
+                  {card.name}
+                </Typography>
+                <Typography>{card.description}</Typography>
+              </CardContent>
+              <CardActions>
+                <EditTalkPopUp talk={card} />
+                <Button size="small" color="primary" onClick={goToTalk}>
+                  start
+                </Button>
+              </CardActions>
+            </Card>
+          </Grid>
+        </>
       );
-};
+    case 'Quizz':
+      return (
+        <>
+          <Grid item key={card.id} xs={12} sm={6} md={4}>
+            <Card>
+              <Grid container justify="flex-end">
+                <Tooltip title={'Delete ' + card.name} placement="right">
+                  <PopupDelete card={card} type={type} />
+                </Tooltip>
+              </Grid>
+              <CardContent>
+                <Typography gutterBottom variant="h5" component="h2">
+                  {card.name}
+                </Typography>
+                <Typography>{card.description}</Typography>
+              </CardContent>
+              <CardActions>
+                <EditQuizzPopUp quizz={card} />
+              </CardActions>
+            </Card>
+          </Grid>
+        </>
+      );
+    default:
+      return <></>;
+  }
 };
 export default PresCard;

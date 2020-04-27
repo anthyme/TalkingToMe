@@ -18,7 +18,7 @@ import Header from '../static/Header';
 import WelcomeMsg from '../static/WelcomeMsg';
 import { green } from '@material-ui/core/colors';
 import { Tabs, Tab, Box } from '@material-ui/core';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { InitialState } from '../store/reducers/MainReducer';
 
 function TabPanel(props: any) {
@@ -109,8 +109,6 @@ function Menu() {
       };
     },
   );
-  const dispatch = useDispatch();
-  //const rootDispatcher = new RootDispatcher(dispatch);
 
   function a11yProps(index: number) {
     return {

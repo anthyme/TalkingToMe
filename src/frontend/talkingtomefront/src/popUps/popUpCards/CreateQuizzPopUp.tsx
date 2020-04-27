@@ -12,19 +12,16 @@ import { RootDispatcher } from '../../store/MainDispatcher';
 interface StateProps {
   changeRequestRdx: number;
   questionIdRdx: number;
-  
 }
 
 function CreateQuizzPopUp() {
-  const [name, setName] = useState('');
-  const [description, setDescription] = useState('');
   const [open, setOpen] = React.useState(false);
 
   const { changeRequestRdx } = useSelector<InitialState, StateProps>(
     (state: InitialState) => {
       return {
         changeRequestRdx: state.changeRequestRdx,
-        questionIdRdx: state.questionIdRdx
+        questionIdRdx: state.questionIdRdx,
       };
     },
   );

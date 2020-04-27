@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
@@ -8,7 +8,6 @@ import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import Paper from '@material-ui/core/Paper';
 import Answer from './Answer';
-import _ from 'lodash';
 import { InitialState } from '../store/reducers/MainReducer';
 import { RootDispatcher } from '../store/MainDispatcher';
 //hello
@@ -23,7 +22,7 @@ interface StateProps {
   questionIdRdx: number;
 }
 //TODO - Keep changes upon revert, aka : Num of questions & content of each question
-const QuizzQuestionEdit: React.FC<IProps> = (props) =>  {
+const QuizzQuestionEdit: React.FC<IProps> = (props) => {
   const [value, setValue] = useState(undefined);
   const [questionValue, setQuestionValue] = useState('');
   const [selectedValue, setSelectedValue] = React.useState('UCQ');
@@ -32,11 +31,10 @@ const QuizzQuestionEdit: React.FC<IProps> = (props) =>  {
   const [answers, setAnswers] = useState(['', '']);
   const questionsJson = props.questionsJson;
 
-  const {
-    currentAnswerRdx,
-    currentAnswerIdRdx,
-    questionIdRdx,
-  } = useSelector<InitialState, StateProps>((state: InitialState) => {
+  const { currentAnswerRdx, currentAnswerIdRdx, questionIdRdx } = useSelector<
+    InitialState,
+    StateProps
+  >((state: InitialState) => {
     return {
       currentAnswerRdx: state.currentAnswerRdx,
       currentAnswerIdRdx: state.currentAnswerIdRdx,
@@ -53,9 +51,9 @@ const QuizzQuestionEdit: React.FC<IProps> = (props) =>  {
     rightAnswer: { value },
   };
 
-  const ShowJson= () =>{
+  const ShowJson = () => {
     console.log(questionJson);
-  }
+  };
 
   const deleteQuestion = (event: any) => {
     //TODO - Change json to empty on quizzcreator
@@ -69,12 +67,12 @@ const QuizzQuestionEdit: React.FC<IProps> = (props) =>  {
   };
 
   // Delete first Element in answers and answersId, sets redux to -1
-  const deleteAnswer = (index:number) =>{
+  const deleteAnswer = (index: number) => {
     const answerId = answersId.indexOf(currentAnswerIdRdx);
     const resultAnswers = answers;
-    resultAnswers.splice(answerId,1);
+    resultAnswers.splice(answerId, 1);
     const resultAnswersId = answersId;
-    resultAnswersId.splice(answerId,1);
+    resultAnswersId.splice(answerId, 1);
     setAnswers(resultAnswers);
     setAnswersId(resultAnswersId);
     rootDispatcher.setAnswerIdRdx(-1);
@@ -93,7 +91,7 @@ const QuizzQuestionEdit: React.FC<IProps> = (props) =>  {
 
   const addNewAnswer = () => {
     let newQuestionId;
-    if(answersId.length !==0){
+    if (answersId.length !== 0) {
       newQuestionId = answersId[answersId.length - 1] + 1;
     } else {
       newQuestionId = 0;
@@ -106,8 +104,12 @@ const QuizzQuestionEdit: React.FC<IProps> = (props) =>  {
   };
 
   useEffect(() => {
-    if (props.questionId === questionIdRdx && questionIdRdx !== -1 && currentAnswerIdRdx !==-1) {
-      if(currentAnswerRdx==='###---DelAn0982373123---###'){
+    if (
+      props.questionId === questionIdRdx &&
+      questionIdRdx !== -1 &&
+      currentAnswerIdRdx !== -1
+    ) {
+      if (currentAnswerRdx === '###---DelAn0982373123---###') {
         deleteAnswer(currentAnswerIdRdx);
       } else {
         let newAnswers = answers;
@@ -115,19 +117,19 @@ const QuizzQuestionEdit: React.FC<IProps> = (props) =>  {
         let newJson = questionJson;
         setAnswers(newAnswers);
         rootDispatcher.setQuestionRdx(newJson);
+      }
     }
-  }
-  }, [currentAnswerRdx,currentAnswerIdRdx, questionValue, value]);
+  }, [currentAnswerRdx, currentAnswerIdRdx, questionValue, value]);
 
   useEffect(() => {
-    if(questionIdRdx===-1){
-      console.log(questionsJson)
+    if (questionIdRdx === -1) {
+      console.log(questionsJson);
       setQuestionValue(questionsJson.question);
       setSelectedValue(questionsJson.type);
       setAnswers(questionsJson.answers);
       setValue(questionsJson.rightAn);
     }
-  }, [questionsJson]); 
+  }, [questionsJson]);
 
   if (show === true) {
     switch (selectedValue) {
@@ -227,7 +229,7 @@ const QuizzQuestionEdit: React.FC<IProps> = (props) =>  {
                         name="gender1"
                         value={selectedValue}
                         onChange={handleQuestionTypeChange}
-                      > 
+                      >
                         <FormControlLabel
                           value="UCQ"
                           control={<Radio />}
