@@ -1,8 +1,7 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import {
   makeStyles,
   RadioGroup,
-  Grid,
   FormControlLabel,
   Radio,
 } from '@material-ui/core';

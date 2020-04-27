@@ -11,7 +11,6 @@ import { postTalk } from '../../dataTransfers/DataTalkPost';
 import { InitialState } from '../../store/reducers/MainReducer';
 import { RootDispatcher } from '../../store/MainDispatcher';
 import { Checkbox, FormGroup, FormControlLabel } from '@material-ui/core';
-import QuizzCreator from '../../quizzCreation/QuizzCreator';
 
 interface StateProps {
   changeRequestRdx: number;

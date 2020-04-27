@@ -13,8 +13,8 @@ interface StateProps {
   questionRdx: Object;
   changeRequestRdx: number;
 }
-interface IProps{
-  quizzId:number;
+interface IProps {
+  quizzId: number;
 }
 
 const QuizzEdit: React.FC<IProps> = (props) => {
@@ -22,11 +22,10 @@ const QuizzEdit: React.FC<IProps> = (props) => {
   const [quizzName, setQuizzName] = useState('');
   const [questionsJson, setQuestionsJson] = useState([{}]);
   const quizzId = props.quizzId;
-  const {
-    questionIdRdx,
-    questionRdx,
-    changeRequestRdx,
-  } = useSelector<InitialState, StateProps>((state: InitialState) => {
+  const { questionIdRdx, questionRdx, changeRequestRdx } = useSelector<
+    InitialState,
+    StateProps
+  >((state: InitialState) => {
     return {
       questionIdRdx: state.questionIdRdx,
       questionRdx: state.questionRdx,
@@ -35,12 +34,6 @@ const QuizzEdit: React.FC<IProps> = (props) => {
   });
   const dispatch = useDispatch();
   const rootDispatcher = new RootDispatcher(dispatch);
-
-  function setNewQuestion() {
-    let newQuestionJson = questionsJson;
-    newQuestionJson[questionIdRdx] = questionRdx;
-    setQuestionsJson(newQuestionJson);
-  }
 
   useEffect(() => {
     if (questionIdRdx !== -1) {
@@ -51,12 +44,12 @@ const QuizzEdit: React.FC<IProps> = (props) => {
   }, [questionRdx]);
 
   useEffect(() => {
-    getQuizzById(quizzId).then((response)=>{
+    getQuizzById(quizzId).then((response) => {
       console.log(response);
       console.log(questionsJson);
-      var count:number = 0;
+      var count: number = 0;
       response.questions.forEach((element: any) => {
-        if(count!==0){
+        if (count !== 0) {
           let newTable = [...questionsID, count];
           let newQuestionJson = questionsJson;
           newQuestionJson.push({});
@@ -71,20 +64,16 @@ const QuizzEdit: React.FC<IProps> = (props) => {
           setQuestionsId([0]);
           count++;
         }
-      });  
+      });
       console.log(questionsJson);
-    })
-      ;
-
-  }, []); 
+    });
+  }, []);
 
   const AddNewQuestion = () => {
     let newQuestionId = questionsID[questionsID.length - 1] + 1;
     let newTable = [...questionsID, newQuestionId];
     setQuestionsId(newTable);
   };
-;
-
   const PutQuizz = async () => {
     await putQuizz(questionsJson, 1);
     setQuestionsId([0]);
@@ -108,7 +97,10 @@ const QuizzEdit: React.FC<IProps> = (props) => {
       />
       <div className="questionsPanel">
         {questionsID.map((qId) => (
-          <QuizzQuestionEdit questionId={qId} questionsJson={questionsJson[questionsID.indexOf(qId)]}/>
+          <QuizzQuestionEdit
+            questionId={qId}
+            questionsJson={questionsJson[questionsID.indexOf(qId)]}
+          />
         ))}
       </div>
       <Button variant="outlined" onClick={AddNewQuestion}>
@@ -119,5 +111,5 @@ const QuizzEdit: React.FC<IProps> = (props) => {
       </Button>
     </React.Fragment>
   );
-}
+};
 export default QuizzEdit;

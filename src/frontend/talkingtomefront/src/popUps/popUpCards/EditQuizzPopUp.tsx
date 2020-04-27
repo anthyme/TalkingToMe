@@ -1,4 +1,4 @@
-import React, {useState, ChangeEvent} from 'react';
+import React, { useState } from 'react';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -8,18 +8,18 @@ import { putTalk } from '../../dataTransfers/DataTalkPost';
 import QuizzEdit from '../../editQuizz/QuizzEdit';
 
 interface IProps {
-    quizz: any,
-  }
+  quizz: any;
+}
 
-const EditQuizzPopUp: React.FC<IProps> = (props) =>  {
+const EditQuizzPopUp: React.FC<IProps> = (props) => {
   const [open, setOpen] = useState(false);
   const [name, setName] = useState(props.quizz.name);
   const [id, setId] = useState(props.quizz.id);
   const json = {
-      "id":{id},
-      "name": {name},
-  }
-  
+    id: { id },
+    name: { name },
+  };
+
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -31,13 +31,13 @@ const EditQuizzPopUp: React.FC<IProps> = (props) =>  {
   const onSubmitEdit = () => {
     setOpen(false);
     putTalk(json);
-  }
+  };
 
   return (
     <div>
       <Button size="small" color="primary" onClick={handleClickOpen}>
-            edit
-    </Button>
+        edit
+      </Button>
       <Dialog
         open={open}
         onClose={handleClose}
@@ -47,7 +47,7 @@ const EditQuizzPopUp: React.FC<IProps> = (props) =>  {
         <DialogContent>
           <>
             <DialogContent>
-              <QuizzEdit quizzId={id}/>
+              <QuizzEdit quizzId={id} />
             </DialogContent>
           </>
         </DialogContent>
@@ -62,5 +62,5 @@ const EditQuizzPopUp: React.FC<IProps> = (props) =>  {
       </Dialog>
     </div>
   );
-}
+};
 export default EditQuizzPopUp;
