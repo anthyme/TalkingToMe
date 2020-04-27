@@ -6,15 +6,35 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import { putTalk } from '../../dataTransfers/DataTalkPost';
 import QuizzEdit from '../../editQuizz/QuizzEdit';
+import { useSelector, useDispatch } from 'react-redux';
+import { InitialState } from '../../store/reducers/MainReducer';
+import { RootDispatcher } from '../../store/MainDispatcher';
 
 interface IProps {
   quizz: any;
+}
+
+interface StateProps {
+  currentAnswerIdRdx: number;
+  questionIdRdx:number;
 }
 
 const EditQuizzPopUp: React.FC<IProps> = (props) => {
   const [open, setOpen] = useState(false);
   const [name, setName] = useState(props.quizz.name);
   const [id, setId] = useState(props.quizz.id);
+  const {currentAnswerIdRdx, questionIdRdx} = useSelector<
+  InitialState,
+  StateProps
+  >((state: InitialState) => {
+  return {
+    currentAnswerIdRdx: state.currentAnswerIdRdx,
+    questionIdRdx : state.questionIdRdx
+  };
+});
+const dispatch = useDispatch();
+const rootDispatcher = new RootDispatcher(dispatch);
+
   const json = {
     id: { id },
     name: { name },
@@ -26,6 +46,8 @@ const EditQuizzPopUp: React.FC<IProps> = (props) => {
 
   const handleClose = () => {
     setOpen(false);
+    rootDispatcher.setAnswerIdRdx(-1);
+    rootDispatcher.setQuestionIdRdx(-1);
   };
 
   const onSubmitEdit = () => {

@@ -18,9 +18,11 @@ interface IProps {
 }
 
 const QuizzEdit: React.FC<IProps> = (props) => {
-  const [questionsID, setQuestionsId] = useState([-1]);
-  const [quizzName, setQuizzName] = useState('');
+  const [questionsID, setQuestionsId] = useState([0]);
   const [questionsJson, setQuestionsJson] = useState([{}]);
+  const [quizzName, setQuizzName] = useState('');
+  const [baseQuestions, setBaseQuestions] = useState([0]);
+  
   const quizzId = props.quizzId;
   const { questionIdRdx, questionRdx, changeRequestRdx } = useSelector<
     InitialState,
@@ -35,6 +37,7 @@ const QuizzEdit: React.FC<IProps> = (props) => {
   const dispatch = useDispatch();
   const rootDispatcher = new RootDispatcher(dispatch);
 
+  //update json after modification in questions
   useEffect(() => {
     if (questionIdRdx !== -1) {
       let newQuestionJson = questionsJson;
@@ -48,6 +51,7 @@ const QuizzEdit: React.FC<IProps> = (props) => {
       console.log(response);
       console.log(questionsJson);
       var count: number = 0;
+      setQuizzName(response.name);
       response.questions.forEach((element: any) => {
         if (count !== 0) {
           let newTable = [...questionsID, count];
@@ -56,12 +60,15 @@ const QuizzEdit: React.FC<IProps> = (props) => {
           newQuestionJson[count] = element;
           setQuestionsId(newTable);
           setQuestionsJson(newQuestionJson);
+          var baseQTable = [...baseQuestions, element.id];
+          setBaseQuestions(baseQTable);
           count++;
         } else {
           let newQuestionJson = questionsJson;
           newQuestionJson[count] = element;
           setQuestionsJson(newQuestionJson);
           setQuestionsId([0]);
+          setBaseQuestions([element.id]);
           count++;
         }
       });
@@ -72,7 +79,9 @@ const QuizzEdit: React.FC<IProps> = (props) => {
   const AddNewQuestion = () => {
     let newQuestionId = questionsID[questionsID.length - 1] + 1;
     let newTable = [...questionsID, newQuestionId];
+    console.log(questionsJson);
     setQuestionsId(newTable);
+    rootDispatcher.setQuestionIdRdx(newQuestionId);
   };
   const PutQuizz = async () => {
     await putQuizz(questionsJson, 1);
@@ -91,6 +100,7 @@ const QuizzEdit: React.FC<IProps> = (props) => {
         required
         label="Quizz Name"
         fullWidth
+        value={quizzName}
         autoComplete="fname"
         className="quizzName"
         onChange={handleQuestionChange}
