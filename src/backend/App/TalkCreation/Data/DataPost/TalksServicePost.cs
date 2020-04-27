@@ -82,6 +82,28 @@ namespace App.TalkCreation.Data
                 changeTalk.Name = data[0].name.name;
                 changeTalk.Description = data[0].description.description;
                 context.Talks.Update(changeTalk);
+
+                List<int> oldQuizzes = data[0].oldQuizzes.oldQuizzes.ToObject<List<int>>();
+                List<int> checkedQuizzes = data[0].checkedQuizzes.checkedQuizzes.ToObject<List<int>>();
+                for (int i = checkedQuizzes.Count - 1; i >= 0; i--) //reversed loop to be able to call .remove in the loop
+                {
+                    if (oldQuizzes.Contains(checkedQuizzes[i]))
+                    {
+                        oldQuizzes.Remove(checkedQuizzes[i]);
+                        checkedQuizzes.Remove(checkedQuizzes[i]);
+                    }
+                }
+                foreach(int i in oldQuizzes)
+                {
+                    QuizzToTalk qtt = context.QuizzToTalks.Where(a => a.QuizzId == i && a.TalkId == talkId).FirstOrDefault();
+                    context.Remove(qtt);
+                }
+                foreach(int j in checkedQuizzes)
+                {
+                    var qtt = new QuizzToTalk { QuizzId = j, TalkId = talkId };
+                    context.Add(qtt);
+                }
+
                 context.SaveChanges();
                 Console.WriteLine("modified talk");
             } catch (ArgumentOutOfRangeException e)
