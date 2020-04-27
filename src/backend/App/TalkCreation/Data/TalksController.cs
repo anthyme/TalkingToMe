@@ -59,15 +59,13 @@ namespace App.TalkCreation.Data
             return await talk;
         }
 
-        // PUT: api/ChannelsControllerTest/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
-        // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPut("{id}")]
         public async Task<string> PutQuizz([FromBody]dynamic talk)
         {
             var parsedTalk = JArray.Parse(talk.ToString());
+            Console.WriteLine(talk);
             _talkServicePost.ChangeTalk(parsedTalk);
-            return "Talk modified";
+            return "{\"response\":\"Talk modified\"}";
         }
 
         private bool TalkExists(int id)
@@ -75,9 +73,6 @@ namespace App.TalkCreation.Data
             throw new NotImplementedException();
         }
 
-        // POST: api/ChannelsControllerTest
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
-        // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPost]
         public async Task<ActionResult<string>> PostTalk([FromBody]dynamic talk)
         {

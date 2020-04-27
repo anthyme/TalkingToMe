@@ -74,19 +74,19 @@ namespace App.TalkCreation.Data
 
             TalkContextFactory talkFactory = new TalkContextFactory(_connectionString);
             using TalkContext context = talkFactory.create();
+            Console.WriteLine(data);
             try
             {
-                Talk changeTalk = new Talk
-                {
-                    Id = data.id,
-                    Name = data.name,
-                    Description = data.description
-                };
-                context.Talks.Add(changeTalk);
+                int talkId = data[0].id.id;
+                Talk changeTalk = context.Talks.FirstOrDefault(item => item.Id == talkId);
+                changeTalk.Name = data[0].name.name;
+                changeTalk.Description = data[0].description.description;
+                context.Talks.Update(changeTalk);
                 context.SaveChanges();
+                Console.WriteLine("modified talk");
             } catch (ArgumentOutOfRangeException e)
             {
-
+                Console.WriteLine("error modifiying talk");
             }
         }
     }

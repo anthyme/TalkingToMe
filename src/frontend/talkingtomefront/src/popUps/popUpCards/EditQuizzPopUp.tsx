@@ -30,7 +30,7 @@ const EditQuizzPopUp: React.FC<IProps> = (props) =>  {
 
   const onSubmitEdit = () => {
     setOpen(false);
-    putTalk(json);
+    //putQuizz(json);
   }
 
   return (

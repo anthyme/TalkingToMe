@@ -6,21 +6,37 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import { putTalk } from '../../dataTransfers/DataTalkPost';
+import { InitialState } from '../../store/reducers/MainReducer';
+import { useSelector, useDispatch } from 'react-redux';
+import { RootDispatcher } from '../../store/MainDispatcher';
 
 interface IProps {
     talk: any,
   }
 
+  interface StateProps {
+    changeRequestRdx: number;
+  }
 const EditTalkPopUp: React.FC<IProps> = (props) =>  {
   const [open, setOpen] = useState(false);
   const [name, setName] = useState(props.talk.name);
   const [description, setDescription] = useState(props.talk.description);
   const [id, setId] = useState(props.talk.id);
-  const json = {
+  const {
+    changeRequestRdx,
+  } = useSelector<InitialState, StateProps>((state: InitialState) => {
+    return {
+      changeRequestRdx: state.changeRequestRdx,
+    };
+  });
+  const dispatch = useDispatch();
+  const rootDispatcher = new RootDispatcher(dispatch);
+
+  const json = [{
       "id":{id},
       "name": {name},
       "description": {description}
-  }
+  }]
   
   const handleClickOpen = () => {
     setOpen(true);
@@ -32,7 +48,8 @@ const EditTalkPopUp: React.FC<IProps> = (props) =>  {
 
   const onSubmitEdit = () => {
     setOpen(false);
-    putTalk(json);
+    putTalk(json,id);
+    rootDispatcher.setChangeRequestRdx(changeRequestRdx + 1);
   }
 
   const onNameChange = (event: ChangeEvent<HTMLInputElement>) => {
