@@ -14,6 +14,7 @@ import { RootDispatcher } from '../store/MainDispatcher';
 interface IProps {
   questionId: number;
   questionsJson: any;
+  
 }
 
 interface StateProps {
@@ -27,6 +28,7 @@ const QuizzQuestionEdit: React.FC<IProps> = (props) => {
   const [questionValue, setQuestionValue] = useState('');
   const [selectedValue, setSelectedValue] = React.useState('UCQ');
   const [show, setShow] = useState(true);
+  const [updateEnd, setUpdateEnd] = useState(false);
   const [answersId, setAnswersId] = useState([0, 1]);
   const [answers, setAnswers] = useState(['', '']);
   const questionsJson = props.questionsJson;
@@ -56,7 +58,6 @@ const QuizzQuestionEdit: React.FC<IProps> = (props) => {
   };
 
   const deleteQuestion = (event: any) => {
-    //TODO - Change json to empty on quizzcreator
     rootDispatcher.setQuestionRdx({});
     setShow(false);
   };
@@ -86,7 +87,6 @@ const QuizzQuestionEdit: React.FC<IProps> = (props) => {
   const handleQuestionChange = (event: any) => {
     setQuestionValue(event.target.value);
     rootDispatcher.setQuestionIdRdx(props.questionId);
-    console.log(value);
   };
 
   const addNewAnswer = () => {
@@ -103,6 +103,7 @@ const QuizzQuestionEdit: React.FC<IProps> = (props) => {
     setAnswers(newAnswers);
   };
 
+  //setup of answers
   useEffect(() => {
     if (
       props.questionId === questionIdRdx &&
@@ -121,17 +122,30 @@ const QuizzQuestionEdit: React.FC<IProps> = (props) => {
     }
   }, [currentAnswerRdx, currentAnswerIdRdx, questionValue, value]);
 
+  
+  const loadQuestionJson = (json:any) => {
+    let setZero = [];
+    console.log(questionsJson.answers.length+" for question: "+ props.questionId)
+    for(var i=0; i<questionsJson.answers.length;i++){
+      setZero.push(i);
+    }
+    setAnswersId(setZero);
+    setQuestionValue(questionsJson.question);
+    setSelectedValue(questionsJson.type);
+    setValue(questionsJson.correctAn);
+    setAnswers(questionsJson.answers);
+    setUpdateEnd(true);
+  }
   useEffect(() => {
-    if (questionIdRdx === -1) {
-      console.log(questionsJson);
-      setQuestionValue(questionsJson.question);
-      setSelectedValue(questionsJson.type);
-      setAnswers(questionsJson.answers);
-      setValue(questionsJson.rightAn);
+    if (questionIdRdx === -1 && questionsJson.answers!==undefined) {
+      loadQuestionJson(questionsJson);
+    } else if(questionIdRdx>-1) {
+      setUpdateEnd(true);
     }
   }, [questionsJson]);
+  
 
-  if (show === true) {
+  if (show === true && updateEnd===true) {
     switch (selectedValue) {
       case 'UCQ':
         return (
@@ -181,9 +195,10 @@ const QuizzQuestionEdit: React.FC<IProps> = (props) => {
                     onChange={handleRadioChange}
                   >
                     <div className="answersPanel">
-                      {answersId.map((qId, index: number) => (
+                      {answersId.map((qId) => (
                         <Answer
                           questionId={props.questionId}
+                          answer = {answers[answersId.indexOf(qId)]}
                           answerIndex={qId}
                         />
                       ))}
@@ -217,6 +232,7 @@ const QuizzQuestionEdit: React.FC<IProps> = (props) => {
                     required
                     id={props.questionId.toString()}
                     name={questionValue}
+                    value={questionValue}
                     label="Question"
                     fullWidth
                     autoComplete="fname"
