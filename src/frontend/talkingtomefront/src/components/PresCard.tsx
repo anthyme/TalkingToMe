@@ -109,7 +109,16 @@ const PresCard: React.FC<IProps> = (props) => {
                 <Typography>{card.description}</Typography>
               </CardContent>
               <CardActions>
-                {open && <EditQuizzPopUp quizz={card} />}
+                {open && (
+                  <EditQuizzPopUp
+                    quizz={card}
+                    onClose={handleClose}
+                    open={open}
+                  />
+                )}
+                <Button size="small" color="primary" onClick={handleClickOpen}>
+                  edit
+                </Button>
               </CardActions>
             </Card>
           </Grid>

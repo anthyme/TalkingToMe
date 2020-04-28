@@ -11,6 +11,8 @@ import { RootDispatcher } from '../../store/MainDispatcher';
 
 interface IProps {
   quizz: any;
+  onClose: any;
+  open: boolean;
 }
 
 interface StateProps {
@@ -19,7 +21,6 @@ interface StateProps {
 }
 
 const EditQuizzPopUp: React.FC<IProps> = (props) => {
-  const [open, setOpen] = useState(false);
   const [name, setName] = useState(props.quizz.name);
   const [id, setId] = useState(props.quizz.id);
   const { currentAnswerIdRdx, questionIdRdx } = useSelector<
@@ -39,28 +40,20 @@ const EditQuizzPopUp: React.FC<IProps> = (props) => {
     name: { name },
   };
 
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
   const handleClose = () => {
-    setOpen(false);
+    props.onClose();
     rootDispatcher.setAnswerIdRdx(-1);
     rootDispatcher.setQuestionIdRdx(-1);
   };
 
   const onSubmitEdit = () => {
-    setOpen(false);
-    //putQuizz(json);
+    props.onClose();
   };
 
   return (
     <div>
-      <Button size="small" color="primary" onClick={handleClickOpen}>
-        edit
-      </Button>
       <Dialog
-        open={open}
+        open={props.open}
         onClose={handleClose}
         aria-labelledby="form-dialog-title"
       >
