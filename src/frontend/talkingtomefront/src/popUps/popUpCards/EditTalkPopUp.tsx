@@ -13,7 +13,17 @@ import {
   getQuizzByTalkId,
   getQuizzes,
 } from '../../dataTransfers/DataQuizzFetch';
-import { FormGroup, FormControlLabel, Checkbox } from '@material-ui/core';
+import {
+  FormGroup,
+  FormControlLabel,
+  Checkbox,
+  Paper,
+  Chip,
+  makeStyles,
+  Select,
+  MenuItem,
+  DialogContentText,
+} from '@material-ui/core';
 
 interface IProps {
   talk: any;
@@ -29,10 +39,11 @@ interface StateProps {
 const EditTalkPopUp: React.FC<IProps> = (props) => {
   const [name, setName] = useState(props.talk.name);
   const [description, setDescription] = useState(props.talk.description);
-  const [id, setId] = useState(props.talk.id);
   const [userQuizzes, setUserQuizzes] = useState([]);
-  const [checkedQuizzes, setCheckedQuizzes] = useState<string[]>([]);
+  const [selectedQuizzes, setSelectedQuizzes] = useState<string[]>([]);
   const [oldQuizzes, setOldQuizzes] = useState<string[]>([]);
+
+  const id = props.talk.id;
 
   const { userIdRdx, changeRequestRdx } = useSelector<InitialState, StateProps>(
     (state: InitialState) => {
@@ -51,7 +62,7 @@ const EditTalkPopUp: React.FC<IProps> = (props) => {
       id: { id },
       name: { name },
       description: { description },
-      checkedQuizzes: { checkedQuizzes },
+      selectedQuizzes: { selectedQuizzes },
       oldQuizzes: { oldQuizzes },
     },
   ];
@@ -74,17 +85,39 @@ const EditTalkPopUp: React.FC<IProps> = (props) => {
     const allUserQuizzData = await getQuizzes(userIdRdx);
     setUserQuizzes(allUserQuizzData);
     const quizzOfTalkData = await getQuizzByTalkId(id);
-    setCheckedQuizzes(quizzOfTalkData);
+    setSelectedQuizzes(quizzOfTalkData);
     setOldQuizzes(quizzOfTalkData);
   };
 
-  const onCheckQuizz = async (value: string) => {
-    if (checkedQuizzes.includes(value)) {
-      setCheckedQuizzes(checkedQuizzes.filter((val) => val !== value));
-    } else {
-      setCheckedQuizzes([...checkedQuizzes, value]);
-    }
+  const onSelectQuizz = (value: string) => {
+    setSelectedQuizzes([...selectedQuizzes, value]);
   };
+
+  const onRemoveQuizz = (value: string) => {
+    setSelectedQuizzes(selectedQuizzes.filter((val) => val !== value));
+  };
+
+  const useStyles = makeStyles((theme) => ({
+    root: {
+      display: 'flex',
+      flexWrap: 'wrap',
+      listStyle: 'none',
+      padding: theme.spacing(0.5),
+      margin: 0,
+    },
+    chip: {
+      margin: theme.spacing(0.5),
+    },
+    addQuizzDiv: {
+      marginTop: '4%',
+      marginBottom: '1%',
+    },
+    select: {
+      marginBottom: '1%',
+    },
+  }));
+
+  const classes = useStyles();
 
   useEffect(() => {
     loadInit();
@@ -96,9 +129,13 @@ const EditTalkPopUp: React.FC<IProps> = (props) => {
         open={props.open}
         onClose={props.onClose}
         aria-labelledby="form-dialog-title"
+        fullWidth={true}
       >
         <DialogTitle id="form-dialog-title">Editing Talk</DialogTitle>
         <DialogContent>
+          <DialogContentText>
+            Editing a Talk, please enter its name and a description
+          </DialogContentText>
           <TextField
             autoFocus
             margin="dense"
@@ -125,20 +162,49 @@ const EditTalkPopUp: React.FC<IProps> = (props) => {
           />
           <>
             <div>Add one or more quizzes to your talk:</div>
-            <FormGroup>
+            <Select
+              labelId="label"
+              id="select"
+              value="0"
+              onChange={(e: any) =>
+                !selectedQuizzes.includes(e.target.value) &&
+                onSelectQuizz(String(e.target.value))
+              }
+              className={classes.select}
+            >
+              <MenuItem value="0" disabled={true}>
+                Select a quizz
+              </MenuItem>
               {userQuizzes.map(
                 (quizz: any) =>
                   quizz.name && (
-                    <FormControlLabel
-                      control={<Checkbox value={quizz.id} color="primary" />}
-                      label={quizz.name}
-                      key={quizz.id}
-                      onChange={(e: any) => onCheckQuizz(e.target.value)}
-                      checked={checkedQuizzes.includes(String(quizz.id))}
-                    />
+                    <MenuItem value={quizz.id} key={quizz.id}>
+                      {quizz.name}
+                    </MenuItem>
                   ),
               )}
-            </FormGroup>
+            </Select>
+            {selectedQuizzes.length > 0 && (
+              <Paper component="ul" className={classes.root}>
+                {userQuizzes.map(
+                  (quizz: any) =>
+                    selectedQuizzes.includes(String(quizz.id)) && (
+                      <li key={quizz.id}>
+                        <Chip
+                          label={quizz.name}
+                          onDelete={() =>
+                            selectedQuizzes.includes(String(quizz.id)) &&
+                            onRemoveQuizz(String(quizz.id))
+                          }
+                          className={classes.chip}
+                          color="primary"
+                          variant="outlined"
+                        />
+                      </li>
+                    ),
+                )}
+              </Paper>
+            )}
           </>
         </DialogContent>
         <DialogActions>

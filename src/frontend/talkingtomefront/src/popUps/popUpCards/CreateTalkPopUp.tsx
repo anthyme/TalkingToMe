@@ -7,10 +7,19 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import Chip from '@material-ui/core/Chip';
+import Paper from '@material-ui/core/Paper';
 import { postTalk } from '../../dataTransfers/DataTalkPost';
 import { InitialState } from '../../store/reducers/MainReducer';
 import { RootDispatcher } from '../../store/MainDispatcher';
-import { Checkbox, FormGroup, FormControlLabel } from '@material-ui/core';
+import {
+  Checkbox,
+  FormGroup,
+  FormControlLabel,
+  makeStyles,
+  MenuItem,
+  Select,
+} from '@material-ui/core';
 
 interface StateProps {
   changeRequestRdx: number;
@@ -67,13 +76,36 @@ const CreateTalkPopUp: React.FC<IProps> = (props) => {
     setSelectedQuizzes([]);
   };
 
-  const onCheckQuizz = async (value: string) => {
-    if (selectedQuizzes.includes(value)) {
-      setSelectedQuizzes(selectedQuizzes.filter((val) => val !== value));
-    } else {
-      setSelectedQuizzes([...selectedQuizzes, value]);
-    }
+  const onSelectQuizz = (value: string) => {
+    setSelectedQuizzes([...selectedQuizzes, value]);
   };
+
+  const onRemoveQuizz = (value: string) => {
+    setSelectedQuizzes(selectedQuizzes.filter((val) => val !== value));
+  };
+
+  const useStyles = makeStyles((theme) => ({
+    root: {
+      display: 'flex',
+      flexWrap: 'wrap',
+      listStyle: 'none',
+      padding: theme.spacing(0.5),
+      margin: 0,
+    },
+    chip: {
+      margin: theme.spacing(0.5),
+    },
+    addQuizzDiv: {
+      marginTop: '4%',
+      marginBottom: '1%',
+    },
+    select: {
+      marginBottom: '1%',
+    },
+  }));
+
+  const classes = useStyles();
+
   return (
     <div>
       <Button variant="outlined" color="primary" onClick={handleClickOpen}>
@@ -83,62 +115,87 @@ const CreateTalkPopUp: React.FC<IProps> = (props) => {
         open={open}
         onClose={handleClose}
         aria-labelledby="form-dialog-title"
+        fullWidth={true}
       >
         <DialogTitle id="form-dialog-title">Create new Talk</DialogTitle>
         <DialogContent>
-          <>
-            <DialogContent>
-              <DialogContentText>
-                Creating a new Talk, please enter its name and ulpload your
-                presentation (ppt format)
+          <DialogContentText>
+            Creating a new Talk, please enter its name and a description
+          </DialogContentText>
+          <TextField
+            autoFocus
+            margin="dense"
+            id="name"
+            label="Talk name"
+            type="text"
+            className="talkName"
+            onChange={(event: ChangeEvent<HTMLInputElement>) => {
+              onNameChange(event);
+            }}
+            fullWidth
+          />
+          <TextField
+            autoFocus
+            margin="dense"
+            id="description"
+            label="Description"
+            type="text"
+            className="talkDescription"
+            onChange={(event: ChangeEvent<HTMLInputElement>) => {
+              onDescriptionChange(event);
+            }}
+            fullWidth
+          />
+          {props.quizzes && (
+            <>
+              <DialogContentText className={classes.addQuizzDiv}>
+                Add one or more quizzes to your talk:
               </DialogContentText>
-              <TextField
-                autoFocus
-                margin="dense"
-                id="name"
-                label="Talk name"
-                type="text"
-                className="talkName"
-                onChange={(event: ChangeEvent<HTMLInputElement>) => {
-                  onNameChange(event);
-                }}
-                fullWidth
-              />
-              <TextField
-                autoFocus
-                margin="dense"
-                id="description"
-                label="Description"
-                type="text"
-                className="talkDescription"
-                onChange={(event: ChangeEvent<HTMLInputElement>) => {
-                  onDescriptionChange(event);
-                }}
-                fullWidth
-              />
-              {props.quizzes && (
-                <>
-                  <div>Add one or more quizzes to your talk:</div>
-
-                  <FormGroup>
-                    {props.quizzes.map(
-                      (quizz: any) =>
-                        quizz.name && (
-                          <FormControlLabel
-                            control={
-                              <Checkbox value={quizz.id} color="primary" />
-                            }
+              <Select
+                labelId="label"
+                id="select"
+                value="0"
+                onChange={(e: any) =>
+                  !selectedQuizzes.includes(e.target.value) &&
+                  onSelectQuizz(e.target.value)
+                }
+                className={classes.select}
+              >
+                <MenuItem value="0" disabled={true}>
+                  Select a quizz
+                </MenuItem>
+                {props.quizzes.map(
+                  (quizz: any) =>
+                    quizz.name && (
+                      <MenuItem value={quizz.id} key={quizz.id}>
+                        {quizz.name}
+                      </MenuItem>
+                    ),
+                )}
+              </Select>
+              {selectedQuizzes.length > 0 && (
+                <Paper component="ul" className={classes.root}>
+                  {props.quizzes.map(
+                    (quizz: any) =>
+                      selectedQuizzes.includes(quizz.id) && (
+                        <li key={quizz.id}>
+                          <Chip
                             label={quizz.name}
-                            key={quizz.id}
-                            onChange={(e: any) => onCheckQuizz(e.target.value)}
+                            onDelete={() =>
+                              selectedQuizzes.includes(quizz.id) &&
+                              onRemoveQuizz(quizz.id)
+                            }
+                            className={classes.chip}
+                            color="primary"
+                            variant="outlined"
                           />
-                        ),
-                    )}
-                  </FormGroup>
-                </>
+                        </li>
+                      ),
+                  )}
+                </Paper>
               )}
-            </DialogContent>
-          </>
+            </>
+          )}
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} color="primary">
