@@ -12,14 +12,8 @@ import Paper from '@material-ui/core/Paper';
 import { postTalk } from '../../dataTransfers/DataTalkPost';
 import { InitialState } from '../../store/reducers/MainReducer';
 import { RootDispatcher } from '../../store/MainDispatcher';
-import {
-  Checkbox,
-  FormGroup,
-  FormControlLabel,
-  makeStyles,
-  MenuItem,
-  Select,
-} from '@material-ui/core';
+import { makeStyles, MenuItem, Select } from '@material-ui/core';
+import CustomSnackBar from '../../components/materialUI/CustomSnackBar';
 
 interface StateProps {
   changeRequestRdx: number;
@@ -31,6 +25,7 @@ interface IProps {
 
 const CreateTalkPopUp: React.FC<IProps> = (props) => {
   const [name, setName] = useState('');
+  const [displayRed, setDisplayRed] = useState(false);
   const [description, setDescription] = useState('');
   const [open, setOpen] = React.useState(false);
   const [selectedQuizzes, setSelectedQuizzes] = useState<string[]>([]);
@@ -62,9 +57,13 @@ const CreateTalkPopUp: React.FC<IProps> = (props) => {
   };
 
   const postNewTalk = async () => {
-    setOpen(false);
-    await postTalk(TalkJson);
-    rootDispatcher.setChangeRequestRdx(changeRequestRdx + 1);
+    if (!name) {
+      setDisplayRed(true);
+    } else {
+      setOpen(false);
+      await postTalk(TalkJson);
+      rootDispatcher.setChangeRequestRdx(changeRequestRdx + 1);
+    }
   };
 
   const handleClickOpen = () => {
@@ -129,6 +128,8 @@ const CreateTalkPopUp: React.FC<IProps> = (props) => {
             label="Talk name"
             type="text"
             className="talkName"
+            required={true}
+            error={displayRed}
             onChange={(event: ChangeEvent<HTMLInputElement>) => {
               onNameChange(event);
             }}
@@ -206,6 +207,9 @@ const CreateTalkPopUp: React.FC<IProps> = (props) => {
           </Button>
         </DialogActions>
       </Dialog>
+      {displayRed && (
+        <CustomSnackBar message="The talk's name is required" variant="error" />
+      )}
     </div>
   );
 };

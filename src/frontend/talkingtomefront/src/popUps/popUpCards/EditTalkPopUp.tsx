@@ -14,9 +14,6 @@ import {
   getQuizzes,
 } from '../../dataTransfers/DataQuizzFetch';
 import {
-  FormGroup,
-  FormControlLabel,
-  Checkbox,
   Paper,
   Chip,
   makeStyles,
