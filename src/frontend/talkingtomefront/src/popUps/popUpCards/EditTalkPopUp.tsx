@@ -17,6 +17,8 @@ import { FormGroup, FormControlLabel, Checkbox } from '@material-ui/core';
 
 interface IProps {
   talk: any;
+  onClose: any;
+  open: boolean;
 }
 
 interface StateProps {
@@ -25,7 +27,6 @@ interface StateProps {
 }
 
 const EditTalkPopUp: React.FC<IProps> = (props) => {
-  const [open, setOpen] = useState(false);
   const [name, setName] = useState(props.talk.name);
   const [description, setDescription] = useState(props.talk.description);
   const [id, setId] = useState(props.talk.id);
@@ -55,16 +56,8 @@ const EditTalkPopUp: React.FC<IProps> = (props) => {
     },
   ];
 
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
-
   const onSubmitEdit = () => {
-    setOpen(false);
+    props.onClose();
     putTalk(json, id);
     rootDispatcher.setChangeRequestRdx(changeRequestRdx + 1);
   };
@@ -94,17 +87,14 @@ const EditTalkPopUp: React.FC<IProps> = (props) => {
   };
 
   useEffect(() => {
-    open && loadInit();
-  }, [open]);
+    loadInit();
+  }, []);
 
   return (
     <div>
-      <Button size="small" color="primary" onClick={handleClickOpen}>
-        edit
-      </Button>
       <Dialog
-        open={open}
-        onClose={handleClose}
+        open={props.open}
+        onClose={props.onClose}
         aria-labelledby="form-dialog-title"
       >
         <DialogTitle id="form-dialog-title">Editing Talk</DialogTitle>
@@ -152,7 +142,7 @@ const EditTalkPopUp: React.FC<IProps> = (props) => {
           </>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose} color="primary">
+          <Button onClick={props.onClose} color="primary">
             Cancel
           </Button>
           <Button onClick={onSubmitEdit} color="primary">
