@@ -60,7 +60,6 @@ const EditQuizzPopUp: React.FC<IProps> = (props) => {
       let newQuestionJson = questionsJson
       newQuestionJson[questionIdRdx] = questionRdx
       setQuestionsJson(newQuestionJson)
-      console.log(questionRdx)
     }
   }, [questionRdx])
 
@@ -95,7 +94,6 @@ const EditQuizzPopUp: React.FC<IProps> = (props) => {
   const AddNewQuestion = () => {
     let newQuestionId = questionsID[questionsID.length - 1] + 1
     let newTable = [...questionsID, newQuestionId]
-    console.log(questionsJson)
     setQuestionsId(newTable)
     rootDispatcher.setQuestionIdRdx(newQuestionId)
   }
@@ -111,9 +109,6 @@ const EditQuizzPopUp: React.FC<IProps> = (props) => {
     props.onClose()
   }
 
-  const showJson = () => {
-    console.log(questionsJson)
-  }
   const handleQuestionChange = (event: ChangeEvent<HTMLInputElement>) => {
     setQuizzName(event.target.value)
   }

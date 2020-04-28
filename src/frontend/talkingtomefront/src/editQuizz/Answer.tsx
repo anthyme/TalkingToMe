@@ -37,7 +37,6 @@ const Answer: React.FC<IProps> = (props) => {
 
   useEffect(() => {
     if (questionIdRdx === -1 && value) {
-      //rootDispatcher.setQuestionIdRdx(1);
       setValue(props.answer)
     }
   }, [value]);
@@ -47,7 +46,6 @@ const Answer: React.FC<IProps> = (props) => {
   const deleteAnswer = async () => {
     await rootDispatcher.setAnswerIdRdx(props.answerIndex);
     await rootDispatcher.setQuestionIdRdx(props.questionId);
-    console.log(currentAnswerIdRdx);
     rootDispatcher.setAnswerRdx('###---DelAn0982373123---###');
   };
 

@@ -32,7 +32,6 @@ const Answer: React.FC<IProps> = (props) => {
   const deleteAnswer = async () => {
     await rootDispatcher.setAnswerIdRdx(props.answerIndex);
     await rootDispatcher.setQuestionIdRdx(props.questionId);
-    console.log(currentAnswerIdRdx);
     rootDispatcher.setAnswerRdx('###---DelAn0982373123---###');
     //setShow(false);
   };
