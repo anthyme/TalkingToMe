@@ -3,11 +3,11 @@ import * as constants from '../constants';
 export const putQuizz = async (questionsJson: any, quizzId: number, name:string) => {
   let sentJson = [...questionsJson, { Name: {name}, id: { quizzId } }];
   const requestOptions = {
-    method: 'POST',
+    method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(sentJson),
   };
-  let response = await fetch(constants.urlDataBase + 'Quizz', requestOptions);
+  let response = await fetch(constants.urlDataBase + 'Quizz/'+ quizzId, requestOptions);
   let json = response.json();
   console.log(json);
   return '';

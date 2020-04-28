@@ -7,11 +7,13 @@ import { InitialState } from '../store/reducers/MainReducer';
 import { putQuizz } from '../dataTransfers/DataQuizzPost';
 import { TextField } from '@material-ui/core';
 import { getQuizzById } from '../dataTransfers/DataQuizzFetch';
+import { createQJson } from './CreateJson';
 
 interface StateProps {
   questionIdRdx: number;
   questionRdx: Object;
   changeRequestRdx: number;
+  currentAnswerIdRdx:number;
 }
 interface IProps {
   quizzId: number;
@@ -24,7 +26,7 @@ const QuizzEdit: React.FC<IProps> = (props) => {
   const [baseQuestions, setBaseQuestions] = useState([0]);
   
   const quizzId = props.quizzId;
-  const { questionIdRdx, questionRdx, changeRequestRdx } = useSelector<
+  const { questionIdRdx, questionRdx, changeRequestRdx, currentAnswerIdRdx } = useSelector<
     InitialState,
     StateProps
   >((state: InitialState) => {
@@ -32,6 +34,7 @@ const QuizzEdit: React.FC<IProps> = (props) => {
       questionIdRdx: state.questionIdRdx,
       questionRdx: state.questionRdx,
       changeRequestRdx: state.changeRequestRdx,
+      currentAnswerIdRdx : state.currentAnswerIdRdx
     };
   });
   const dispatch = useDispatch();
@@ -43,10 +46,13 @@ const QuizzEdit: React.FC<IProps> = (props) => {
       let newQuestionJson = questionsJson;
       newQuestionJson[questionIdRdx] = questionRdx;
       setQuestionsJson(newQuestionJson);
+      console.log(questionRdx);
     }
   }, [questionRdx]);
+ 
 
   useEffect(() => {
+    console.log("Call Edit useffect")
     getQuizzById(quizzId).then((response) => {
       var count: number = 0;
       setQuizzName(response.name);
@@ -55,15 +61,15 @@ const QuizzEdit: React.FC<IProps> = (props) => {
           let newTable = [...questionsID, count];
           let newQuestionJson = questionsJson;
           newQuestionJson.push({});
-          newQuestionJson[count] = element;
+          newQuestionJson[count] = createQJson(element);
           setQuestionsId(newTable);
           setQuestionsJson(newQuestionJson);
           var baseQTable = [...baseQuestions, element.id];
           setBaseQuestions(baseQTable);
           count++;
-        } else {
+        } else {        
           let newQuestionJson = questionsJson;
-          newQuestionJson[count] = element;
+          newQuestionJson[count] = createQJson(element);
           setQuestionsJson(newQuestionJson);
           setQuestionsId([0]);
           setBaseQuestions([element.id]);
@@ -91,6 +97,9 @@ const QuizzEdit: React.FC<IProps> = (props) => {
   const handleQuestionChange = (event: ChangeEvent<HTMLInputElement>) => {
     setQuizzName(event.target.value);
   };
+  const ShowJson = () => {
+    console.log(questionsJson);
+  };
 
   return (
     <React.Fragment>
@@ -116,6 +125,9 @@ const QuizzEdit: React.FC<IProps> = (props) => {
       </Button>
       <Button variant="outlined" onClick={PutQuizz}>
         Validate Quizz
+      </Button>
+      <Button variant="outlined" onClick={ShowJson}>
+        Json
       </Button>
     </React.Fragment>
   );

@@ -127,18 +127,17 @@ const QuizzQuestionEdit: React.FC<IProps> = (props) => {
   }, [currentAnswerRdx, currentAnswerIdRdx, questionValue, value]);
 
   
-  const loadQuestionJson = (json:any) => {
+  const loadQuestionJson = async (json:any) => {
     let setZero = [];
-    console.log(questionsJson.answers.length+" for question: "+ props.questionId)
-    for(var i=0; i<questionsJson.answers.length;i++){
+    for(var i=0; i<questionsJson.answers.answers.length;i++){
       setZero.push(i);
     }
     setAnswersId(setZero);
-    setQuestionValue(questionsJson.question);
-    setSelectedValue(questionsJson.type);
-    setValue(questionsJson.correctAn);
-    setAnswers(questionsJson.answers);
-    setQuestionId(questionsJson.questionId);
+    setQuestionValue(questionsJson.question.questionValue);
+    setSelectedValue(questionsJson.type.selectedValue);
+    setValue(questionsJson.rightAnswer.value);
+    setAnswers(questionsJson.answers.answers);
+    setQuestionId(questionsJson.questionId.questionId);
     setUpdateEnd(true);
     setIsNew(false);
   }

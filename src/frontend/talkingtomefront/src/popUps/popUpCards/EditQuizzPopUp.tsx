@@ -21,7 +21,6 @@ interface StateProps {
 
 const EditQuizzPopUp: React.FC<IProps> = (props) => {
   const [open, setOpen] = useState(false);
-  const [name, setName] = useState(props.quizz.name);
   const [id, setId] = useState(props.quizz.id);
   const {currentAnswerIdRdx, questionIdRdx} = useSelector<
   InitialState,
@@ -34,12 +33,6 @@ const EditQuizzPopUp: React.FC<IProps> = (props) => {
 });
 const dispatch = useDispatch();
 const rootDispatcher = new RootDispatcher(dispatch);
-
-  const json = {
-    id: { id },
-    name: { name },
-  };
-
   const handleClickOpen = () => {
     setOpen(true);
   };
