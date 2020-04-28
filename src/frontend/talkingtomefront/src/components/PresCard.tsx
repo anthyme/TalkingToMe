@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Button from '@material-ui/core/Button';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
@@ -42,8 +42,18 @@ const PresCard: React.FC<IProps> = (props) => {
   const type = props.type;
   const history = useHistory();
 
+  const [open, setOpen] = useState(false);
+
   const goToTalk = () => {
     history.push(`/Talk?talkId=${card.id}`);
+  };
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
   };
 
   switch (type) {
@@ -64,7 +74,16 @@ const PresCard: React.FC<IProps> = (props) => {
                 <Typography>{card.description}</Typography>
               </CardContent>
               <CardActions>
-                <EditTalkPopUp talk={card} />
+                {open && (
+                  <EditTalkPopUp
+                    talk={card}
+                    onClose={handleClose}
+                    open={open}
+                  />
+                )}
+                <Button size="small" color="primary" onClick={handleClickOpen}>
+                  edit
+                </Button>
                 <Button size="small" color="primary" onClick={goToTalk}>
                   start
                 </Button>
@@ -90,7 +109,16 @@ const PresCard: React.FC<IProps> = (props) => {
                 <Typography>{card.description}</Typography>
               </CardContent>
               <CardActions>
-                <EditQuizzPopUp quizz={card} />
+                {open && (
+                  <EditQuizzPopUp
+                    quizz={card}
+                    onClose={handleClose}
+                    open={open}
+                  />
+                )}
+                <Button size="small" color="primary" onClick={handleClickOpen}>
+                  edit
+                </Button>
               </CardActions>
             </Card>
           </Grid>
