@@ -81,6 +81,7 @@ namespace App.TalkCreation.Data
             try
             {
                 var talk = await context.Talks.FindAsync(id);
+                context.QuizzToTalks.RemoveRange(context.QuizzToTalks.Where(q => q.TalkId == id));
                 context.Talks.Remove(talk);
                 await context.SaveChangesAsync();
                 return "{\"response\":\"Remove sucessful\"}";

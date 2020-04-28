@@ -84,7 +84,7 @@ namespace App.TalkCreation.Data
                 context.Talks.Update(changeTalk);
 
                 List<int> oldQuizzes = data[0].oldQuizzes.oldQuizzes.ToObject<List<int>>();
-                List<int> checkedQuizzes = data[0].checkedQuizzes.checkedQuizzes.ToObject<List<int>>();
+                List<int> checkedQuizzes = data[0].selectedQuizzes.selectedQuizzes.ToObject<List<int>>();
                 for (int i = checkedQuizzes.Count - 1; i >= 0; i--) //reversed loop to be able to call .remove in the loop
                 {
                     if (oldQuizzes.Contains(checkedQuizzes[i]))
