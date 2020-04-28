@@ -57,10 +57,6 @@ const QuizzQuestionEdit: React.FC<IProps> = (props) => {
     questionId: {questionId}
   };
 
-  const ShowJson = () => {
-    console.log(questionJson);
-  };
-
   const deleteQuestion = (event: any) => {
     rootDispatcher.setQuestionRdx({});
     setShow(false);
@@ -218,9 +214,6 @@ const QuizzQuestionEdit: React.FC<IProps> = (props) => {
                     onClick={deleteQuestion}
                   >
                     Delete Question
-                  </Button>
-                  <Button variant="outlined" onClick={ShowJson}>
-                    Json
                   </Button>
                 </Grid>
               </Grid>

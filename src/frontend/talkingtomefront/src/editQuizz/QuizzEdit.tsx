@@ -52,7 +52,6 @@ const QuizzEdit: React.FC<IProps> = (props) => {
  
 
   useEffect(() => {
-    console.log("Call Edit useffect")
     getQuizzById(quizzId).then((response) => {
       var count: number = 0;
       setQuizzName(response.name);
@@ -97,10 +96,6 @@ const QuizzEdit: React.FC<IProps> = (props) => {
   const handleQuestionChange = (event: ChangeEvent<HTMLInputElement>) => {
     setQuizzName(event.target.value);
   };
-  const ShowJson = () => {
-    console.log(questionsJson);
-  };
-
   return (
     <React.Fragment>
       <TextField
@@ -125,9 +120,6 @@ const QuizzEdit: React.FC<IProps> = (props) => {
       </Button>
       <Button variant="outlined" onClick={PutQuizz}>
         Validate Quizz
-      </Button>
-      <Button variant="outlined" onClick={ShowJson}>
-        Json
       </Button>
     </React.Fragment>
   );
