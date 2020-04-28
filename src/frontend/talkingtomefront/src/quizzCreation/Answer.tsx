@@ -49,7 +49,7 @@ const Answer: React.FC<IProps> = (props) => {
       return (
         <React.Fragment>
           <Grid item>
-            <FormControlLabel className ="formControlLabel" value={value} control={<Radio />} label="label" />
+            <FormControlLabel className ="formControlLabel" value={value} control={<Radio />} label="" />
             <TextField
               placeholder='Answer'
               inputProps={{ 'aria-label': 'description' }}

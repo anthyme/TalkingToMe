@@ -8,7 +8,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import { InitialState } from '../store/reducers/MainReducer';
 import { RootDispatcher } from '../store/MainDispatcher';
 import { Button } from '@material-ui/core';
-//import {withSearchValue} from "../enhancers/WithSearchValue";
+
 interface IProps { 
   questionId: number;
   answerIndex: number;
@@ -42,16 +42,13 @@ const Answer: React.FC<IProps> = (props) => {
     }
   }, [value]);
 
-  const showValue = ()=>{
-    console.log(value);
-  }
+
 
   const deleteAnswer = async () => {
     await rootDispatcher.setAnswerIdRdx(props.answerIndex);
     await rootDispatcher.setQuestionIdRdx(props.questionId);
     console.log(currentAnswerIdRdx);
     rootDispatcher.setAnswerRdx('###---DelAn0982373123---###');
-    //setShow(false);
   };
 
   const onInputChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -66,7 +63,7 @@ const Answer: React.FC<IProps> = (props) => {
       return (
         <React.Fragment>
           <Grid item>
-            <FormControlLabel className ="formControlLabel" value={value} control={<Radio />} label="label" />
+            <FormControlLabel className ="formControlLabel" value={value} control={<Radio />} label="" />
             <TextField
               placeholder='Answer'
               inputProps={{ 'aria-label': 'description' }}
@@ -77,7 +74,6 @@ const Answer: React.FC<IProps> = (props) => {
               }}
             />
             <DeleteIcon className="deleteAnswer" onClick={deleteAnswer} style={{ cursor: 'pointer' }} />
-            <Button onClick={showValue}>showvalue</Button>
           </Grid>
         </React.Fragment>
       );

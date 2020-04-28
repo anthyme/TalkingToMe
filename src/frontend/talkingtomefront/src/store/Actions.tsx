@@ -40,3 +40,10 @@ export const setChangeRequest = (changeRequest:Object) => ({
     value: changeRequest,
   },
 });
+
+export const setSwitch = (switchChange:Object) => ({
+  type: types.UPDATE_SWITCH_VALUE,
+  payload: {
+    value: switchChange,
+  },
+});
