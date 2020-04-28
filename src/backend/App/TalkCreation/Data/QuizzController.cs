@@ -58,32 +58,12 @@ namespace App.TalkCreation.Data
 
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutQuizz(int id, Quizz channel)
+        public async Task<ActionResult<string>> PutQuizz([FromBody] dynamic quizz)
         {
-            if (id != channel.Id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(channel).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!QuizzExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
+            var parsedQuizz = JArray.Parse(quizz.ToString());
+            string returnQuizz = _quizzService.updateQuizz(parsedQuizz);
+            Console.WriteLine(returnQuizz);
+            return returnQuizz;
         }
 
         private bool QuizzExists(int id)

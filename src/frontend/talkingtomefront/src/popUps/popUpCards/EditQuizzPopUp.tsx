@@ -1,28 +1,28 @@
-import React, { useState } from 'react';
-import Button from '@material-ui/core/Button';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import QuizzEdit from '../../editQuizz/QuizzEdit';
-import { useSelector, useDispatch } from 'react-redux';
-import { InitialState } from '../../store/reducers/MainReducer';
-import { RootDispatcher } from '../../store/MainDispatcher';
+import React, { useState } from 'react'
+import Button from '@material-ui/core/Button'
+import Dialog from '@material-ui/core/Dialog'
+import DialogActions from '@material-ui/core/DialogActions'
+import DialogContent from '@material-ui/core/DialogContent'
+import DialogTitle from '@material-ui/core/DialogTitle'
+import QuizzEdit from '../../editQuizz/QuizzEdit'
+import { useSelector, useDispatch } from 'react-redux'
+import { InitialState } from '../../store/reducers/MainReducer'
+import { RootDispatcher } from '../../store/MainDispatcher'
 
 interface IProps {
-  quizz: any;
-  onClose: any;
-  open: boolean;
+  quizz: any
+  onClose: any
+  open: boolean
 }
 
 interface StateProps {
-  currentAnswerIdRdx: number;
-  questionIdRdx: number;
+  currentAnswerIdRdx: number
+  questionIdRdx: number
 }
 
 const EditQuizzPopUp: React.FC<IProps> = (props) => {
-  const [name, setName] = useState(props.quizz.name);
-  const [id, setId] = useState(props.quizz.id);
+  const [open, setOpen] = useState(false)
+  const [id, setId] = useState(props.quizz.id)
   const { currentAnswerIdRdx, questionIdRdx } = useSelector<
     InitialState,
     StateProps
@@ -30,25 +30,23 @@ const EditQuizzPopUp: React.FC<IProps> = (props) => {
     return {
       currentAnswerIdRdx: state.currentAnswerIdRdx,
       questionIdRdx: state.questionIdRdx,
-    };
-  });
-  const dispatch = useDispatch();
-  const rootDispatcher = new RootDispatcher(dispatch);
-
-  const json = {
-    id: { id },
-    name: { name },
-  };
+    }
+  })
+  const dispatch = useDispatch()
+  const rootDispatcher = new RootDispatcher(dispatch)
+  const handleClickOpen = () => {
+    setOpen(true)
+  }
 
   const handleClose = () => {
-    props.onClose();
-    rootDispatcher.setAnswerIdRdx(-1);
-    rootDispatcher.setQuestionIdRdx(-1);
-  };
+    props.onClose()
+    rootDispatcher.setAnswerIdRdx(-1)
+    rootDispatcher.setQuestionIdRdx(-1)
+  }
 
   const onSubmitEdit = () => {
-    props.onClose();
-  };
+    props.onClose()
+  }
 
   return (
     <div>
@@ -75,6 +73,6 @@ const EditQuizzPopUp: React.FC<IProps> = (props) => {
         </DialogActions>
       </Dialog>
     </div>
-  );
-};
-export default EditQuizzPopUp;
+  )
+}
+export default EditQuizzPopUp
