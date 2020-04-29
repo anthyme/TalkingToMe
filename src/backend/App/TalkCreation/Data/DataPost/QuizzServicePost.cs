@@ -95,12 +95,12 @@ namespace App.TalkCreation.Data
                         deleteQA(id);
                     }
                 }
-                return "{\"response\":\"Quizz Modified\"}";
+                return "{\"response\":\"Success\"}";
             }
             catch (ArrayTypeMismatchException e)
             {
                 _logger.LogError("The Quizz did not get modified check Json format", e);
-                return "{\"response\":\"Modified Quizz failed to save\"}";
+                return "{\"response\":\"Failure\"}";
             }
         }
 
