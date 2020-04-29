@@ -17,10 +17,9 @@ import Footer from '../static/Footer';
 import Header from '../static/Header';
 import WelcomeMsg from '../static/WelcomeMsg';
 import { green } from '@material-ui/core/colors';
-import { Tabs, Tab, Box } from '@material-ui/core';
+import { Tabs, Tab, Box, Button } from '@material-ui/core';
 import { useSelector } from 'react-redux';
 import { InitialState } from '../store/reducers/MainReducer';
-
 
 function TabPanel(props: any) {
   const { children, value, index } = props;
@@ -98,6 +97,7 @@ function Menu() {
   const [quizzCards, setQuizzCards] = useState([]);
   const [chosenTab, setChosenTab] = useState(0);
   const [indexTab, setIndexTab] = useState(0);
+  const [openCreaTalk, setOpenCreaTalk] = useState(false);
 
   const classes = useStyles();
   const theme = useTheme();
@@ -128,6 +128,13 @@ function Menu() {
     });
   }, [changeRequestRdx]);
 
+  const handleCreaTalkOpen = () => {
+    setOpenCreaTalk(true);
+  };
+  const handleCreaTalkClose = () => {
+    setOpenCreaTalk(false);
+  };
+
   const handleChange = (event: any, newValue: any) => {
     setChosenTab(newValue);
   };
@@ -145,7 +152,20 @@ function Menu() {
             <div className={classes.heroButtons}>
               <Grid container spacing={2} justify="center">
                 <Grid item>
-                  <CreateTalkPopUp quizzes={quizzCards} />
+                  {openCreaTalk && (
+                    <CreateTalkPopUp
+                      quizzes={quizzCards}
+                      onClose={handleCreaTalkClose}
+                      open={openCreaTalk}
+                    />
+                  )}
+                  <Button
+                    variant="outlined"
+                    color="primary"
+                    onClick={handleCreaTalkOpen}
+                  >
+                    Create new Talk
+                  </Button>
                 </Grid>
                 <Grid item>
                   <CreateQuizzPopUp />
