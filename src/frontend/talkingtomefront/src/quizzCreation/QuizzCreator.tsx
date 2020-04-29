@@ -54,7 +54,7 @@ export default function QuizzCreator() {
     setQuizzName('');
     setQuestionsJson([{}]);
     rootDispatcher.setChangeRequestRdx(changeRequestRdx + 1);
-    rootDispatcher.setQuestionIdRdx(-1)
+    rootDispatcher.setQuestionIdRdx(-1);
   };
   const handleQuestionChange = (event: ChangeEvent<HTMLInputElement>) => {
     setQuizzName(event.target.value);
@@ -72,7 +72,7 @@ export default function QuizzCreator() {
       />
       <div className="questionsPanel">
         {questionsID.map((qId) => (
-          <QuizzQuestion questionId={qId} />
+          <QuizzQuestion key={qId} questionId={qId} />
         ))}
       </div>
       <Button variant="outlined" onClick={AddNewQuestion}>

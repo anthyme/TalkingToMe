@@ -96,7 +96,6 @@ function Menu() {
   const [cards, setCards] = useState([]);
   const [quizzCards, setQuizzCards] = useState([]);
   const [chosenTab, setChosenTab] = useState(0);
-  const [indexTab, setIndexTab] = useState(0);
   const [openCreaTalk, setOpenCreaTalk] = useState(false);
 
   const classes = useStyles();
@@ -120,15 +119,10 @@ function Menu() {
 
   useEffect(() => {
     let userId = userIdRdx;
-    console.log("Menu useffect userRdx value"+userId)
     getTalks(userId).then((json) => {
-      console.log("talkcards json:");
-      console.log(json);
       setCards(json);
     });
     getQuizzes(userId).then((json) => {
-      console.log("Quizzcards json:");
-      console.log(json);
       setQuizzCards(json);
     });
   }, [changeRequestRdx]);
@@ -143,25 +137,11 @@ function Menu() {
   const handleChange = (event: any, newValue: any) => {
     setChosenTab(newValue);
   };
-  const handleChangeIndex = (index: number) => {
-    setIndexTab(index);
-  };
 
-  const showId =()=>{
-    console.log("IdRDX value:");
-    console.log(userIdRdx);
-  }
   return (
     <React.Fragment>
       <CssBaseline />
       <Header />
-      <Button
-                    variant="outlined"
-                    color="primary"
-                    onClick={showId}
-                  >
-                    showId
-                  </Button>
       <main>
         <div className={classes.heroContent}>
           <Container maxWidth="sm">
@@ -207,7 +187,6 @@ function Menu() {
         <SwipeableViews
           axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
           index={chosenTab}
-          onChangeIndex={handleChangeIndex}
         >
           <TabPanel value={chosenTab} index={0}>
             <TalkCardViews className={classes.cardGrid} cards={cards} />

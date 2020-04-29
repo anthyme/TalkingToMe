@@ -7,41 +7,35 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import { InitialState } from '../store/reducers/MainReducer';
 import { RootDispatcher } from '../store/MainDispatcher';
-import { Button } from '@material-ui/core';
 
-interface IProps { 
+interface IProps {
   questionId: number;
   answerIndex: number;
   answer: any;
 }
 interface StateProps {
   currentAnswerIdRdx: number;
-  questionIdRdx:number
+  questionIdRdx: number;
 }
 
 const Answer: React.FC<IProps> = (props) => {
   const [value, setValue] = useState(props.answer);
-  const [show, setShow] = useState(true);
-  const answer = props.answer;
-  const {
-    currentAnswerIdRdx,
-    questionIdRdx
-  } = useSelector<InitialState, StateProps>((state: InitialState) => {
-    return {
-      currentAnswerIdRdx: state.currentAnswerIdRdx,
-      questionIdRdx:state.questionIdRdx
-    };
-  });
+  const { questionIdRdx } = useSelector<InitialState, StateProps>(
+    (state: InitialState) => {
+      return {
+        currentAnswerIdRdx: state.currentAnswerIdRdx,
+        questionIdRdx: state.questionIdRdx,
+      };
+    },
+  );
   const dispatch = useDispatch();
   const rootDispatcher = new RootDispatcher(dispatch);
 
   useEffect(() => {
     if (questionIdRdx === -1 && value) {
-      setValue(props.answer)
+      setValue(props.answer);
     }
   }, [value]);
-
-
 
   const deleteAnswer = async () => {
     await rootDispatcher.setAnswerIdRdx(props.answerIndex);
@@ -56,27 +50,31 @@ const Answer: React.FC<IProps> = (props) => {
     rootDispatcher.setAnswerRdx(event.target.value);
   };
 
-  switch (show) {
-    case true:
-      return (
-        <React.Fragment>
-          <Grid item>
-            <FormControlLabel className ="formControlLabel" value={value} control={<Radio />} label="" />
-            <TextField
-              placeholder='Answer'
-              inputProps={{ 'aria-label': 'description' }}
-              className="answerText"
-              value={value}
-              onChange={(event: ChangeEvent<HTMLInputElement>) => {
-                onInputChange(event);
-              }}
-            />
-            <DeleteIcon className="deleteAnswer" onClick={deleteAnswer} style={{ cursor: 'pointer' }} />
-          </Grid>
-        </React.Fragment>
-      );
-    case false:
-      return <></>;
-  }
+  return (
+    <React.Fragment>
+      <Grid item>
+        <FormControlLabel
+          className="formControlLabel"
+          value={value}
+          control={<Radio />}
+          label=""
+        />
+        <TextField
+          placeholder="Answer"
+          inputProps={{ 'aria-label': 'description' }}
+          className="answerText"
+          value={value}
+          onChange={(event: ChangeEvent<HTMLInputElement>) => {
+            onInputChange(event);
+          }}
+        />
+        <DeleteIcon
+          className="deleteAnswer"
+          onClick={deleteAnswer}
+          style={{ cursor: 'pointer' }}
+        />
+      </Grid>
+    </React.Fragment>
+  );
 };
 export default Answer;
