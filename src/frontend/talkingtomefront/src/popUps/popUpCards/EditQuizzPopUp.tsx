@@ -106,6 +106,8 @@ const EditQuizzPopUp: React.FC<IProps> = (props) => {
 
   const onSubmitEdit = () => {
     PutQuizz()
+    rootDispatcher.setAnswerIdRdx(-1)
+    rootDispatcher.setQuestionIdRdx(-1)
     props.onClose()
   }
 
