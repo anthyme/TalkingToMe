@@ -20,6 +20,7 @@ import { green } from '@material-ui/core/colors';
 import { Tabs, Tab, Box, Button } from '@material-ui/core';
 import { useSelector } from 'react-redux';
 import { InitialState } from '../store/reducers/MainReducer';
+import { useHistory } from 'react-router-dom'
 
 function TabPanel(props: any) {
   const { children, value, index } = props;
@@ -100,6 +101,8 @@ function Menu() {
 
   const classes = useStyles();
   const theme = useTheme();
+  const history = useHistory()
+
 
   const { userIdRdx, changeRequestRdx } = useSelector<InitialState, StateProps>(
     (state: InitialState) => {
@@ -118,6 +121,9 @@ function Menu() {
   }
 
   useEffect(() => {
+    if(userIdRdx==="-1"){
+      history.push('/');
+    }
     let userId = userIdRdx;
     getTalks(userId).then((json) => {
       setCards(json);

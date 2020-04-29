@@ -8,6 +8,7 @@ import { loadTalkNQuizzes } from '../dataTransfers/Fetchs/DataTalkFetch';
 import { loadQuizzContent } from '../dataTransfers/Fetchs/DataQuestionFetch';
 import QuestionInterface from './questionsPreview/QuestionInterface';
 import { useHistory } from 'react-router-dom';
+import QRCode from 'qrcode.react';
 
 const TalkInterface = () => {
   const [quizzId, setQuizzId] = useState('0');
@@ -141,6 +142,7 @@ const TalkInterface = () => {
           >
             Start Quizz
           </Button>
+          <QRCode value="http://facebook.github.io/react/" />
         </div>
         <div className={classes.quizzNQuest}>
           {showQuestion && <h3 className={classes.title}>Quizz preview</h3>}
