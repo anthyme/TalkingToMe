@@ -17,6 +17,7 @@ import CustomSnackBar from '../../components/materialUI/CustomSnackBar';
 
 interface StateProps {
   changeRequestRdx: number;
+  userIdRdx: string;
 }
 
 interface IProps {
@@ -31,10 +32,11 @@ const CreateTalkPopUp: React.FC<IProps> = (props) => {
   const [snackBarMessage, setSnackBarMessage] = useState('');
   const [selectedQuizzes, setSelectedQuizzes] = useState<string[]>([]);
 
-  const { changeRequestRdx } = useSelector<InitialState, StateProps>(
+  const { changeRequestRdx, userIdRdx } = useSelector<InitialState, StateProps>(
     (state: InitialState) => {
       return {
         changeRequestRdx: state.changeRequestRdx,
+        userIdRdx: state.userIdRdx,
       };
     },
   );
@@ -43,6 +45,7 @@ const CreateTalkPopUp: React.FC<IProps> = (props) => {
 
   const TalkJson = [
     {
+      ownerId: {userIdRdx},
       name: { name },
       description: { description },
       quizzesId: { selectedQuizzes },

@@ -30,7 +30,7 @@ namespace App.TalkCreation.Data
                 {
                     Name = data[0].name.name,
                     Description = data[0].description.description,
-                    OwnerId = 1
+                    OwnerId = data[0].ownerId.userIdRdx
                 };
                 context.Talks.Add(newTalk);
                 context.SaveChanges();
