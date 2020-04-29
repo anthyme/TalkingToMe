@@ -24,19 +24,19 @@ namespace App.TalkCreation.Data
             _logger = logger;
         }
 
-        public int CheckUserExistence(dynamic data)
+        public string CheckUserExistence(dynamic data)
         {
             TalkContextFactory talkFactory = new TalkContextFactory(_connectionString);
             using TalkContext context = talkFactory.create();
             data = data[0];
             try
             {
-                string externalId = data.userId.userId;
+                string externalId = data.externalId.externalId;
                 string service = data.service.service;
-                User user = context.Users.Where(p => p.ExternalId == externalId && p.Service == service).DefaultIfEmpty<User>(null).First();
+                User user = context.Users.Where(p => p.ExternalId == externalId && p.Service == service).FirstOrDefault();
                 if (user!=null)
                 {
-                    return user.UserId;
+                    return "{\"response\":\""+ user.UserId + "\"}";
                 }
 
                 User newUser = new User
@@ -51,14 +51,14 @@ namespace App.TalkCreation.Data
                 int userId = newUser.Id;
                 User modUser = context.Users.Where(p => p.Id == userId).FirstOrDefault();
                 modUser.UserId = userId;
-                context.Users.Update(modUser);
-                return userId;
+                context.SaveChanges();
+                return "{\"response\":\"" + userId + "\"}";
             }
-            catch (ArgumentOutOfRangeException e)
+            catch (Exception e)
             {
-                string message = "The creation of a new User or finding an existing user failed, id of -1 has been as an error marker";
+                string message = "The creation of a new User or finding an existing user failed, id of -1 has been returned as an error marker";
                 _logger.LogWarning("Message displayed: {Message} at {RequestTime}", message, DateTime.Now);
-                return -1;
+                return "{\"response\":\"-1\"}" ;
             }
         }
 

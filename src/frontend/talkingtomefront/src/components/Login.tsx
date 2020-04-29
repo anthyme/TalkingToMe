@@ -78,18 +78,15 @@ export default function SignIn() {
 
   const responseGoogle = async (response: any) => {
     const googleJson = createGoogleJson(response);
-    const userId = await checkUser(googleJson);
-    rootDispatcher.setUserIdRdx(userId)
+    const userId:string = await checkUser(googleJson);
+    await rootDispatcher.setUserIdRdx(userId)
     console.log(userIdRdx)
-    if(userId!==-1){
+    if(userId!=="-1"){
       setSnackBarMessage('');
       history.push('/Menu');
     } else {
       setSnackBarMessage("We are sorry we seem to have encountered an error, please try again or, if the error persists, come back later")
     }
-  }
-  const logout = () => {
-    console.log('logged out')
   }
 
   return (

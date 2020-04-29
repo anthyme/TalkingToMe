@@ -119,7 +119,8 @@ function Menu() {
   }
 
   useEffect(() => {
-    let userId = userIdRdx.toString();
+    let userId = userIdRdx;
+    console.log("Menu useffect userRdx value"+userId)
     getTalks(userId).then((json) => {
       console.log("talkcards json:");
       console.log(json);
@@ -145,10 +146,22 @@ function Menu() {
   const handleChangeIndex = (index: number) => {
     setIndexTab(index);
   };
+
+  const showId =()=>{
+    console.log("IdRDX value:");
+    console.log(userIdRdx);
+  }
   return (
     <React.Fragment>
       <CssBaseline />
       <Header />
+      <Button
+                    variant="outlined"
+                    color="primary"
+                    onClick={showId}
+                  >
+                    showId
+                  </Button>
       <main>
         <div className={classes.heroContent}>
           <Container maxWidth="sm">

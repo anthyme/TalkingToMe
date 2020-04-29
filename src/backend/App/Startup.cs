@@ -35,6 +35,7 @@ namespace App
             services.AddScoped<TalksServiceFetch>();
             services.AddScoped<TalksServicePost>();
             services.AddScoped<QuestionServiceFetch>();
+            services.AddScoped<UserServiceFetch>();
             services.AddScoped<HealthCheckOption>();
 
             services.AddCors(o => o.AddPolicy("ReactPolicy", builder =>

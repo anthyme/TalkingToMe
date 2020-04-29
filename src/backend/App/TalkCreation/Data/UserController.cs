@@ -31,13 +31,13 @@ namespace App.TalkCreation.Data
 
         // GET: api/ChannelsControllerTest
         [HttpPost]
-        public async Task<ActionResult<String>> CheckUserAndGetId([FromBody]dynamic userInfos)
+        public async Task<ActionResult<string>> CheckUserAndGetId([FromBody]dynamic userInfos)
         {
-            int userId = _userServiceFetch.CheckUserExistence(userInfos);
+            var parsedInfos = JArray.Parse(userInfos.ToString());
+            string userId = _userServiceFetch.CheckUserExistence(parsedInfos);
             // End of test purpose //
-
-
-            return "placeholder";
+            Console.WriteLine(userId);
+            return userId;
         }
     }
 }

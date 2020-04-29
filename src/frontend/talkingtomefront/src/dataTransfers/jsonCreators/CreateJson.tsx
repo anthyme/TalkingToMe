@@ -20,10 +20,10 @@ export const createGoogleJson = (googleJson:any)=>{
     const service = "Google";
     const name = "";
     const email = googleJson.email;
-    const json = {
+    const json = [{
         externalId: { externalId },
         email: { email },
         service: { service },
-        name: { name }};
+        name: { name }}];
     return json
 }
