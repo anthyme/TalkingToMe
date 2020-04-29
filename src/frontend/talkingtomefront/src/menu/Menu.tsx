@@ -97,7 +97,6 @@ function Menu() {
   const [cards, setCards] = useState([]);
   const [quizzCards, setQuizzCards] = useState([]);
   const [chosenTab, setChosenTab] = useState(0);
-  const [indexTab, setIndexTab] = useState(0);
   const [openCreaTalk, setOpenCreaTalk] = useState(false);
 
   const classes = useStyles();
@@ -143,9 +142,6 @@ function Menu() {
 
   const handleChange = (event: any, newValue: any) => {
     setChosenTab(newValue);
-  };
-  const handleChangeIndex = (index: number) => {
-    setIndexTab(index);
   };
 
   return (
@@ -197,7 +193,6 @@ function Menu() {
         <SwipeableViews
           axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
           index={chosenTab}
-          onChangeIndex={handleChangeIndex}
         >
           <TabPanel value={chosenTab} index={0}>
             <TalkCardViews className={classes.cardGrid} cards={cards} />

@@ -5,7 +5,7 @@ interface StateProps {
   questionIdRdx: number;
   questionRdx: Object;
   changeRequestRdx: number;
-  switchRdx:boolean;
+  switchRdx: boolean;
 }
 interface IProps {
   questionsID: number[];
@@ -21,6 +21,7 @@ const QuizzEdit: React.FC<IProps> = (props) => {
       <div className="questionsPanel">
         {questionsID.map((qId) => (
           <QuizzQuestionEdit
+            key={qId}
             questionId={qId}
             questionsJson={questionsJson[questionsID.indexOf(qId)]}
           />

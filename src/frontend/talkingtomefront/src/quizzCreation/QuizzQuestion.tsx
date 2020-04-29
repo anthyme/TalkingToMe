@@ -49,9 +49,6 @@ const QuizzQuestion: React.FC<IProps> = (props) => {
     rightAnswer: { value },
   };
 
-  const ShowJson = () => {
-    console.log(questionJson);
-  };
   const deleteQuestion = (event: any) => {
     //TODO - Change json to empty on quizzcreator
     rootDispatcher.setQuestionRdx({});
@@ -83,7 +80,6 @@ const QuizzQuestion: React.FC<IProps> = (props) => {
   const handleQuestionChange = (event: any) => {
     setQuestionValue(event.target.value);
     rootDispatcher.setQuestionIdRdx(props.questionId);
-    console.log(value);
   };
 
   const addNewAnswer = () => {
@@ -116,7 +112,13 @@ const QuizzQuestion: React.FC<IProps> = (props) => {
         rootDispatcher.setQuestionRdx(newJson);
       }
     }
-  }, [currentAnswerRdx, currentAnswerIdRdx, questionValue, value, selectedValue]);
+  }, [
+    currentAnswerRdx,
+    currentAnswerIdRdx,
+    questionValue,
+    value,
+    selectedValue,
+  ]);
 
   if (show === true) {
     switch (selectedValue) {
@@ -167,8 +169,9 @@ const QuizzQuestion: React.FC<IProps> = (props) => {
                     onChange={handleRadioChange}
                   >
                     <div className="answersPanel">
-                      {answersId.map((qId, index: number) => (
+                      {answersId.map((qId) => (
                         <Answer
+                          key={qId}
                           questionId={props.questionId}
                           answerIndex={qId}
                         />
@@ -184,9 +187,6 @@ const QuizzQuestion: React.FC<IProps> = (props) => {
                     onClick={deleteQuestion}
                   >
                     Delete Question
-                  </Button>
-                  <Button variant="outlined" onClick={ShowJson}>
-                    json
                   </Button>
                 </Grid>
               </Grid>

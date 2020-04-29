@@ -11,7 +11,6 @@ export const getTalks = async (userId: string) => {
   ).then((response) => {
     return response.json();
   });
-  console.log(response);
   return response;
 };
 
@@ -42,6 +41,5 @@ export const getQuizz = async (quizzId: number) => {
   ).then((response) => {
     return response.json();
   });
-  console.log(response);
   return response;
 };

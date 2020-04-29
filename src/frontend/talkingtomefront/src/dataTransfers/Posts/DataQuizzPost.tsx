@@ -1,16 +1,17 @@
 import * as constants from '../../constants';
 
-export const putQuizz = async (questionsJson: any, quizzId: number, name:string) => {
-  let sentJson = [...questionsJson, { Name: {name}, id: { quizzId } }];
+export const putQuizz = async (
+  questionsJson: any,
+  quizzId: number,
+  name: string,
+) => {
+  let sentJson = [...questionsJson, { Name: { name }, id: { quizzId } }];
   const requestOptions = {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(sentJson),
   };
-  let response = await fetch(constants.urlDataBase + 'Quizz/'+ quizzId, requestOptions);
-  let json = response.json();
-  console.log(json);
-  return '';
+  await fetch(constants.urlDataBase + 'Quizz/' + quizzId, requestOptions);
 };
 
 export const postQuizz = async (
@@ -27,9 +28,7 @@ export const postQuizz = async (
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(sentJson),
   };
-  let response = await fetch(constants.urlDataBase + 'Quizz', requestOptions);
-  let json = response.json();
-  console.log(json);
+  await fetch(constants.urlDataBase + 'Quizz', requestOptions);
 };
 
 export const deleteQuizzById = async (id: number) => {
@@ -37,10 +36,5 @@ export const deleteQuizzById = async (id: number) => {
     method: 'DELETE',
     headers: { 'Content-Type': 'application/json' },
   };
-  let response = await fetch(
-    constants.urlDataBase + 'Quizz/' + id,
-    requestOptions,
-  );
-  let json = response.json();
-  console.log(json);
+  await fetch(constants.urlDataBase + 'Quizz/' + id, requestOptions);
 };

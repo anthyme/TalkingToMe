@@ -4,32 +4,11 @@ import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
 import EditTalkPopUp from '../popUps/popUpCards/EditTalkPopUp';
 import { Tooltip, Grid } from '@material-ui/core';
 import { useHistory } from 'react-router-dom';
 import PopupDelete from '../editQuizz/PopupDelete';
 import EditQuizzPopUp from '../popUps/popUpCards/EditQuizzPopUp';
-
-const useStyles = makeStyles((theme) => ({
-  paper: {
-    marginTop: theme.spacing(8),
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-  },
-  avatar: {
-    margin: theme.spacing(1),
-    backgroundColor: theme.palette.secondary.main,
-  },
-  form: {
-    width: '100%', // Fix IE 11 issue.
-    marginTop: theme.spacing(1),
-  },
-  submit: {
-    margin: theme.spacing(3, 0, 2),
-  },
-}));
 
 interface IProps {
   card: any;
