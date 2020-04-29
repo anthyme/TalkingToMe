@@ -128,6 +128,33 @@ namespace App.Migrations
                     b.ToTable("Talks");
                 });
 
+            modelBuilder.Entity("App.TalkCreation.Models.User", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("DisplayName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ExternalId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Service")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Users");
+                });
+
             modelBuilder.Entity("App.TalkCreation.Models.Answer", b =>
                 {
                     b.HasOne("App.TalkCreation.Models.Question", "Question")

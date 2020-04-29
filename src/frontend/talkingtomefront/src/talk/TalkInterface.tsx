@@ -4,8 +4,8 @@ import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import { makeStyles } from '@material-ui/core/styles';
 import { Typography, CssBaseline, AppBar, Toolbar } from '@material-ui/core';
-import { loadTalkNQuizzes } from '../dataTransfers/DataTalkFetch';
-import { loadQuizzContent } from '../dataTransfers/DataQuestionFetch';
+import { loadTalkNQuizzes } from '../dataTransfers/Fetchs/DataTalkFetch';
+import { loadQuizzContent } from '../dataTransfers/Fetchs/DataQuestionFetch';
 import QuestionInterface from './questionsPreview/QuestionInterface';
 import { useHistory } from 'react-router-dom';
 

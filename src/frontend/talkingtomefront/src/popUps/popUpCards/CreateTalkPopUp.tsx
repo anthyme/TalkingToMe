@@ -9,7 +9,7 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Chip from '@material-ui/core/Chip';
 import Paper from '@material-ui/core/Paper';
-import { postTalk } from '../../dataTransfers/DataTalkPost';
+import { postTalk } from '../../dataTransfers/Posts/DataTalkPost';
 import { InitialState } from '../../store/reducers/MainReducer';
 import { RootDispatcher } from '../../store/MainDispatcher';
 import { makeStyles, MenuItem, Select } from '@material-ui/core';

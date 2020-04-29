@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Avatar from '@material-ui/core/Avatar'
 import Button from '@material-ui/core/Button'
 import CssBaseline from '@material-ui/core/CssBaseline'
@@ -18,6 +18,9 @@ import { RootDispatcher } from '../store/MainDispatcher'
 import { useHistory } from 'react-router-dom'
 import { GoogleLogin } from 'react-google-login'
 import { GoogleLogout } from 'react-google-login'
+import { createGoogleJson } from '../dataTransfers/jsonCreators/CreateJson'
+import { checkUser } from '../dataTransfers/Posts/DataUserPost'
+import CustomSnackBar from './materialUI/CustomSnackBar'
 
 function Copyright() {
   return (
@@ -60,6 +63,7 @@ interface StateProps {
 }
 
 export default function SignIn() {
+  const [snackBarMessage, setSnackBarMessage] = useState('');
   const classes = useStyles()
   const history = useHistory()
   const { userIdRdx } = useSelector<InitialState, StateProps>(
@@ -73,9 +77,16 @@ export default function SignIn() {
   const rootDispatcher = new RootDispatcher(dispatch)
 
   const responseGoogle = async (response: any) => {
-    await rootDispatcher.setUserIdRdx(response.googleId)
+    const googleJson = createGoogleJson(response);
+    const userId = await checkUser(googleJson);
+    rootDispatcher.setUserIdRdx(userId)
     console.log(userIdRdx)
-    history.push('/Menu')
+    if(userId!==-1){
+      setSnackBarMessage('');
+      history.push('/Menu');
+    } else {
+      setSnackBarMessage("We are sorry we seem to have encountered an error, please try again or, if the error persists, come back later")
+    }
   }
   const logout = () => {
     console.log('logged out')
@@ -83,11 +94,6 @@ export default function SignIn() {
 
   return (
     <Container component="main" maxWidth="xs">
-      <GoogleLogout
-        clientId="401730606164-p774q8osiptncb4mfl8cgfs2gr6lrs92.apps.googleusercontent.com"
-        buttonText="Logout"
-        onLogoutSuccess={logout}
-      ></GoogleLogout>
       <CssBaseline />
       <div className={classes.paper}>
         <h1>Talking To Me</h1>
@@ -112,6 +118,9 @@ export default function SignIn() {
       <Box mt={8}>
         <Copyright />
       </Box>
+      {snackBarMessage && (
+        <CustomSnackBar message={snackBarMessage} variant="error" />
+      )}
     </Container>
   )
 }

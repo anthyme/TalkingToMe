@@ -7,8 +7,8 @@ import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-import { getTalks } from '../dataTransfers/DataTalkFetch';
-import { getQuizzes } from '../dataTransfers/DataQuizzFetch';
+import { getTalks } from '../dataTransfers/Fetchs/DataTalkFetch';
+import { getQuizzes } from '../dataTransfers/Fetchs/DataQuizzFetch';
 import CreateTalkPopUp from '../popUps/popUpCards/CreateTalkPopUp';
 import CreateQuizzPopUp from '../popUps/popUpCards/CreateQuizzPopUp';
 import TalkCardViews from '../menu/TalkCardViews';
@@ -119,11 +119,15 @@ function Menu() {
   }
 
   useEffect(() => {
-    let userId = userIdRdx;
+    let userId = userIdRdx.toString();
     getTalks(userId).then((json) => {
+      console.log("talkcards json:");
+      console.log(json);
       setCards(json);
     });
     getQuizzes(userId).then((json) => {
+      console.log("Quizzcards json:");
+      console.log(json);
       setQuizzCards(json);
     });
   }, [changeRequestRdx]);
