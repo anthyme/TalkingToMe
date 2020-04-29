@@ -5,6 +5,10 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import Paper from '@material-ui/core/Paper';
+import Chip from '@material-ui/core/Chip';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import { makeStyles, Select, MenuItem } from '@material-ui/core';
 import { putTalk } from '../../dataTransfers/DataTalkPost';
 import { InitialState } from '../../store/reducers/MainReducer';
 import { useSelector, useDispatch } from 'react-redux';
@@ -13,14 +17,7 @@ import {
   getQuizzByTalkId,
   getQuizzes,
 } from '../../dataTransfers/DataQuizzFetch';
-import {
-  Paper,
-  Chip,
-  makeStyles,
-  Select,
-  MenuItem,
-  DialogContentText,
-} from '@material-ui/core';
+import CustomSnackBar from '../../components/materialUI/CustomSnackBar';
 
 interface IProps {
   talk: any;
@@ -36,6 +33,7 @@ interface StateProps {
 const EditTalkPopUp: React.FC<IProps> = (props) => {
   const [name, setName] = useState(props.talk.name);
   const [description, setDescription] = useState(props.talk.description);
+  const [snackBarMessage, setSnackBarMessage] = useState('');
   const [userQuizzes, setUserQuizzes] = useState([]);
   const [selectedQuizzes, setSelectedQuizzes] = useState<string[]>([]);
   const [oldQuizzes, setOldQuizzes] = useState<string[]>([]);
@@ -65,9 +63,13 @@ const EditTalkPopUp: React.FC<IProps> = (props) => {
   ];
 
   const onSubmitEdit = () => {
-    props.onClose();
-    putTalk(json, id);
-    rootDispatcher.setChangeRequestRdx(changeRequestRdx + 1);
+    if (!name) {
+      setSnackBarMessage("The talk's name is required");
+    } else {
+      props.onClose();
+      putTalk(json, id);
+      rootDispatcher.setChangeRequestRdx(changeRequestRdx + 1);
+    }
   };
 
   const onNameChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -140,6 +142,8 @@ const EditTalkPopUp: React.FC<IProps> = (props) => {
             label="Talk name"
             type="text"
             value={name}
+            required={true}
+            error={!!snackBarMessage}
             onChange={(event: ChangeEvent<HTMLInputElement>) => {
               onNameChange(event);
             }}
@@ -212,6 +216,9 @@ const EditTalkPopUp: React.FC<IProps> = (props) => {
             Submit
           </Button>
         </DialogActions>
+        {snackBarMessage && (
+          <CustomSnackBar message={snackBarMessage} variant="error" />
+        )}
       </Dialog>
     </div>
   );

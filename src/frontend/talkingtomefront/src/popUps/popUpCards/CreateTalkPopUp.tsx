@@ -25,8 +25,8 @@ interface IProps {
 
 const CreateTalkPopUp: React.FC<IProps> = (props) => {
   const [name, setName] = useState('');
-  const [displayRed, setDisplayRed] = useState(false);
   const [description, setDescription] = useState('');
+  const [snackBarMessage, setSnackBarMessage] = useState('');
   const [open, setOpen] = React.useState(false);
   const [selectedQuizzes, setSelectedQuizzes] = useState<string[]>([]);
 
@@ -58,7 +58,7 @@ const CreateTalkPopUp: React.FC<IProps> = (props) => {
 
   const postNewTalk = async () => {
     if (!name) {
-      setDisplayRed(true);
+      setSnackBarMessage("The talk's name is required");
     } else {
       setOpen(false);
       await postTalk(TalkJson);
@@ -129,7 +129,7 @@ const CreateTalkPopUp: React.FC<IProps> = (props) => {
             type="text"
             className="talkName"
             required={true}
-            error={displayRed}
+            error={!!snackBarMessage}
             onChange={(event: ChangeEvent<HTMLInputElement>) => {
               onNameChange(event);
             }}
@@ -207,8 +207,8 @@ const CreateTalkPopUp: React.FC<IProps> = (props) => {
           </Button>
         </DialogActions>
       </Dialog>
-      {displayRed && (
-        <CustomSnackBar message="The talk's name is required" variant="error" />
+      {snackBarMessage && (
+        <CustomSnackBar message={snackBarMessage} variant="error" />
       )}
     </div>
   );
