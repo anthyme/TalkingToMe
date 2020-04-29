@@ -87,7 +87,7 @@ export default function SignIn() {
           Sign in
         </Typography>
         <GoogleLogin
-          clientId="326711242697-j4bcl6p1t3m7u986vsm0t55tcpojnlm6.apps.googleusercontent.com"
+          clientId="326711242697-pj0ob8eu4autok3fs93vnnt0juace2d2.apps.googleusercontent.com"
           buttonText="Login"
           onSuccess={responseGoogle}
           onFailure={responseGoogle}
