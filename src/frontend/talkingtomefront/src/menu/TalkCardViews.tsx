@@ -9,6 +9,7 @@ interface IProps {
 }
 
 const TalkCardView: React.FC<IProps> = (props) => {
+  console.log('Louis props.cards', props.cards !== [] && props.cards);
   return (
     <Container className={props.className} maxWidth="md">
       {/* End hero unit */}

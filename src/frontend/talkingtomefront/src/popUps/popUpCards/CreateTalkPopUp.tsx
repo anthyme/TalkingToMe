@@ -22,13 +22,14 @@ interface StateProps {
 
 interface IProps {
   quizzes: number[];
+  onClose: any;
+  open: boolean;
 }
 
 const CreateTalkPopUp: React.FC<IProps> = (props) => {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [snackBarMessage, setSnackBarMessage] = useState('');
-  const [open, setOpen] = React.useState(false);
   const [selectedQuizzes, setSelectedQuizzes] = useState<string[]>([]);
 
   const { changeRequestRdx, userIdRdx } = useSelector<InitialState, StateProps>(
@@ -63,19 +64,15 @@ const CreateTalkPopUp: React.FC<IProps> = (props) => {
     if (!name) {
       setSnackBarMessage("The talk's name is required");
     } else {
-      setOpen(false);
+      props.onClose();
       await postTalk(TalkJson);
       rootDispatcher.setChangeRequestRdx(changeRequestRdx + 1);
     }
   };
 
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
   const handleClose = () => {
-    setOpen(false);
     setSelectedQuizzes([]);
+    props.onClose();
   };
 
   const onSelectQuizz = (value: string) => {
@@ -107,14 +104,10 @@ const CreateTalkPopUp: React.FC<IProps> = (props) => {
   }));
 
   const classes = useStyles();
-
   return (
     <div>
-      <Button variant="outlined" color="primary" onClick={handleClickOpen}>
-        Create new Talk
-      </Button>
       <Dialog
-        open={open}
+        open={props.open}
         onClose={handleClose}
         aria-labelledby="form-dialog-title"
         fullWidth={true}
