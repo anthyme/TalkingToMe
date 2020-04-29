@@ -1,4 +1,4 @@
-import * as constants from '../constants';
+import * as constants from '../../constants';
 
 export const loadQuizzContent = async (quizzId: string) => {
   const response = await fetch(

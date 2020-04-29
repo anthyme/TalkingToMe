@@ -4,7 +4,7 @@ import Button from '@material-ui/core/Button';
 import QuizzQuestion from './QuizzQuestion';
 import { RootDispatcher } from '../store/MainDispatcher';
 import { InitialState } from '../store/reducers/MainReducer';
-import { postQuizz } from '../dataTransfers/DataQuizzPost';
+import { postQuizz } from '../dataTransfers/Posts/DataQuizzPost';
 import { TextField } from '@material-ui/core';
 
 interface StateProps {

@@ -63,7 +63,7 @@ namespace App
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, HealthCheckOption healthCheckOptions, ILogger<Startup> logger)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, HealthCheckOption healthCheckOptions, ILogger<Startup> logger, TalkContext dataContext)
         {
             app.UseDeveloperExceptionPage();
             if (env.IsDevelopment())
@@ -71,6 +71,8 @@ namespace App
                 logger.LogInformation("In Development environment");
                 app.UseCors("ReactPolicy");
             }
+
+            dataContext.Database.Migrate();
 
             app.UseHealthChecks("/HealthCheck", healthCheckOptions.returnOptions());
 

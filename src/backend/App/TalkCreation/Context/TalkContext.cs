@@ -17,6 +17,7 @@ namespace App.TalkCreation.Context
         public DbSet<Talk> Talks { get; set; }
         public DbSet<Question> Questions { get; set; }
         public DbSet<Answer> Answers { get; set; }
+        public DbSet<User> Users { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -25,6 +26,7 @@ namespace App.TalkCreation.Context
             modelBuilder.Entity<Talk>().ToTable("Talks");
             modelBuilder.Entity<Question>().ToTable("Questions");
             modelBuilder.Entity<Answer>().ToTable("Answers");
+            modelBuilder.Entity<User>().ToTable("Users");
 
             modelBuilder.Entity<Talk>().HasMany(e => e.Quizzes).WithOne();
             modelBuilder.Entity<Quizz>().HasMany(e => e.Talks).WithOne();

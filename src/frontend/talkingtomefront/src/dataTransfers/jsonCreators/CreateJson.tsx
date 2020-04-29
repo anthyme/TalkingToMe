@@ -14,3 +14,16 @@ export const createQJson = (qJson:any)=>{
         questionId: {questionId}};
     return json
 }
+
+export const createGoogleJson = (googleJson:any)=>{
+    const externalId = googleJson.googleId;
+    const service = "Google";
+    const name = "";
+    const email = googleJson.email;
+    const json = {
+        externalId: { externalId },
+        email: { email },
+        service: { service },
+        name: { name }};
+    return json
+}

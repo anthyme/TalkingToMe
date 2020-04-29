@@ -1,4 +1,4 @@
-import * as constants from '../constants';
+import * as constants from '../../constants';
 
 export const putQuizz = async (questionsJson: any, quizzId: number, name:string) => {
   let sentJson = [...questionsJson, { Name: {name}, id: { quizzId } }];

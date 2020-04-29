@@ -9,14 +9,14 @@ import Paper from '@material-ui/core/Paper';
 import Chip from '@material-ui/core/Chip';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import { makeStyles, Select, MenuItem } from '@material-ui/core';
-import { putTalk } from '../../dataTransfers/DataTalkPost';
+import { putTalk } from '../../dataTransfers/Posts/DataTalkPost';
 import { InitialState } from '../../store/reducers/MainReducer';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootDispatcher } from '../../store/MainDispatcher';
 import {
   getQuizzByTalkId,
   getQuizzes,
-} from '../../dataTransfers/DataQuizzFetch';
+} from '../../dataTransfers/Fetchs/DataQuizzFetch';
 import CustomSnackBar from '../../components/materialUI/CustomSnackBar';
 
 interface IProps {

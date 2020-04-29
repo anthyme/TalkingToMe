@@ -1,4 +1,4 @@
-import * as constants from '../constants';
+import * as constants from '../../constants';
 
 export const getTalks = async (userId: string) => {
   const requestOptions = {
