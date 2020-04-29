@@ -21,6 +21,7 @@ import { Tabs, Tab, Box } from '@material-ui/core';
 import { useSelector } from 'react-redux';
 import { InitialState } from '../store/reducers/MainReducer';
 
+
 function TabPanel(props: any) {
   const { children, value, index } = props;
 

@@ -17,7 +17,7 @@ interface StateProps {
 function CreateQuizzPopUp() {
   const [open, setOpen] = React.useState(false);
 
-  const { changeRequestRdx } = useSelector<InitialState, StateProps>(
+  const { changeRequestRdx ,questionIdRdx} = useSelector<InitialState, StateProps>(
     (state: InitialState) => {
       return {
         changeRequestRdx: state.changeRequestRdx,
