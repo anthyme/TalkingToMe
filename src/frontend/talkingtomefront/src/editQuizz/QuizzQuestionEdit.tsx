@@ -123,7 +123,7 @@ const QuizzQuestionEdit: React.FC<IProps> = (props) => {
         rootDispatcher.setQuestionRdx(newJson)
       }
     }
-  }, [currentAnswerRdx, currentAnswerIdRdx, questionValue, value])
+  }, [currentAnswerRdx, currentAnswerIdRdx, questionValue, value, selectedValue])
 
   const loadQuestionJson = async (json: any) => {
     let setZero = []

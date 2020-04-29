@@ -116,7 +116,7 @@ const QuizzQuestion: React.FC<IProps> = (props) => {
         rootDispatcher.setQuestionRdx(newJson);
       }
     }
-  }, [currentAnswerRdx, currentAnswerIdRdx, questionValue, value]);
+  }, [currentAnswerRdx, currentAnswerIdRdx, questionValue, value, selectedValue]);
 
   if (show === true) {
     switch (selectedValue) {
