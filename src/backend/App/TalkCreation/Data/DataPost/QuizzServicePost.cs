@@ -40,8 +40,10 @@ namespace App.TalkCreation.Data
                 Console.WriteLine(data);
                 foreach (dynamic question in data)
                 {
-                    createNewQuestion(question, quizzId);
-
+                    if (question.type.selectedValue != "Deleted")
+                    {
+                        createNewQuestion(question, quizzId);
+                    }
                 }
                 return "{\"response\":\"New Quizz Saved\"}";
             }
