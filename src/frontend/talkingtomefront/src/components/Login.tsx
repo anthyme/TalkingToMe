@@ -60,9 +60,9 @@ export default function SignIn() {
 
   const responseGoogle = async (response: any) => {
     const googleJson = createGoogleJson(response);
-    const userId:string = await checkUser(googleJson);
-    await rootDispatcher.setUserIdRdx(userId)
-    if(userId!=="-1"){
+    const userId: string = await checkUser(googleJson);
+    await rootDispatcher.setUserIdRdx(userId);
+    if (userId !== '-1') {
       setSnackBarMessage('');
       history.push('/Menu');
     } else {
@@ -87,8 +87,8 @@ export default function SignIn() {
           Sign in
         </Typography>
         <GoogleLogin
-          clientId="401730606164-p774q8osiptncb4mfl8cgfs2gr6lrs92.apps.googleusercontent.com"
-          buttonText="Login"
+          clientId="326711242697-j4bcl6p1t3m7u986vsm0t55tcpojnlm6.apps.googleusercontent.com"
+          buttonText="Log in"
           onSuccess={responseGoogle}
           onFailure={responseGoogle}
           isSignedIn={true}

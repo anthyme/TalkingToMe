@@ -107,15 +107,10 @@ const EditTalkPopUp: React.FC<IProps> = (props) => {
     chip: {
       margin: theme.spacing(0.5),
     },
-    addQuizzDiv: {
-      marginTop: '4%',
-      marginBottom: '1%',
-    },
     select: {
       marginBottom: '1%',
     },
   }));
-
   const classes = useStyles();
 
   useEffect(() => {
@@ -128,7 +123,7 @@ const EditTalkPopUp: React.FC<IProps> = (props) => {
         open={props.open}
         onClose={props.onClose}
         aria-labelledby="form-dialog-title"
-        fullWidth={true}
+        fullWidth
       >
         <DialogTitle id="form-dialog-title">Editing Talk</DialogTitle>
         <DialogContent>
