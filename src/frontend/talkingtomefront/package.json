@@ -20,6 +20,7 @@
     "@types/react-router": "^4.0.30",
     "@types/react-router-dom": "^5.1.4",
     "@types/react-swipeable-views": "^0.13.0",
+    "@types/uuid": "^7.0.3",
     "babel-eslint": "^10.1.0",
     "babel-loader": "^8.1.0",
     "install": "^0.13.0",
@@ -37,6 +38,7 @@
     "react-swipeable-views": "^0.13.9",
     "redux": "^4.0.5",
     "typescript": "^3.8.3",
+    "uuid": "^8.0.0",
     "webpack": "^4.42.0"
   },
   "scripts": {
