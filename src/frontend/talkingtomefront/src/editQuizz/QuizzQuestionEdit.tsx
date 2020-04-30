@@ -126,9 +126,11 @@ const QuizzQuestionEdit: React.FC<IProps> = (props) => {
   ]);
 
   const deleteQuestion = (event: any) => {
+    rootDispatcher.setQuestionIdRdx(props.questionId);
     setAnswers([""]);
     setAnswersId([0]);
     setSelectedValue("Deleted");
+    rootDispatcher.setQuestionRdx(questionJson);
     setShow(false);
   };
 

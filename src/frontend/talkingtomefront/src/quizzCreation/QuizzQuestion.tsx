@@ -50,8 +50,11 @@ const QuizzQuestion: React.FC<IProps> = (props) => {
   };
 
   const deleteQuestion = (event: any) => {
-    //TODO - Change json to empty on quizzcreator
-    rootDispatcher.setQuestionRdx({});
+    rootDispatcher.setQuestionIdRdx(props.questionId);
+    setAnswers([""]);
+    setAnswersId([0]);
+    setSelectedValue("Deleted");
+    rootDispatcher.setQuestionRdx(questionJson);
     setShow(false);
   };
 
