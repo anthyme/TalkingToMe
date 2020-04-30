@@ -1,1 +1,2 @@
-export const urlDataBase = "https://talkingtome-api.azurewebsites.net/api/";
+export const urlDataBase = "https://localhost:44381/api/";
+export const urlHub= "https://localhost:44381/"

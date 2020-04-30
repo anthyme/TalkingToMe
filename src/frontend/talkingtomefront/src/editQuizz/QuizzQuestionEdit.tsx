@@ -33,10 +33,9 @@ const QuizzQuestionEdit: React.FC<IProps> = (props) => {
   const [answersId, setAnswersId] = useState([0, 1]);
   const [answers, setAnswers] = useState(['', '']);
   const [isNew, setIsNew] = useState(true);
+  const [show, setShow] = useState(true);
   const [questionId, setQuestionId] = useState(props.questionId);
   const questionsJson = props.questionsJson;
-
-  const show = true;
 
   const { currentAnswerRdx, currentAnswerIdRdx, questionIdRdx } = useSelector<
     InitialState,
@@ -126,6 +125,13 @@ const QuizzQuestionEdit: React.FC<IProps> = (props) => {
     selectedValue,
   ]);
 
+  const deleteQuestion = (event: any) => {
+    setAnswers([""]);
+    setAnswersId([0]);
+    setSelectedValue("Deleted");
+    setShow(false);
+  };
+
   const loadQuestionJson = async (json: any) => {
     let setZero = [];
     for (var i = 0; i < questionsJson.answers.answers.length; i++) {
@@ -179,7 +185,7 @@ const QuizzQuestionEdit: React.FC<IProps> = (props) => {
                       <IconButton
                         aria-label="Add"
                         className="DeleteQuestionButton"
-                        onClick={addNewAnswer}
+                        onClick={deleteQuestion}
                       >
                         <HighlightOffIcon style={{ color: red[500] }}>
                           delete_circle
@@ -273,7 +279,7 @@ const QuizzQuestionEdit: React.FC<IProps> = (props) => {
                       <IconButton
                         aria-label="Add"
                         className="DeleteQuestionButton"
-                        onClick={addNewAnswer}
+                        onClick={deleteQuestion}
                       >
                         <HighlightOffIcon style={{ color: red[500] }}>
                           delete_circle

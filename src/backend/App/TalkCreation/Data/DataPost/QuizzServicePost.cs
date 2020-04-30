@@ -77,16 +77,19 @@ namespace App.TalkCreation.Data
                 Console.WriteLine(listQIds[0]);
                 foreach (dynamic question in data)
                 {
-                     if ("true".Equals(question.New.isNew))
-                     {
-                         createNewQuestion(question, quizzId);
-                     }
-                     else
-                     {
-                         int questionId = question.questionId.questionId;
-                         listQIds.Remove(questionId);
-                         putQuestion(question, quizzId);
-                     }                                     
+                    if (question.type.selectedValue != "Deleted")
+                    {
+                        if ("true".Equals(question.New.isNew))
+                        {
+                            createNewQuestion(question, quizzId);
+                        }
+                        else
+                        {
+                            int questionId = question.questionId.questionId;
+                            listQIds.Remove(questionId);
+                            putQuestion(question, quizzId);
+                        }
+                    }                          
                 }
                 if (listQIds.Count() != 0)
                 {

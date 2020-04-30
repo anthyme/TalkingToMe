@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using App.HeathChecks;
 using System.Linq;
 using Microsoft.AspNetCore.Http;
+using App.TalkAnswer.Hubs;
 
 namespace App
 {
@@ -57,6 +58,8 @@ namespace App
 
             services.AddControllers();
 
+            services.AddSignalR();
+
             services.AddControllersWithViews()
             .AddNewtonsoftJson(options =>
               options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
@@ -72,6 +75,11 @@ namespace App
                 logger.LogInformation("In Development environment");
                 app.UseCors("ReactPolicy");
             }
+
+            app.UseSignalR(routes =>
+            {
+                routes.MapHub<TalkAnswerHub>("/TalkAnswerHub");
+            });
 
             dataContext.Database.Migrate();
 
