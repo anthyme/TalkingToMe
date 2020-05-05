@@ -130,7 +130,7 @@ function Menu() {
     getQuizzes(userId).then((json) => {
       setQuizzCards(json);
     });
-  }, [changeRequestRdx]);
+  }, [changeRequestRdx, history, userIdRdx]);
 
   const handleCreaTalkOpen = () => {
     setOpenCreaTalk(true);

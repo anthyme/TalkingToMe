@@ -14,6 +14,15 @@ export const putQuizz = async (
   await fetch(constants.urlDataBase + 'Quizz/' + quizzId, requestOptions);
 };
 
+export const putTalksToQuizz = async (jsonTTQ: any) => {
+  const requestOptions = {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(jsonTTQ),
+  };
+  await fetch(constants.urlDataBase + 'Quizz/TalksToQuizz/', requestOptions);
+};
+
 export const postQuizz = async (
   questionsJson: any,
   userId: string,

@@ -57,7 +57,28 @@ namespace App.TalkCreation.Data
             }
         }
 
-
+        public async Task<List<String>> returnTalksByQuizzId(int quizzId)
+        {
+            TalkContextFactory talkFactory = new TalkContextFactory(_connectionString);
+            using TalkContext context = talkFactory.create();
+            try
+            {
+                var quizzesToTalk = context.QuizzToTalks
+                    .Where(p => p.QuizzId == quizzId)
+                    .ToList();
+                List<String> listTalksId = new List<String>();
+                foreach (QuizzToTalk quizzToTalk in quizzesToTalk)
+                {
+                    listTalksId.Add(quizzToTalk.TalkId.ToString());
+                }
+                return listTalksId;
+            }
+            catch (ArgumentOutOfRangeException e)
+            {
+                Console.WriteLine("This quizz isn't linked to any talk");
+                return null;
+            }
+        }
 
         public async Task<List<Talk>> getTalksByUserId(int id)
         {

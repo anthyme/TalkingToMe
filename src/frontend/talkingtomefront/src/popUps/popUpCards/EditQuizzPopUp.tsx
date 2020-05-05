@@ -11,13 +11,7 @@ import { RootDispatcher } from '../../store/MainDispatcher';
 import { putQuizz } from '../../dataTransfers/Posts/DataQuizzPost';
 import { getQuizzById } from '../../dataTransfers/Fetchs/DataQuizzFetch';
 import { createQJson } from '../../dataTransfers/jsonCreators/CreateJson';
-import {
-  TextField,
-  IconButton,
-  Icon,
-  Tooltip,
-  makeStyles,
-} from '@material-ui/core';
+import { TextField, IconButton, Tooltip, makeStyles } from '@material-ui/core';
 import { green } from '@material-ui/core/colors';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import CustomSnackBar from '../../components/materialUI/CustomSnackBar';

@@ -49,10 +49,10 @@ namespace App.TalkCreation.Data
             return quizzes;
         }
 
-        [HttpGet("QuizzByTalk/{id}")]
-        public async Task<ActionResult<List<String>>> GetQuizzesByTalkId(int id)
+        [HttpGet("QuizzByTalk/{talkId}")]
+        public async Task<ActionResult<List<String>>> GetQuizzesByTalkId(int talkId)
         {
-            List<String> quizzes = await _quizzServiceFetch.returnQuizzByTalkId(id);
+            List<String> quizzes = await _quizzServiceFetch.returnQuizzByTalkId(talkId);
             return quizzes;
         }
 
@@ -62,8 +62,15 @@ namespace App.TalkCreation.Data
         {
             var parsedQuizz = JArray.Parse(quizz.ToString());
             string returnQuizz = _quizzService.updateQuizz(parsedQuizz);
-            Console.WriteLine(returnQuizz);
             return returnQuizz;
+        }
+
+       [HttpPut("TalksToQuizz")]
+       public async Task<string> putTalksToQuizz([FromBody] dynamic jsonTTQ)
+        {
+            var parsedTtq = JArray.Parse(jsonTTQ.ToString());
+            _quizzService.changeTalksToQuizz(parsedTtq);
+            return "{\"response\":\"QuizzToTalks modified\"}";
         }
 
         private bool QuizzExists(int id)
