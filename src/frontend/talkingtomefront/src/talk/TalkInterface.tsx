@@ -1,64 +1,83 @@
-import React, { useState, useEffect } from 'react';
-import Button from '@material-ui/core/Button';
-import Select from '@material-ui/core/Select';
-import MenuItem from '@material-ui/core/MenuItem';
-import { makeStyles } from '@material-ui/core/styles';
-import { Typography, CssBaseline, AppBar, Toolbar } from '@material-ui/core';
-import { loadTalkNQuizzes } from '../dataTransfers/Fetchs/DataTalkFetch';
-import { loadQuizzContent } from '../dataTransfers/Fetchs/DataQuestionFetch';
-import QuestionInterface from './questionsPreview/QuestionInterface';
-import { useHistory } from 'react-router-dom';
-import QRCode from 'qrcode.react';
+import React, { useState, useEffect } from 'react'
+import Button from '@material-ui/core/Button'
+import Select from '@material-ui/core/Select'
+import MenuItem from '@material-ui/core/MenuItem'
+import { makeStyles } from '@material-ui/core/styles'
+import { Typography, CssBaseline, AppBar, Toolbar } from '@material-ui/core'
+import { loadTalkNQuizzes } from '../dataTransfers/Fetchs/DataTalkFetch'
+import { loadQuizzContent } from '../dataTransfers/Fetchs/DataQuestionFetch'
+import QuestionInterface from './questionsPreview/QuestionInterface'
+import { useHistory } from 'react-router-dom'
+import QRCode from 'qrcode.react'
+import { CreateTalkHub } from '../signalR/CreateHub'
+import { v4 as uuidv4 } from 'uuid'
+import { InitialState } from '../store/reducers/MainReducer'
+import { useSelector } from 'react-redux'
+
+interface StateProps {
+  userIdRdx: string
+}
 
 const TalkInterface = () => {
-  const [quizzId, setQuizzId] = useState('0');
-  const [listQuizzes, setListQuizzes] = useState([{}]);
-  const [talkName, setTalkName] = useState('');
-  const [showQuestion, setShowQuestion] = useState(false);
-  const [questionsData, setQuestionsData] = useState([{}]);
+  const [quizzId, setQuizzId] = useState('0')
+  const [listQuizzes, setListQuizzes] = useState([{}])
+  const [talkName, setTalkName] = useState('')
+  const [showQuestion, setShowQuestion] = useState(false)
+  const [questionsData, setQuestionsData] = useState([{}])
+  const groupId = uuidv4()
+  const connection = CreateTalkHub()
 
-  const url = new URL(window.location.href);
-  const TalkId: string | null = url.searchParams.get('talkId');
-  const history = useHistory();
+  const { userIdRdx } = useSelector<InitialState, StateProps>(
+    (state: InitialState) => {
+      return {
+        userIdRdx: state.userIdRdx,
+      }
+    },
+  )
+
+  const url = new URL(window.location.href)
+  const TalkId: string | null = url.searchParams.get('talkId')
+  const history = useHistory()
 
   //Buttons
   const backToMenu = () => {
-    history.push('/Menu');
-  };
+    history.push('/Menu')
+  }
 
   const startQuizz = () => {
-    console.log(`Starting quizz ${quizzId}`);
-  };
+    console.log(`Starting quizz ${quizzId}`)
+  }
 
   //Data Fetching
   const onChangeQuizz = async (value: string) => {
-    setQuizzId(value);
-    const responseData = await loadQuizzContent(value);
-    responseData && showQuestions(responseData);
-  };
+    setQuizzId(value)
+    const responseData = await loadQuizzContent(value)
+    responseData && showQuestions(responseData)
+  }
 
   const loadInit = async () => {
-    const responseData = await loadTalkNQuizzes(TalkId);
-    responseData && showInitialFetchedData(responseData);
-  };
+    const responseData = await loadTalkNQuizzes(TalkId)
+    responseData && showInitialFetchedData(responseData)
+  }
 
   //Data Showing
   const showInitialFetchedData = (data: any) => {
-    setTalkName(data.talkName);
+    setTalkName(data.talkName)
     for (let quizz of data.quizzes) {
-      setListQuizzes((listQuizzes) => [...listQuizzes, quizz]);
+      setListQuizzes((listQuizzes) => [...listQuizzes, quizz])
     }
-  };
+  }
 
   const showQuestions = (data: any) => {
-    setQuestionsData(data);
-    setShowQuestion(true);
-  };
+    setQuestionsData(data)
+    setShowQuestion(true)
+  }
 
   //UseEffects
   useEffect(() => {
-    loadInit();
-  }, []); //Load only once at first build
+    loadInit()
+    connection.invoke('CreateTalkGroup', groupId, userIdRdx)
+  }, []) //Load only once at first build
 
   //CSS
   const useStyles = makeStyles((theme) => ({
@@ -82,9 +101,9 @@ const TalkInterface = () => {
     selectNStart: {
       marginBottom: '10px',
     },
-  }));
+  }))
 
-  const classes = useStyles();
+  const classes = useStyles()
 
   return (
     <React.Fragment>
@@ -156,9 +175,9 @@ const TalkInterface = () => {
                     typeQuest={question.type}
                     answers={question.answers.map(
                       (ans: {
-                        id: number;
-                        questionId: number;
-                        response: string;
+                        id: number
+                        questionId: number
+                        response: string
                       }) => ans.response,
                     )}
                     correctAn={question.correctAn}
@@ -168,7 +187,7 @@ const TalkInterface = () => {
         </div>
       </div>
     </React.Fragment>
-  );
-};
+  )
+}
 
-export default TalkInterface;
+export default TalkInterface
