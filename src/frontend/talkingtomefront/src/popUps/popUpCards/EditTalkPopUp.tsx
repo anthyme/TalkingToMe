@@ -104,18 +104,17 @@ const EditTalkPopUp: React.FC<IProps> = (props) => {
       padding: theme.spacing(0.5),
       margin: 0,
     },
-    chip: {
-      margin: theme.spacing(0.5),
-    },
     addQuizzDiv: {
       marginTop: '4%',
       marginBottom: '1%',
+    },
+    chip: {
+      margin: theme.spacing(0.5),
     },
     select: {
       marginBottom: '1%',
     },
   }));
-
   const classes = useStyles();
 
   useEffect(() => {
@@ -128,7 +127,7 @@ const EditTalkPopUp: React.FC<IProps> = (props) => {
         open={props.open}
         onClose={props.onClose}
         aria-labelledby="form-dialog-title"
-        fullWidth={true}
+        fullWidth
       >
         <DialogTitle id="form-dialog-title">Editing Talk</DialogTitle>
         <DialogContent>
@@ -162,13 +161,15 @@ const EditTalkPopUp: React.FC<IProps> = (props) => {
             fullWidth
           />
           <>
-            <div>Add one or more quizzes to your talk:</div>
+            <DialogContentText className={classes.addQuizzDiv}>
+              Add one or more quizzes to your talk:
+            </DialogContentText>
             <Select
               labelId="label"
               id="select"
               value="0"
               onChange={(e: any) =>
-                !selectedQuizzes.includes(e.target.value) &&
+                !selectedQuizzes.includes(String(e.target.value)) &&
                 onSelectQuizz(String(e.target.value))
               }
               className={classes.select}

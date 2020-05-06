@@ -74,7 +74,6 @@ namespace App.TalkCreation.Data
 
             TalkContextFactory talkFactory = new TalkContextFactory(_connectionString);
             using TalkContext context = talkFactory.create();
-            Console.WriteLine(data);
             try
             {
                 int talkId = data[0].id.id;
@@ -105,7 +104,6 @@ namespace App.TalkCreation.Data
                 }
 
                 context.SaveChanges();
-                Console.WriteLine("modified talk");
             } catch (ArgumentOutOfRangeException e)
             {
                 Console.WriteLine("error modifiying talk");

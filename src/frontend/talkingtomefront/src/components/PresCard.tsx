@@ -9,6 +9,7 @@ import { Tooltip, Grid } from '@material-ui/core';
 import { useHistory } from 'react-router-dom';
 import PopupDelete from '../editQuizz/PopupDelete';
 import EditQuizzPopUp from '../popUps/popUpCards/EditQuizzPopUp';
+import AddTalkPopUp from '../popUps/popUpCards/AddTalkPopUp';
 
 interface IProps {
   card: any;
@@ -22,6 +23,7 @@ const PresCard: React.FC<IProps> = (props) => {
   const history = useHistory();
 
   const [open, setOpen] = useState(false);
+  const [addTalkOpen, setAddTalkOpen] = useState(false);
 
   const goToTalk = () => {
     history.push(`/Talk?talkId=${card.id}`);
@@ -31,8 +33,12 @@ const PresCard: React.FC<IProps> = (props) => {
     setOpen(true);
   };
 
+  const handleAddTalkOpen = () => {
+    setAddTalkOpen(true);
+  };
+
   const handleClose = () => {
-    setOpen(false);
+    open ? setOpen(false) : setAddTalkOpen(false);
   };
 
   switch (type) {
@@ -60,11 +66,11 @@ const PresCard: React.FC<IProps> = (props) => {
                     open={open}
                   />
                 )}
-                <Button size="small" color="primary" onClick={handleClickOpen}>
-                  edit
-                </Button>
                 <Button size="small" color="primary" onClick={goToTalk}>
-                  start
+                  Start
+                </Button>
+                <Button size="small" color="primary" onClick={handleClickOpen}>
+                  Edit
                 </Button>
               </CardActions>
             </Card>
@@ -95,8 +101,22 @@ const PresCard: React.FC<IProps> = (props) => {
                     open={open}
                   />
                 )}
+                {addTalkOpen && (
+                  <AddTalkPopUp
+                    quizz={card}
+                    onClose={handleClose}
+                    open={addTalkOpen}
+                  />
+                )}
+                <Button
+                  size="small"
+                  color="primary"
+                  onClick={handleAddTalkOpen}
+                >
+                  Associated talks
+                </Button>
                 <Button size="small" color="primary" onClick={handleClickOpen}>
-                  edit
+                  Edit
                 </Button>
               </CardActions>
             </Card>

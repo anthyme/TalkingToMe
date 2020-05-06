@@ -57,7 +57,6 @@ namespace App.TalkCreation.Data
         {
             TalkContextFactory talkFactory = new TalkContextFactory(_connectionString);
             using TalkContext context = talkFactory.create();
-            //Console.WriteLine(data);
             try
             {
                 int quizzId = data[data.Count-1].id.quizzId;
@@ -66,17 +65,12 @@ namespace App.TalkCreation.Data
                 context.Quizzes.Update(modQuizz);
                 context.SaveChanges();
                 data.RemoveAt(data.Count - 1);
-
-                Console.WriteLine(data);
-
                 List<int> listQIds = new List<int>();
                 List<Question> listQuestions = context.Questions.Where(p=> p.QuizzId==quizzId).ToList();
                 foreach (Question questions in listQuestions)
                 {
                     listQIds.Add(questions.Id);
                 }
-                Console.WriteLine("listOfIds"+listQIds.Count);
-                Console.WriteLine(listQIds[0]);
                 foreach (dynamic question in data)
                 {
                     if (question.type.selectedValue != "Deleted")
@@ -106,6 +100,42 @@ namespace App.TalkCreation.Data
             {
                 _logger.LogError("The Quizz did not get modified check Json format", e);
                 return "{\"response\":\"Failure\"}";
+            }
+        }
+
+        public void changeTalksToQuizz(dynamic data)
+        {
+            TalkContextFactory talkFactory = new TalkContextFactory(_connectionString);
+            using TalkContext context = talkFactory.create();
+            try
+            {
+                int quizzId = data[0].quizzId.quizzId;
+                List<int> oldTalks = data[0].oldTalks.oldTalks.ToObject<List<int>>();
+                List<int> checkedTalks = data[0].selectedTalks.selectedTalks.ToObject<List<int>>();
+
+                for (int i = checkedTalks.Count - 1; i >= 0; i--) //reversed loop to be able to call .remove in the loop
+                {
+                    if (oldTalks.Contains(checkedTalks[i]))
+                    {
+                        oldTalks.Remove(checkedTalks[i]);
+                        checkedTalks.Remove(checkedTalks[i]);
+                    }
+                }
+                foreach (int i in oldTalks)
+                {
+                    QuizzToTalk qtt = context.QuizzToTalks.Where(a => a.TalkId == i && a.QuizzId == quizzId).FirstOrDefault();
+                    context.Remove(qtt);
+                }
+                foreach (int j in checkedTalks)
+                {
+                    var qtt = new QuizzToTalk { TalkId = j, QuizzId = quizzId };
+                    context.Add(qtt);
+                }
+                context.SaveChanges();
+            }
+            catch (ArrayTypeMismatchException e)
+            {
+                _logger.LogError("The changes for in quizzToTalks didn't work", e);
             }
         }
 

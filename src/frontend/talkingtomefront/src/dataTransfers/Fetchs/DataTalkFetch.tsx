@@ -43,3 +43,15 @@ export const getQuizz = async (quizzId: number) => {
   });
   return response;
 };
+
+export const getTalksByQuizzId = async (quizzId: number) => {
+  const requestOptions = {
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json' },
+  };
+  let response = await fetch(
+    constants.urlDataBase + 'Talks/TalksByQuizz/' + quizzId,
+    requestOptions,
+  );
+  return response.json();
+};

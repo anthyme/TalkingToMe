@@ -9,7 +9,7 @@ import Paper from '@material-ui/core/Paper';
 import Answer from './Answer';
 import { InitialState } from '../store/reducers/MainReducer';
 import { RootDispatcher } from '../store/MainDispatcher';
-import { Tooltip, IconButton } from '@material-ui/core';
+import { Tooltip, IconButton, makeStyles } from '@material-ui/core';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import { blue, red } from '@material-ui/core/colors';
 import HighlightOffIcon from '@material-ui/icons/HighlightOff';
@@ -127,9 +127,9 @@ const QuizzQuestionEdit: React.FC<IProps> = (props) => {
 
   const deleteQuestion = (event: any) => {
     rootDispatcher.setQuestionIdRdx(props.questionId);
-    setAnswers([""]);
+    setAnswers(['']);
     setAnswersId([0]);
-    setSelectedValue("Deleted");
+    setSelectedValue('Deleted');
     rootDispatcher.setQuestionRdx(questionJson);
     setShow(false);
   };
@@ -156,13 +156,20 @@ const QuizzQuestionEdit: React.FC<IProps> = (props) => {
     }
   }, [questionsJson]);
 
+  const useStyles = makeStyles(() => ({
+    gridSpacing: {
+      padding: '2%',
+    },
+  }));
+  const classes = useStyles();
+
   if (show === true && updateEnd === true) {
     switch (selectedValue) {
       case 'UCQ':
         return (
           <React.Fragment>
             <Paper variant="outlined">
-              <Grid container spacing={3}>
+              <Grid container spacing={3} className={classes.gridSpacing}>
                 <Grid item xs={12}>
                   <Grid
                     container
@@ -172,7 +179,6 @@ const QuizzQuestionEdit: React.FC<IProps> = (props) => {
                   >
                     <Grid item xs={8}>
                       <TextField
-                        required
                         id={props.questionId.toString()}
                         name={questionValue}
                         value={questionValue}
@@ -236,7 +242,7 @@ const QuizzQuestionEdit: React.FC<IProps> = (props) => {
                       ))}
                     </div>
                   </RadioGroup>
-                  <Tooltip title={'add Answer'} placement="bottom">
+                  <Tooltip title={'Add Answer'} placement="bottom">
                     <IconButton
                       aria-label="Add"
                       className="AddAnswerButton"
@@ -266,7 +272,6 @@ const QuizzQuestionEdit: React.FC<IProps> = (props) => {
                   >
                     <Grid item xs={8}>
                       <TextField
-                        required
                         id={props.questionId.toString()}
                         name={questionValue}
                         value={questionValue}

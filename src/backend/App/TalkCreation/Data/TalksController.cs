@@ -59,11 +59,17 @@ namespace App.TalkCreation.Data
             return await talk;
         }
 
+        [HttpGet("TalksByQuizz/{quizzId}")]
+        public async Task<ActionResult<List<String>>> GetTalksByQuizzId(int quizzId)
+        {
+            List<String> talks = await _talkServiceFetch.returnTalksByQuizzId(quizzId);
+            return talks;
+        }
+
         [HttpPut("{id}")]
         public async Task<string> PutQuizz([FromBody]dynamic talk)
         {
             var parsedTalk = JArray.Parse(talk.ToString());
-            Console.WriteLine(talk);
             _talkServicePost.ChangeTalk(parsedTalk);
             return "{\"response\":\"Talk modified\"}";
         }
