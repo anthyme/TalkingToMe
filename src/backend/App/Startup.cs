@@ -16,6 +16,16 @@ using App.HeathChecks;
 using System.Linq;
 using Microsoft.AspNetCore.Http;
 using App.TalkAnswer.Hubs;
+using App.TalkAnswer;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using System.Net.Http;
+using System.Security.Cryptography.X509Certificates;
+using System.Text;
+using App.TokenValidation;
+using System;
 
 namespace App
 {
@@ -28,6 +38,17 @@ namespace App
 
         public IConfiguration Configuration { get; }
 
+        public async Task<Dictionary<string, X509Certificate2>> FetchGoogleCertificates()
+        {
+            using (var http = new HttpClient())
+            {
+                var response = await http.GetAsync("https://www.googleapis.com/oauth2/v1/certs");
+
+                var dictionary = await response.Content.ReadAsAsync<Dictionary<string, string>>();
+                return dictionary.ToDictionary(x => x.Key, x => new X509Certificate2(Encoding.UTF8.GetBytes(x.Value)));
+            }
+        }
+
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
@@ -38,6 +59,8 @@ namespace App
             services.AddScoped<QuestionServiceFetch>();
             services.AddScoped<UserServiceFetch>();
             services.AddScoped<HealthCheckOption>();
+            services.AddScoped<UserServices>();
+            services.AddScoped<JwtTokenValidation>();
 
             services.AddCors(o => o.AddPolicy("ReactPolicy", builder =>
             {

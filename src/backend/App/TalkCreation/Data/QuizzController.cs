@@ -11,9 +11,12 @@ using App.TalkCreation.Models;
 using Newtonsoft.Json.Linq;
 using App.TalkCreation.Data.DataFetch;
 using App.TalkCreation.Data.DataFetch.Dto;
+using Microsoft.AspNetCore.Authorization;
+using App.TokenValidation;
 
 namespace App.TalkCreation.Data
 {
+    //[JwtTokenValidation]
     [Route("api/[controller]")]
     [ApiController]
     public class QuizzController : ControllerBase

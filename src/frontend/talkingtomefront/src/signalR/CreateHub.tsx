@@ -1,4 +1,4 @@
-import signalR from "@aspnet/signalr"
+import * as signalR from "@aspnet/signalr"
 import { urlHub } from "../constants"
 
 export const CreateTalkHub = () =>{

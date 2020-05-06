@@ -13,6 +13,7 @@ import { CreateTalkHub } from '../signalR/CreateHub'
 import { v4 as uuidv4 } from 'uuid'
 import { InitialState } from '../store/reducers/MainReducer'
 import { useSelector } from 'react-redux'
+import { siteUrl } from '../constants'
 
 interface StateProps {
   userIdRdx: string
@@ -26,7 +27,6 @@ const TalkInterface = () => {
   const [questionsData, setQuestionsData] = useState([{}])
   const groupId = uuidv4()
   const connection = CreateTalkHub()
-
   const { userIdRdx } = useSelector<InitialState, StateProps>(
     (state: InitialState) => {
       return {
@@ -34,6 +34,7 @@ const TalkInterface = () => {
       }
     },
   )
+  const qrString = `${siteUrl}/TalkAnswer?talkId=${groupId}&ownerId=${userIdRdx}`;
 
   const url = new URL(window.location.href)
   const TalkId: string | null = url.searchParams.get('talkId')
@@ -45,8 +46,13 @@ const TalkInterface = () => {
   }
 
   const startQuizz = () => {
+    connection.invoke('StartQuizz', quizzId)
     console.log(`Starting quizz ${quizzId}`)
   }
+
+  connection.on("GetCurrentQuizz",function (responseData){
+    connection.invoke("GetCurrentQuizz",groupId,responseData, quizzId)
+  })
 
   //Data Fetching
   const onChangeQuizz = async (value: string) => {
@@ -76,9 +82,8 @@ const TalkInterface = () => {
   //UseEffects
   useEffect(() => {
     loadInit()
-    connection.invoke('CreateTalkGroup', groupId, userIdRdx)
+    connection.invoke('CreateTalkGroup', groupId, userIdRdx, TalkId)
   }, []) //Load only once at first build
-
   //CSS
   const useStyles = makeStyles((theme) => ({
     title: {
@@ -161,7 +166,7 @@ const TalkInterface = () => {
           >
             Start Quizz
           </Button>
-          <QRCode value="http://facebook.github.io/react/" />
+          <QRCode value={qrString} />
         </div>
         <div className={classes.quizzNQuest}>
           {showQuestion && <h3 className={classes.title}>Quizz preview</h3>}

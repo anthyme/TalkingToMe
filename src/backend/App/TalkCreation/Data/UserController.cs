@@ -11,9 +11,13 @@ using App.TalkCreation.Models;
 using Newtonsoft.Json.Linq;
 using App.TalkCreation.Data.DataFetch.Dto;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Authorization;
+using DocumentFormat.OpenXml.Spreadsheet;
+using App.TokenValidation;
 
 namespace App.TalkCreation.Data
 {
+    [JwtTokenValidation]
     [Route("api/[controller]")]
     [ApiController]
     public class UserController : ControllerBase
