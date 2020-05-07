@@ -65,7 +65,7 @@ const EditQuizzPopUp: React.FC<IProps> = (props) => {
       newQuestionJson[questionIdRdx] = questionRdx;
       setQuestionsJson(newQuestionJson);
     }
-  }, [questionRdx]);
+  }, [questionIdRdx, questionRdx, questionsJson]);
 
   useEffect(() => {
     getQuizzById(quizzId, tokenIdRdx).then((response) => {
