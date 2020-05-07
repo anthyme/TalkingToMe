@@ -60,11 +60,11 @@ export default function SignIn() {
 
   const responseGoogle = async (response: any) => {
     const googleJson = createGoogleJson(response);
-    const userId:string = await checkUser(googleJson, response.tokenId);
-    await rootDispatcher.setUserIdRdx(userId)
-    await rootDispatcher.setTokenIdRdx(response.tokenId)
+    const userId: string = await checkUser(googleJson, response.tokenId);
+    await rootDispatcher.setUserIdRdx(userId);
+    await rootDispatcher.setTokenIdRdx(response.tokenId);
     console.log(response.tokenId);
-    if(userId!=="-1"){
+    if (userId !== '-1') {
       setSnackBarMessage('');
       history.push('/Menu');
     } else {
@@ -89,7 +89,7 @@ export default function SignIn() {
           Sign in
         </Typography>
         <GoogleLogin
-          clientId="401730606164-p774q8osiptncb4mfl8cgfs2gr6lrs92.apps.googleusercontent.com"
+          clientId="326711242697-pj0ob8eu4autok3fs93vnnt0juace2d2.apps.googleusercontent.com"
           buttonText="Log in"
           onSuccess={responseGoogle}
           onFailure={responseGoogle}
