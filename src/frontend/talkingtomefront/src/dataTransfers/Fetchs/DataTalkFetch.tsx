@@ -3,7 +3,7 @@ import * as constants from '../../constants';
 export const getTalks = async (userId: string) => {
   const requestOptions = {
     method: 'GET',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json' , "AuthorizationToken" : `${constants.tokenId}`},
   };
   let response = await fetch(
     constants.urlDataBase + 'Talks/' + userId,
@@ -19,7 +19,7 @@ export const loadTalkNQuizzes = async (talkId: string | null) => {
     constants.urlDataBase + 'Talks/fetchTalkAndQuizzes/' + talkId,
     {
       method: 'get',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json' , "AuthorizationToken" : `${constants.tokenId}`},
     },
   );
   if (response.status < 100 || response.status > 400) {
@@ -33,7 +33,7 @@ export const loadTalkNQuizzes = async (talkId: string | null) => {
 export const getQuizz = async (quizzId: number) => {
   const requestOptions = {
     method: 'GET',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json' , "AuthorizationToken" : `${constants.tokenId}`},
   };
   let response = await fetch(
     constants.urlDataBase + 'Quizz/' + quizzId,
@@ -47,7 +47,7 @@ export const getQuizz = async (quizzId: number) => {
 export const getTalksByQuizzId = async (quizzId: number) => {
   const requestOptions = {
     method: 'GET',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json' , "AuthorizationToken" : `${constants.tokenId}`},
   };
   let response = await fetch(
     constants.urlDataBase + 'Talks/TalksByQuizz/' + quizzId,

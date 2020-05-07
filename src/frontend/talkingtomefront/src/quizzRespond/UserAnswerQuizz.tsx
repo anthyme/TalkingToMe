@@ -4,6 +4,7 @@ import { CreateTalkHub } from '../signalR/CreateHub'
 import { useSelector } from 'react-redux'
 import { InitialState } from '../store/reducers/MainReducer'
 import { v4 as uuidv4 } from 'uuid'
+import { getQuizzById } from '../dataTransfers/Fetchs/DataQuizzFetch'
 //import {withSearchValue} from "../enhancers/WithSearchValue";
 interface StateProps {
   userIdRdx: string
@@ -14,6 +15,7 @@ interface IProps {
 const UserAnswerQuizz: React.FC<IProps> = (props) => {
   const [value, setValue] = useState('')
   const [quizzId, setQuizzId] = useState(-1)
+  const [quizz, setQuizz] = useState({})
   const connection = CreateTalkHub()
   const groupId = props.groupId
   const userId = uuidv4()
@@ -31,8 +33,16 @@ const UserAnswerQuizz: React.FC<IProps> = (props) => {
   //const rootDispatcher = new RootDispatcher(dispatch)
   connection.on('StartQuizz', function (responseData) {
     setQuizzId(responseData)
+    var quizz = getQuizzById(responseData);
+    setQuizz(quizz);
   })
-
+  connection.on('SetCurrentQuiz', function (responseData) {
+    if(responseData===-1){
+      setQuizzId(responseData)
+      var quizz = getQuizzById(responseData);
+      setQuizz(quizz);
+    }
+  })
   useEffect(() => {
     connection.invoke('JoinGroup', talkId, userId, ownerId)
     console.log('added new user to group:')

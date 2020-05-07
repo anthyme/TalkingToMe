@@ -59,10 +59,10 @@ export default function SignIn() {
   const rootDispatcher = new RootDispatcher(dispatch);
 
   const responseGoogle = async (response: any) => {
-    console.log(response);
     const googleJson = createGoogleJson(response);
     const userId:string = await checkUser(googleJson, response.tokenId);
     await rootDispatcher.setUserIdRdx(userId)
+    await rootDispatcher.setTokenIdRdx(response.tokenId)
     if(userId!=="-1"){
       setSnackBarMessage('');
       history.push('/Menu');

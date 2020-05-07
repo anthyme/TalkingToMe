@@ -7,7 +7,7 @@ export interface InitialState {
   questionRdx: Object;
   userIdRdx: string;
   changeRequestRdx: number;
-  switchRdx: boolean;
+  tokenIdRdx: string;
 }
 const initialState: InitialState = {
   currentAnswerRdx: '',
@@ -16,7 +16,7 @@ const initialState: InitialState = {
   questionRdx: { Name: 'QuizzTest' },
   userIdRdx: '0',
   changeRequestRdx: 0,
-  switchRdx: false,
+  tokenIdRdx: "",
 };
 
 export interface DispatchAction extends Action {
@@ -45,7 +45,7 @@ export const mainReducer: Reducer<InitialState, DispatchAction> = (
     return { ...state, userIdRdx: action.payload.userIdRdx || '' };
   } else if (action.type === actions.UPDATE_CHANGEREQUEST_VALUE) {
     return { ...state, changeRequestRdx: action.payload.changeRequestRdx || 0 };
-  } else if (action.type === actions.UPDATE_SWITCH_VALUE) {
-    return { ...state, swicthRdx: action.payload.switchRdx || false };
+  } else if (action.type === actions.UPDATE_TOKENID_VALUE) {
+    return { ...state, swicthRdx: action.payload.tokenIdRdx || false };
   } else return state;
 };

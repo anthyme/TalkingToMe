@@ -16,7 +16,7 @@ using App.TokenValidation;
 
 namespace App.TalkCreation.Data
 {
-    //[JwtTokenValidation]
+    [JwtTokenValidation]
     [Route("api/[controller]")]
     [ApiController]
     public class QuizzController : ControllerBase
