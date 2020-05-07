@@ -11,6 +11,7 @@ using App.TalkCreation.Models;
 using Newtonsoft.Json.Linq;
 using App.TalkCreation.Data.DataFetch.Dto;
 using Microsoft.Extensions.Logging;
+using App.TokenValidation;
 
 namespace App.TalkCreation.Data
 {

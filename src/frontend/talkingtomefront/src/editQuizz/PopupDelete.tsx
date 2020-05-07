@@ -19,6 +19,7 @@ interface IProps {
 }
 interface StateProps {
   changeRequestRdx: number;
+  tokenIdRdx:string;
 }
 
 const PopupDelete: React.FC<IProps> = (props) => {
@@ -26,10 +27,11 @@ const PopupDelete: React.FC<IProps> = (props) => {
   const card = props.card;
   const type = props.type;
 
-  const { changeRequestRdx } = useSelector<InitialState, StateProps>(
+  const { changeRequestRdx, tokenIdRdx } = useSelector<InitialState, StateProps>(
     (state: InitialState) => {
       return {
         changeRequestRdx: state.changeRequestRdx,
+        tokenIdRdx: state.tokenIdRdx,
       };
     },
   );
@@ -47,10 +49,10 @@ const PopupDelete: React.FC<IProps> = (props) => {
   const deleteCard = async (id: number) => {
     switch (type) {
       case 'Quizz':
-        await deleteQuizzById(card.id);
+        await deleteQuizzById(card.id,tokenIdRdx);
         break;
       case 'Talk':
-        await deleteTalkById(card.id);
+        await deleteTalkById(card.id,tokenIdRdx);
         break;
     }
     rootDispatcher.setChangeRequestRdx(changeRequestRdx - 1);

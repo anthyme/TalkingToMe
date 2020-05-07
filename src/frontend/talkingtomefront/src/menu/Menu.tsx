@@ -90,6 +90,7 @@ const useStyles = makeStyles((theme) => ({
 interface StateProps {
   userIdRdx: string;
   changeRequestRdx: number;
+  tokenIdRdx:string;
 }
 
 //TODO - CHANGE THIS TO CONNECTED USER ID
@@ -103,11 +104,12 @@ function Menu() {
   const theme = useTheme();
   const history = useHistory();
 
-  const { userIdRdx, changeRequestRdx } = useSelector<InitialState, StateProps>(
+  const { userIdRdx, changeRequestRdx, tokenIdRdx } = useSelector<InitialState, StateProps>(
     (state: InitialState) => {
       return {
         userIdRdx: state.userIdRdx,
         changeRequestRdx: state.changeRequestRdx,
+        tokenIdRdx: state.tokenIdRdx,
       };
     },
   );
@@ -124,10 +126,10 @@ function Menu() {
       history.push('/');
     }
     let userId = userIdRdx;
-    getTalks(userId).then((json) => {
+    getTalks(userId,tokenIdRdx).then((json) => {
       setCards(json);
     });
-    getQuizzes(userId).then((json) => {
+    getQuizzes(userId,tokenIdRdx).then((json) => {
       setQuizzCards(json);
     });
   }, [changeRequestRdx, history, userIdRdx]);

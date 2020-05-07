@@ -18,6 +18,7 @@ import CustomSnackBar from '../../components/materialUI/CustomSnackBar';
 interface StateProps {
   changeRequestRdx: number;
   userIdRdx: string;
+  tokenIdRdx:string
 }
 
 interface IProps {
@@ -32,11 +33,12 @@ const CreateTalkPopUp: React.FC<IProps> = (props) => {
   const [snackBarMessage, setSnackBarMessage] = useState('');
   const [selectedQuizzes, setSelectedQuizzes] = useState<string[]>([]);
 
-  const { changeRequestRdx, userIdRdx } = useSelector<InitialState, StateProps>(
+  const { changeRequestRdx, userIdRdx ,tokenIdRdx} = useSelector<InitialState, StateProps>(
     (state: InitialState) => {
       return {
         changeRequestRdx: state.changeRequestRdx,
         userIdRdx: state.userIdRdx,
+        tokenIdRdx: state.tokenIdRdx,
       };
     },
   );
@@ -65,7 +67,7 @@ const CreateTalkPopUp: React.FC<IProps> = (props) => {
       setSnackBarMessage("The talk's name is required");
     } else {
       props.onClose();
-      await postTalk(TalkJson);
+      await postTalk(TalkJson, tokenIdRdx);
       rootDispatcher.setChangeRequestRdx(changeRequestRdx + 1);
     }
   };

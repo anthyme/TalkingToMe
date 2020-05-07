@@ -1,9 +1,9 @@
 import * as constants from '../../constants';
 
-export const getQuizzes = async (userId: string) => {
+export const getQuizzes = async (userId: string, tokenId:string) => {
   const requestOptions = {
     method: 'GET',
-    headers: { 'Content-Type': 'application/json' , "AuthorizationToken" : `${constants.tokenId}`},
+    headers: { 'Content-Type': 'application/json' , "AuthorizationToken" : `${tokenId}`},
   };
   let response = await fetch(
     constants.urlDataBase + 'Quizz/GetByUser/' + userId,
@@ -14,10 +14,10 @@ export const getQuizzes = async (userId: string) => {
   return response;
 };
 
-export const getQuizzById = async (quizzId: number) => {
+export const getQuizzById = async (quizzId: number, tokenId:string) => {
   const requestOptions = {
     method: 'GET',
-    headers: { 'Content-Type': 'application/json' , "AuthorizationToken" : `${constants.tokenId}`},
+    headers: { 'Content-Type': 'application/json' , "AuthorizationToken" : `${tokenId}`},
   };
   let response = await fetch(
     constants.urlDataBase + 'Quizz/' + quizzId,
@@ -28,10 +28,10 @@ export const getQuizzById = async (quizzId: number) => {
   return response;
 };
 
-export const getQuizzByTalkId = async (talkId: number) => {
+export const getQuizzByTalkId = async (talkId: number, tokenId:string) => {
   const requestOptions = {
     method: 'GET',
-    headers: { 'Content-Type': 'application/json' , "AuthorizationToken" : `${constants.tokenId}`},
+    headers: { 'Content-Type': 'application/json' , "AuthorizationToken" : `${tokenId}`},
   };
   let response = await fetch(
     constants.urlDataBase + 'Quizz/QuizzByTalk/' + talkId,

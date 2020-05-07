@@ -1,11 +1,11 @@
 import * as constants from '../../constants';
 
-export const loadQuizzContent = async (quizzId: string) => {
+export const loadQuizzContent = async (quizzId: string, tokenId:string) => {
   const response = await fetch(
     constants.urlDataBase + 'Question/fetchQuestionsByQuizzId/' + quizzId,
     {
       method: 'get',
-      headers: { 'Content-Type': 'application/json' , "AuthorizationToken" : `${constants.tokenId}`},
+      headers: { 'Content-Type': 'application/json' , "AuthorizationToken" : `${tokenId}`},
     },
   );
   if (response.status < 100 || response.status > 400) {

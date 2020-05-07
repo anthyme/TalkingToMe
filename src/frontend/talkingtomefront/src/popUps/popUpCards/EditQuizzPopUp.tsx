@@ -26,6 +26,7 @@ interface StateProps {
   questionIdRdx: number;
   questionRdx: Object;
   changeRequestRdx: number;
+  tokenIdRdx: string;
 }
 
 const EditQuizzPopUp: React.FC<IProps> = (props) => {
@@ -36,7 +37,7 @@ const EditQuizzPopUp: React.FC<IProps> = (props) => {
   const [snackBarMessage, setSnackBarMessage] = useState('');
 
   const quizzId = props.quizz.id;
-  const { questionIdRdx, questionRdx, changeRequestRdx } = useSelector<
+  const { questionIdRdx, questionRdx, changeRequestRdx ,tokenIdRdx} = useSelector<
     InitialState,
     StateProps
   >((state: InitialState) => {
@@ -44,13 +45,14 @@ const EditQuizzPopUp: React.FC<IProps> = (props) => {
       questionIdRdx: state.questionIdRdx,
       questionRdx: state.questionRdx,
       changeRequestRdx: state.changeRequestRdx,
+      tokenIdRdx: state.tokenIdRdx
     };
   });
   const dispatch = useDispatch();
   const rootDispatcher = new RootDispatcher(dispatch);
 
   const PutQuizz = async () => {
-    await putQuizz(questionsJson, quizzId, quizzName);
+    await putQuizz(questionsJson, quizzId, quizzName, tokenIdRdx);
     setQuestionsId([0]);
     setQuizzName('');
     setQuestionsJson([{}]);
@@ -66,7 +68,7 @@ const EditQuizzPopUp: React.FC<IProps> = (props) => {
   }, [questionRdx]);
 
   useEffect(() => {
-    getQuizzById(quizzId).then((response) => {
+    getQuizzById(quizzId, tokenIdRdx).then((response) => {
       var count: number = 0;
       setQuizzName(response.name);
       response.questions.forEach((element: any) => {

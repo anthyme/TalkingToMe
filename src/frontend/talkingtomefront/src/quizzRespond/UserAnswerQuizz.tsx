@@ -8,6 +8,7 @@ import { getQuizzById } from '../dataTransfers/Fetchs/DataQuizzFetch'
 //import {withSearchValue} from "../enhancers/WithSearchValue";
 interface StateProps {
   userIdRdx: string
+  tokenIdRdx: string,
 }
 interface IProps {
   groupId: string
@@ -22,10 +23,11 @@ const UserAnswerQuizz: React.FC<IProps> = (props) => {
   const url = new URL(window.location.href)
   const talkId: string | null = url.searchParams.get('talkId')
   const ownerId: string | null = url.searchParams.get('ownerId')
-  const { userIdRdx } = useSelector<InitialState, StateProps>(
+  const { userIdRdx,tokenIdRdx } = useSelector<InitialState, StateProps>(
     (state: InitialState) => {
       return {
         userIdRdx: state.userIdRdx,
+        tokenIdRdx: state.tokenIdRdx
       }
     },
   )
@@ -33,13 +35,13 @@ const UserAnswerQuizz: React.FC<IProps> = (props) => {
   //const rootDispatcher = new RootDispatcher(dispatch)
   connection.on('StartQuizz', function (responseData) {
     setQuizzId(responseData)
-    var quizz = getQuizzById(responseData);
+    var quizz = getQuizzById(responseData,tokenIdRdx);
     setQuizz(quizz);
   })
   connection.on('SetCurrentQuiz', function (responseData) {
     if(responseData===-1){
       setQuizzId(responseData)
-      var quizz = getQuizzById(responseData);
+      var quizz = getQuizzById(responseData,tokenIdRdx);
       setQuizz(quizz);
     }
   })

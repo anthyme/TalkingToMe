@@ -31,6 +31,7 @@ interface IProps {
 interface StateProps {
   userIdRdx: string;
   changeRequestRdx: number;
+  tokenIdRdx: string;
 }
 
 const AddTalkPopUp: React.FC<IProps> = (props) => {
@@ -41,11 +42,12 @@ const AddTalkPopUp: React.FC<IProps> = (props) => {
   const quizzId = props.quizz.id;
   const history = useHistory();
 
-  const { userIdRdx, changeRequestRdx } = useSelector<InitialState, StateProps>(
+  const { userIdRdx, changeRequestRdx , tokenIdRdx} = useSelector<InitialState, StateProps>(
     (state: InitialState) => {
       return {
         userIdRdx: state.userIdRdx,
         changeRequestRdx: state.changeRequestRdx,
+        tokenIdRdx: state.tokenIdRdx
       };
     },
   );
@@ -62,7 +64,7 @@ const AddTalkPopUp: React.FC<IProps> = (props) => {
 
   const onSubmitEdit = () => {
     props.onClose();
-    putTalksToQuizz(jsonTTQ);
+    putTalksToQuizz(jsonTTQ, tokenIdRdx);
     rootDispatcher.setChangeRequestRdx(changeRequestRdx + 1);
   };
 
@@ -79,10 +81,10 @@ const AddTalkPopUp: React.FC<IProps> = (props) => {
       history.push('/');
     }
     let userId = userIdRdx;
-    getTalks(userId).then((json) => {
+    getTalks(userId,tokenIdRdx).then((json) => {
       setUserTalks(json);
     });
-    getTalksByQuizzId(quizzId).then((json) => {
+    getTalksByQuizzId(quizzId,tokenIdRdx).then((json) => {
       setSelectedTalks(json);
       setOldTalks(json);
     });

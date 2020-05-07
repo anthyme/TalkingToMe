@@ -28,6 +28,7 @@ interface IProps {
 interface StateProps {
   userIdRdx: string;
   changeRequestRdx: number;
+  tokenIdRdx: string;
 }
 
 const EditTalkPopUp: React.FC<IProps> = (props) => {
@@ -40,11 +41,12 @@ const EditTalkPopUp: React.FC<IProps> = (props) => {
 
   const id = props.talk.id;
 
-  const { userIdRdx, changeRequestRdx } = useSelector<InitialState, StateProps>(
+  const { userIdRdx, changeRequestRdx, tokenIdRdx } = useSelector<InitialState, StateProps>(
     (state: InitialState) => {
       return {
         userIdRdx: state.userIdRdx,
         changeRequestRdx: state.changeRequestRdx,
+        tokenIdRdx: state.tokenIdRdx,
       };
     },
   );
@@ -67,7 +69,7 @@ const EditTalkPopUp: React.FC<IProps> = (props) => {
       setSnackBarMessage("The talk's name is required");
     } else {
       props.onClose();
-      putTalk(json, id);
+      putTalk(json, id, tokenIdRdx);
       rootDispatcher.setChangeRequestRdx(changeRequestRdx + 1);
     }
   };
@@ -81,9 +83,9 @@ const EditTalkPopUp: React.FC<IProps> = (props) => {
   };
 
   const loadInit = async () => {
-    const allUserQuizzData = await getQuizzes(userIdRdx);
+    const allUserQuizzData = await getQuizzes(userIdRdx, tokenIdRdx);
     setUserQuizzes(allUserQuizzData);
-    const quizzOfTalkData = await getQuizzByTalkId(id);
+    const quizzOfTalkData = await getQuizzByTalkId(id, tokenIdRdx);
     setSelectedQuizzes(quizzOfTalkData);
     setOldQuizzes(quizzOfTalkData);
   };

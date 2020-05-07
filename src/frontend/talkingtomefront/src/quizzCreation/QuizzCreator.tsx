@@ -12,6 +12,7 @@ interface StateProps {
   questionRdx: Object;
   userIdRdx: string;
   changeRequestRdx: number;
+  tokenIdRdx: string;
 }
 
 export default function QuizzCreator() {
@@ -23,12 +24,14 @@ export default function QuizzCreator() {
     questionRdx,
     userIdRdx,
     changeRequestRdx,
+    tokenIdRdx
   } = useSelector<InitialState, StateProps>((state: InitialState) => {
     return {
       questionIdRdx: state.questionIdRdx,
       questionRdx: state.questionRdx,
       userIdRdx: state.userIdRdx,
       changeRequestRdx: state.changeRequestRdx,
+      tokenIdRdx: state.tokenIdRdx
     };
   });
   const dispatch = useDispatch();
@@ -49,7 +52,7 @@ export default function QuizzCreator() {
   };
 
   const PostQuizz = async () => {
-    await postQuizz(questionsJson, userIdRdx, quizzName);
+    await postQuizz(questionsJson, userIdRdx, quizzName, tokenIdRdx);
     setQuestionsId([0]);
     setQuizzName('');
     setQuestionsJson([{}]);

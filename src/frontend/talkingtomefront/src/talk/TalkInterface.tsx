@@ -17,6 +17,7 @@ import { siteUrl } from '../constants'
 
 interface StateProps {
   userIdRdx: string
+  tokenIdRdx: string
 }
 
 const TalkInterface = () => {
@@ -27,10 +28,11 @@ const TalkInterface = () => {
   const [questionsData, setQuestionsData] = useState([{}])
   const groupId = uuidv4()
   const connection = CreateTalkHub()
-  const { userIdRdx } = useSelector<InitialState, StateProps>(
+  const { userIdRdx, tokenIdRdx } = useSelector<InitialState, StateProps>(
     (state: InitialState) => {
       return {
         userIdRdx: state.userIdRdx,
+        tokenIdRdx: state.tokenIdRdx,
       }
     },
   )
@@ -57,12 +59,12 @@ const TalkInterface = () => {
   //Data Fetching
   const onChangeQuizz = async (value: string) => {
     setQuizzId(value)
-    const responseData = await loadQuizzContent(value)
+    const responseData = await loadQuizzContent(value,tokenIdRdx)
     responseData && showQuestions(responseData)
   }
 
   const loadInit = async () => {
-    const responseData = await loadTalkNQuizzes(TalkId)
+    const responseData = await loadTalkNQuizzes(TalkId,tokenIdRdx)
     responseData && showInitialFetchedData(responseData)
   }
 
