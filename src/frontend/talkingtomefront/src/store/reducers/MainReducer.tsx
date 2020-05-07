@@ -14,7 +14,7 @@ const initialState: InitialState = {
   currentAnswerIdRdx: 0,
   questionIdRdx: -1,
   questionRdx: { Name: 'QuizzTest' },
-  userIdRdx: '0',
+  userIdRdx: '-1',
   changeRequestRdx: 0,
   tokenIdRdx: "",
 };
