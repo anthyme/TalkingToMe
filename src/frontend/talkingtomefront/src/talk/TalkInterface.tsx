@@ -50,7 +50,7 @@ const TalkInterface = () => {
     console.log(`Starting quizz ${quizzId}`)
   }
 
-  connection.on("GetCurrentQuizz",function (responseData){
+  connection.on("RequestCurrentQuizz",function (responseData){
     connection.invoke("GetCurrentQuizz",groupId,responseData, quizzId)
   })
 
