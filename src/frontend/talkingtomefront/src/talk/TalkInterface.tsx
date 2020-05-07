@@ -83,8 +83,10 @@ const TalkInterface = () => {
 
   //UseEffects
   useEffect(() => {
-    loadInit()
-    connection.invoke('CreateTalkGroup', groupId, userIdRdx, TalkId)
+    connection.start().then(()=>{
+      loadInit()
+      connection.invoke('CreateTalkGroup',groupId.toString(), userIdRdx, Number(TalkId) );
+    });
   }, []) //Load only once at first build
   //CSS
   const useStyles = makeStyles((theme) => ({

@@ -5,6 +5,7 @@ import { useSelector } from 'react-redux'
 import { InitialState } from '../store/reducers/MainReducer'
 import { v4 as uuidv4 } from 'uuid'
 import { getQuizzById } from '../dataTransfers/Fetchs/DataQuizzFetch'
+import { urlHub } from '../constants'
 //import {withSearchValue} from "../enhancers/WithSearchValue";
 interface StateProps {
   userIdRdx: string
@@ -17,7 +18,8 @@ const UserAnswerQuizz: React.FC<IProps> = (props) => {
   const [value, setValue] = useState('')
   const [quizzId, setQuizzId] = useState(-1)
   const [quizz, setQuizz] = useState({})
-  const connection = CreateTalkHub()
+  //const connection = CreateTalkHub()
+  const [connection, setConnection] = useState(CreateTalkHub());
   const groupId = props.groupId
   const userId = uuidv4()
   const url = new URL(window.location.href)
@@ -31,8 +33,7 @@ const UserAnswerQuizz: React.FC<IProps> = (props) => {
       }
     },
   )
-  //const dispatch = useDispatch()
-  //const rootDispatcher = new RootDispatcher(dispatch)
+
   connection.on('StartQuizz', function (responseData) {
     setQuizzId(responseData)
     var quizz = getQuizzById(responseData,tokenIdRdx);
@@ -46,7 +47,15 @@ const UserAnswerQuizz: React.FC<IProps> = (props) => {
     }
   })
   useEffect(() => {
-    connection.invoke('JoinGroup', talkId, userId, ownerId)
+    const connection = new signalR.HubConnectionBuilder()
+    .withUrl(`${urlHub}/TalkAnswerHub`, {
+      skipNegotiation: true,
+      transport: signalR.HttpTransportType.WebSockets,
+    })
+    .build()
+    connection.start()
+            .catch(err => console.error(err.toString()));
+   // connection.invoke('JoinGroup', talkId, userId, ownerId)
     console.log('added new user to group:')
     console.log(talkId)
     console.log('with Id')

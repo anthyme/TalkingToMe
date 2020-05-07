@@ -15,8 +15,8 @@ namespace App.TalkAnswer.Hubs
         {
             _userServices = userServices;
         }
-        public async void CreateTalkGroup(string groupId, string userId, int talkId)
-        {
+        public async void CreateTalkGroup(string groupId, string userId,int talkId)
+       {
             await Groups.AddToGroupAsync(userId, groupId);
             _userServices.ChangeTalkById(groupId, talkId);
             string placeholder = "placeholder";
