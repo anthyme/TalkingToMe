@@ -21,5 +21,5 @@ export class RootDispatcher {
 
     setChangeRequestRdx = (changeRequestRdx :number) => this.dispatch({type: actions.UPDATE_CHANGEREQUEST_VALUE, payload: {changeRequestRdx}})
 
-    setSwitchRdx = (switchRdx :boolean) => this.dispatch({type: actions.UPDATE_SWITCH_VALUE, payload: {switchRdx}})
+    setTokenIdRdx = (tokenIdRdx :string) => this.dispatch({type: actions.UPDATE_TOKENID_VALUE, payload: {tokenIdRdx}})
 }

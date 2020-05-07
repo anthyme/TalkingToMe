@@ -4,4 +4,4 @@ export const UPDATE_QUESTIONID_VALUE = 'updateQuestionIdValue';
 export const UPDATE_QUESTION_VALUE = 'updateQuestionValue';
 export const UPDATE_USERID_VALUE = 'updateUserIdValue';
 export const UPDATE_CHANGEREQUEST_VALUE = 'changeRequestValue';
-export const UPDATE_SWITCH_VALUE = 'changeSwitchValue';
+export const UPDATE_TOKENID_VALUE = 'changeSwitchValue';

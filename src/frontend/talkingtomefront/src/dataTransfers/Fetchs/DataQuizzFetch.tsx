@@ -3,7 +3,7 @@ import * as constants from '../../constants';
 export const getQuizzes = async (userId: string) => {
   const requestOptions = {
     method: 'GET',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json' , "AuthorizationToken" : `${constants.tokenId}`},
   };
   let response = await fetch(
     constants.urlDataBase + 'Quizz/GetByUser/' + userId,
@@ -17,7 +17,7 @@ export const getQuizzes = async (userId: string) => {
 export const getQuizzById = async (quizzId: number) => {
   const requestOptions = {
     method: 'GET',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json' , "AuthorizationToken" : `${constants.tokenId}`},
   };
   let response = await fetch(
     constants.urlDataBase + 'Quizz/' + quizzId,
@@ -31,7 +31,7 @@ export const getQuizzById = async (quizzId: number) => {
 export const getQuizzByTalkId = async (talkId: number) => {
   const requestOptions = {
     method: 'GET',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json' , "AuthorizationToken" : `${constants.tokenId}`},
   };
   let response = await fetch(
     constants.urlDataBase + 'Quizz/QuizzByTalk/' + talkId,

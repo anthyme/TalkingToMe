@@ -14,6 +14,7 @@ using Microsoft.Extensions.Logging;
 
 namespace App.TalkCreation.Data
 {
+    [JwtTokenValidation]
     [Route("api/[controller]")]
     [ApiController]
     public class TalksController : ControllerBase

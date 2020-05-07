@@ -34,7 +34,7 @@ export const postQuizz = async (
   ];
   const requestOptions = {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json' , "AuthorizationToken" : `${constants.tokenId}`},
     body: JSON.stringify(sentJson),
   };
   await fetch(constants.urlDataBase + 'Quizz', requestOptions);
@@ -43,7 +43,7 @@ export const postQuizz = async (
 export const deleteQuizzById = async (id: number) => {
   const requestOptions = {
     method: 'DELETE',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json' , "AuthorizationToken" : `${constants.tokenId}`},
   };
   await fetch(constants.urlDataBase + 'Quizz/' + id, requestOptions);
 };

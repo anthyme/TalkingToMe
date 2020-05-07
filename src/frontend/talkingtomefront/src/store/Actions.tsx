@@ -41,9 +41,9 @@ export const setChangeRequest = (changeRequest:Object) => ({
   },
 });
 
-export const setSwitch = (switchChange:Object) => ({
-  type: types.UPDATE_SWITCH_VALUE,
+export const setSwitch = (tokenId:Object) => ({
+  type: types.UPDATE_TOKENID_VALUE,
   payload: {
-    value: switchChange,
+    value: tokenId,
   },
 });

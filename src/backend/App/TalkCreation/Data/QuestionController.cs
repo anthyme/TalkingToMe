@@ -11,9 +11,11 @@ using App.TalkCreation.Models;
 using Newtonsoft.Json.Linq;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using App.TokenValidation;
 
 namespace App.TalkCreation.Data
 {
+    [JwtTokenValidation]
     [Route("api/[controller]")]
     [ApiController]
     public class QuestionController : ControllerBase
