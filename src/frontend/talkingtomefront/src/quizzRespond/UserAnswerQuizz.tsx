@@ -6,24 +6,23 @@ import { InitialState } from '../store/reducers/MainReducer'
 import { v4 as uuidv4 } from 'uuid'
 import { getQuizzById } from '../dataTransfers/Fetchs/DataQuizzFetch'
 import { urlHub } from '../constants'
+import { HubConnection } from '@aspnet/signalr'
 //import {withSearchValue} from "../enhancers/WithSearchValue";
 interface StateProps {
   userIdRdx: string
   tokenIdRdx: string,
 }
 interface IProps {
-  groupId: string
 }
 const UserAnswerQuizz: React.FC<IProps> = (props) => {
   const [value, setValue] = useState('')
   const [quizzId, setQuizzId] = useState(-1)
   const [quizz, setQuizz] = useState({})
+  const [connection, setConnection] = useState<HubConnection>();
   //const connection = CreateTalkHub()
-  const [connection, setConnection] = useState(CreateTalkHub());
-  const groupId = props.groupId
   const userId = uuidv4()
   const url = new URL(window.location.href)
-  const talkId: string | null = url.searchParams.get('talkId')
+  const groupId: string | null = url.searchParams.get('talkId')
   const ownerId: string | null = url.searchParams.get('ownerId')
   const { userIdRdx,tokenIdRdx } = useSelector<InitialState, StateProps>(
     (state: InitialState) => {
@@ -34,32 +33,36 @@ const UserAnswerQuizz: React.FC<IProps> = (props) => {
     },
   )
 
-  connection.on('StartQuizz', function (responseData) {
-    setQuizzId(responseData)
-    var quizz = getQuizzById(responseData,tokenIdRdx);
-    setQuizz(quizz);
-  })
-  connection.on('SetCurrentQuiz', function (responseData) {
-    if(responseData===-1){
+  if(connection!==undefined){
+    connection.on('StartQuizz', function (responseData:any) {
       setQuizzId(responseData)
+      console.log("StartQuizz: "+responseData);
       var quizz = getQuizzById(responseData,tokenIdRdx);
       setQuizz(quizz);
-    }
-  })
-  useEffect(() => {
-    const connection = new signalR.HubConnectionBuilder()
-    .withUrl(`${urlHub}/TalkAnswerHub`, {
-      skipNegotiation: true,
-      transport: signalR.HttpTransportType.WebSockets,
     })
-    .build()
-    connection.start()
-            .catch(err => console.error(err.toString()));
-   // connection.invoke('JoinGroup', talkId, userId, ownerId)
-    console.log('added new user to group:')
-    console.log(talkId)
-    console.log('with Id')
-    console.log(userId)
+    connection.on('SetCurrentQuiz', function (responseData:any) {
+      if(responseData===-1){
+        console.log("setCurrentQuizz: "+responseData);
+        setQuizzId(responseData)
+        var quizz = getQuizzById(responseData,tokenIdRdx);
+        setQuizz(quizz);
+      }
+    })
+  }
+
+  useEffect(() => {
+    const createHubConnection = async () => {
+      const connect = CreateTalkHub();
+      try {
+        await connect.start()
+        //Invoke method defined in server to add user to a specified group
+      } catch (err) {
+        console.log(err)
+      }
+      setConnection(connect)
+      connect.invoke("JoinGroup",groupId, ownerId);
+    }
+    createHubConnection();
   }, [])
 
   useEffect(() => {
@@ -70,7 +73,7 @@ const UserAnswerQuizz: React.FC<IProps> = (props) => {
 
   return (
     <React.Fragment>
-      <></>
+      <><div><p>Welcome to the user page</p></div></>
     </React.Fragment>
   )
 }

@@ -14,6 +14,7 @@ import { v4 as uuidv4 } from 'uuid'
 import { InitialState } from '../store/reducers/MainReducer'
 import { useSelector } from 'react-redux'
 import { siteUrl } from '../constants'
+import { HubConnection } from '@aspnet/signalr'
 
 interface StateProps {
   userIdRdx: string
@@ -25,9 +26,11 @@ const TalkInterface = () => {
   const [listQuizzes, setListQuizzes] = useState([{}])
   const [talkName, setTalkName] = useState('')
   const [showQuestion, setShowQuestion] = useState(false)
+  const [connection, setConnection] = useState<HubConnection>();
   const [questionsData, setQuestionsData] = useState([{}])
-  const groupId = uuidv4()
-  const connection = CreateTalkHub()
+  const [groupId, setGroupId] = useState(uuidv4());
+ 
+  
   const { userIdRdx, tokenIdRdx } = useSelector<InitialState, StateProps>(
     (state: InitialState) => {
       return {
@@ -36,7 +39,7 @@ const TalkInterface = () => {
       }
     },
   )
-  const qrString = `${siteUrl}/TalkAnswer?talkId=${groupId}&ownerId=${userIdRdx}`;
+  const qrString = `${siteUrl}TalkAnswer?talkId=${groupId}&ownerId=${userIdRdx}`;
 
   const url = new URL(window.location.href)
   const TalkId: string | null = url.searchParams.get('talkId')
@@ -45,16 +48,24 @@ const TalkInterface = () => {
   //Buttons
   const backToMenu = () => {
     history.push('/Menu')
+    if(connection!==undefined){
+      connection?.stop();
+    }
+  }
+  if(connection!==undefined){
+    connection.on("JoinedGroup",function (responseData){
+      console.log("A new User has joined the channel: "+responseData);
+    })
+    
+    connection.on("NewChannel",function (responseData){
+      console.log("The new channel is: "+responseData)
+    })
+  
+    connection.on("RequestCurrentQuizz",function (responseData){
+      connection.invoke("GetCurrentQuizz",groupId, quizzId)
+    })
   }
 
-  const startQuizz = () => {
-    connection.invoke('StartQuizz', quizzId)
-    console.log(`Starting quizz ${quizzId}`)
-  }
-
-  connection.on("RequestCurrentQuizz",function (responseData){
-    connection.invoke("GetCurrentQuizz",groupId,responseData, quizzId)
-  })
 
   //Data Fetching
   const onChangeQuizz = async (value: string) => {
@@ -83,11 +94,27 @@ const TalkInterface = () => {
 
   //UseEffects
   useEffect(() => {
-    connection.start().then(()=>{
-      loadInit()
-      connection.invoke('CreateTalkGroup',groupId.toString(), userIdRdx, Number(TalkId) );
-    });
+    const createHubConnection = async () => {
+      const connect = CreateTalkHub();
+      try {
+        await connect.start()
+        //Invoke method defined in server to add user to a specified group
+      } catch (err) {
+        console.log(err)
+      }
+      setConnection(connect)
+      console.log("CreateTalkGroup: "+ groupId);
+      connect.invoke('CreateTalkGroup',groupId, Number(TalkId) );
+    }
+    createHubConnection();
+    loadInit()
   }, []) //Load only once at first build
+  const startQuizz = () => {
+    if(connection!==undefined){
+      connection.invoke('StartQuizz', groupId, quizzId)
+      console.log(`Starting quizz ${quizzId}`)
+    }
+  }
   //CSS
   const useStyles = makeStyles((theme) => ({
     title: {
@@ -171,6 +198,7 @@ const TalkInterface = () => {
             Start Quizz
           </Button>
           <QRCode value={qrString} />
+          <a href={`TalkAnswer?talkId=${groupId}&ownerId=${userIdRdx}`}>Link to a user page</a>
         </div>
         <div className={classes.quizzNQuest}>
           {showQuestion && <h3 className={classes.title}>Quizz preview</h3>}

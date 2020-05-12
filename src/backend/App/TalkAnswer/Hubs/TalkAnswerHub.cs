@@ -5,40 +5,46 @@ using System.Linq;
 using System.Threading.Tasks;
 using App.TalkCreation.Data;
 using App.TalkCreation.Models;
+using App.TalkAnswer.SaveTalkProgress;
 
 namespace App.TalkAnswer.Hubs
 {
     public class TalkAnswerHub : Hub
     {
+        private TalkSessionRepo _talkSessionRepo;
         private readonly UserServices _userServices;
         public TalkAnswerHub(UserServices userServices)
         {
             _userServices = userServices;
         }
-        public async void CreateTalkGroup(string groupId, string userId,int talkId)
+        public async void CreateTalkGroup(string groupId,int talkId)
        {
-            await Groups.AddToGroupAsync(userId, groupId);
+            await Groups.AddToGroupAsync(Context.ConnectionId, groupId);
+            Console.WriteLine("Owner context Id: " + Context.ConnectionId);
             _userServices.ChangeTalkById(groupId, talkId);
             string placeholder = "placeholder";
-            await Clients.All.SendAsync("NewChannel", placeholder);
+            var clients = Clients.Group(groupId).ToString();
+            await Clients.All.SendAsync("NewChannel", clients);
         }
 
         //CHANGE DB SO TALKS HAS A CURRENT QUESTION ACTIVE
-        public async void JoinGroup(string groupId, string userId, string ownerId)
+        public async void JoinGroup(string groupId, string ownerId)
         {
-            await Groups.AddToGroupAsync(userId, groupId);
-            await Clients.User(ownerId).SendAsync("RequestCurrentQuizz", userId);
+            await Groups.AddToGroupAsync(Context.ConnectionId, groupId);
+            Console.WriteLine("user context Id: " + Context.ConnectionId);
+            await Clients.OthersInGroup(groupId).SendAsync("JoinedGroup", Context.ConnectionId);
         }
 
-        public async void GetCurrentQuizz(string groupId, string userId, int quizzId)
+        public async void GetCurrentQuizz(string groupId, int quizzId)
         {
-            await Groups.AddToGroupAsync(userId, groupId);
-            await Clients.User(userId).SendAsync("SetCurrentQuizz", quizzId);
+            await Groups.AddToGroupAsync(Context.ConnectionId, groupId);
+            await Clients.User(Context.ConnectionId).SendAsync("SetCurrentQuizz", quizzId);
         }
 
         public async void StartQuizz(string groupId, int quizzId)
         {
-            await Clients.OthersInGroup(groupId).SendAsync("StartQuizz", quizzId);
+            Console.WriteLine("Sending starting quizz info to group: " + groupId);
+            await Clients.Group(groupId).SendAsync("StartQuizz", quizzId);
         }
     }
 }
