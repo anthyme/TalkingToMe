@@ -49,14 +49,6 @@ namespace App.TalkAnswer.SaveTalkProgress
             }
             return true;
         }
-
-        public override int GetHashCode()
-        {
-            if (ValueSignature != null) return ValueSignature.GetHashCode();
-            var hashCode = new HashCode();
-            GetValues(this).Iter(hashCode.Add);
-            return hashCode.ToHashCode();
-        }
     }
 
     public class ValueOf<T>

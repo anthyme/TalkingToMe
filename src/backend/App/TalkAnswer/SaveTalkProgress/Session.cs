@@ -39,7 +39,7 @@ namespace App.TalkAnswer.SaveTalkProgress
             if (other.groupid == -1
                 || other.Equals(Invalid))
                 return Session.Invalid;
-            return new Session(other.id, other.currentQuizz);
+            return new Session(other.groupid, other.currentQuizz);
         }
     }
 }
