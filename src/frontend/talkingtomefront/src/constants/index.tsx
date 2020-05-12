@@ -1,20 +1,3 @@
-export const urlDataBase = "https://localhost:44381/api/";
-export const urlHub= "https://localhost:44381"
-export const siteUrl = "https//localhost:3000/"
-
-/*
-interface StateProps {
-    tokenIdRdx: string;
-  }
-
-export const tokenId = () => {
-    const { tokenIdRdx } = useSelector<InitialState, StateProps>(
-        (state: InitialState) => {
-          return {
-            tokenIdRdx: state.tokenIdRdx,
-          };
-        },
-      );
-    return tokenIdRdx;
-}
-*/
+export const urlDataBase =  'https://localhost:44381/api/';//'https://talkingtome-api.azurewebsites.net/api/';
+export const urlHub =  'https://localhost:44381'//'https://talkingtome-api.azurewebsites.net';
+export const siteUrl =  "https//localhost:3000/"//'https://talkingtome.azurewebsites.net/';
