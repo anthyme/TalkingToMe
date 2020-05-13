@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, ChangeEvent, useEffect } from 'react';
 import {
   makeStyles,
   RadioGroup,
@@ -7,20 +7,39 @@ import {
 } from '@material-ui/core';
 
 type QuestionInterfaceProps = {
+  questId: number;
   quest: string;
   typeQuest: string;
   correctAn: string;
   answers: { response: string }[];
   isPreview: boolean;
+  addAnswer: Function;
 };
 
 const QuestionInterface = ({
+  questId,
   quest,
   typeQuest,
   answers,
   correctAn,
   isPreview,
+  addAnswer,
 }: QuestionInterfaceProps) => {
+  const [response, setResponse] = useState('');
+  const isUCQ = typeQuest === 'UCQ';
+
+  const changeTextArea = (event: ChangeEvent<HTMLTextAreaElement>) => {
+    setResponse(event.target.value);
+  };
+
+  const changeCheckBox = (event: any, rep: any) => {
+    event.target.checked ? setResponse(rep) : setResponse('');
+  };
+
+  useEffect(() => {
+    addAnswer(questId, response);
+  }, [response]);
+
   const useStyles = makeStyles((theme) => ({
     typeStyle: {
       textAlign: 'right',
@@ -39,7 +58,6 @@ const QuestionInterface = ({
   }));
 
   const classes = useStyles();
-  const isUCQ = typeQuest === 'UCQ';
 
   return (
     <React.Fragment>
@@ -60,11 +78,18 @@ const QuestionInterface = ({
               <div key={key}>
                 <FormControlLabel
                   checked={
-                    correctAn === ((a as unknown) as string) ? true : false //typescript shenanigans to compare to string that aren't overlapping
+                    isPreview
+                      ? correctAn === ((a as unknown) as string)
+                        ? true
+                        : false
+                      : response === ((a as unknown) as string) //typescript shenanigans to compare to string that aren't overlapping
                   }
                   control={<Radio />}
                   label=""
                   disabled={isPreview}
+                  onChange={(e) => {
+                    changeCheckBox(e, a);
+                  }}
                 />
                 {a}
               </div>
@@ -72,11 +97,12 @@ const QuestionInterface = ({
           </RadioGroup>
         ) : (
           <textarea
-            value={isPreview ? 'Answer placeholder' : ''}
+            value={isPreview ? 'Answer placeholder' : response}
             disabled={isPreview}
             rows={5}
             cols={100}
             style={{ resize: 'none' }}
+            onChange={changeTextArea}
           />
         )}
       </div>

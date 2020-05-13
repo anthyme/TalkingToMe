@@ -7,7 +7,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { getQuizzById } from '../dataTransfers/Fetchs/DataQuizzFetch';
 import { HubConnection } from '@aspnet/signalr';
 import QuestionInterface from '../talk/questionsPreview/QuestionInterface';
-import { Typography } from '@material-ui/core';
+import { Typography, AppBar, Toolbar, makeStyles } from '@material-ui/core';
 interface StateProps {
   userIdRdx: string;
   tokenIdRdx: string;
@@ -22,6 +22,8 @@ const UserAnswerQuizz: React.FC<IProps> = (props) => {
   const url = new URL(window.location.href);
   const groupId: string | null = url.searchParams.get('talkId');
   const ownerId: string | null = url.searchParams.get('ownerId');
+  const talkName: string | null = url.searchParams.get('talkName');
+  const dictResp = new Map();
 
   if (connection !== undefined) {
     connection.on(
@@ -39,8 +41,17 @@ const UserAnswerQuizz: React.FC<IProps> = (props) => {
   }
 
   const showQuestions = (data: any) => {
-    setQuestionsData(data);
-    setWaitingQuizz(false);
+    if (data) {
+      setQuestionsData(data);
+      for (let d of data) {
+        dictResp.set(d.id, '');
+      }
+      setWaitingQuizz(false);
+    }
+  };
+
+  const addAnswerToList = (questId: number, resp: string) => {
+    dictResp.set(questId, resp);
   };
 
   useEffect(() => {
@@ -63,17 +74,43 @@ const UserAnswerQuizz: React.FC<IProps> = (props) => {
     }
   }, [quizzName]);
 
+  const useStyles = makeStyles((theme) => ({
+    userToolbar: {
+      display: 'flex',
+      justifyContent: 'center',
+    },
+    advice: {
+      display: 'flex',
+      justifyContent: 'center',
+    },
+  }));
+
+  const classes = useStyles();
+
   return (
     <React.Fragment>
       <>
+        <AppBar position="relative">
+          <Toolbar className={classes.userToolbar}>
+            <Typography variant="h4" align="center" color="inherit">
+              {talkName}
+            </Typography>
+          </Toolbar>
+        </AppBar>
+
         {waitingQuizz ? (
-          <div>
-            <p>Waiting for a Quizz ... </p>
+          <div className={classes.advice}>
+            <p>
+              You don't have anything to do for now, just listen to the talk 😊
+            </p>
           </div>
         ) : (
           <div>
+            <div className={classes.advice}>
+              <p>Please answer the following quizz 🤓</p>
+            </div>
             <Typography
-              variant="h4"
+              variant="h5"
               align="center"
               color="textPrimary"
               gutterBottom
@@ -85,11 +122,13 @@ const UserAnswerQuizz: React.FC<IProps> = (props) => {
                 question && (
                   <QuestionInterface
                     key={question.id}
+                    questId={question.id}
                     quest={question.question}
                     typeQuest={question.type}
                     answers={question.answers.map((ans: string) => ans)}
                     correctAn={question.correctAn}
                     isPreview={false}
+                    addAnswer={addAnswerToList}
                   />
                 ),
             )}

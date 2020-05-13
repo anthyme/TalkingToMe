@@ -202,7 +202,9 @@ const TalkInterface = () => {
             Start Quizz
           </Button>
           <QRCode value={qrString} />
-          <a href={`TalkAnswer?talkId=${groupId}&ownerId=${userIdRdx}`}>
+          <a
+            href={`TalkAnswer?talkId=${groupId}&ownerId=${userIdRdx}&talkName=${talkName}`}
+          >
             Link to a user page
           </a>
         </div>
@@ -214,6 +216,7 @@ const TalkInterface = () => {
                 question && (
                   <QuestionInterface
                     key={question.id}
+                    questId={question.id}
                     quest={question.quest}
                     typeQuest={question.type}
                     answers={question.answers.map(
@@ -225,6 +228,7 @@ const TalkInterface = () => {
                     )}
                     isPreview={true}
                     correctAn={question.correctAn}
+                    addAnswer={() => {}} //Prop only useful for users but typescript needs us to declare it here too
                   />
                 ),
             )}
