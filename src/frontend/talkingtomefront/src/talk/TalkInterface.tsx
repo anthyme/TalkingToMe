@@ -22,7 +22,6 @@ interface StateProps {
 }
 
 const TalkInterface = () => {
-<<<<<<< HEAD
   const url = new URL(window.location.href)
   const [quizzId, setQuizzId] = useState('0')
   const [listQuizzes, setListQuizzes] = useState([{}])
@@ -33,16 +32,6 @@ const TalkInterface = () => {
   const [groupId, setGroupId] = useState(url.searchParams.get('groupId'));
  
   
-=======
-  const [quizzId, setQuizzId] = useState('0');
-  const [listQuizzes, setListQuizzes] = useState([{}]);
-  const [talkName, setTalkName] = useState('');
-  const [showQuestion, setShowQuestion] = useState(false);
-  const [connection, setConnection] = useState<HubConnection>();
-  const [questionsData, setQuestionsData] = useState([{}]);
-  const [groupId, setGroupId] = useState(uuidv4());
-
->>>>>>> b0065f9c751e8233490c6a30dfb116d900709cc1
   const { userIdRdx, tokenIdRdx } = useSelector<InitialState, StateProps>(
     (state: InitialState) => {
       return {
@@ -53,15 +42,9 @@ const TalkInterface = () => {
   );
   const qrString = `${siteUrl}TalkAnswer?talkId=${groupId}&ownerId=${userIdRdx}`;
 
-<<<<<<< HEAD
  
   const TalkId: string | null = url.searchParams.get('talkId')
   const history = useHistory()
-=======
-  const url = new URL(window.location.href);
-  const TalkId: string | null = url.searchParams.get('talkId');
-  const history = useHistory();
->>>>>>> b0065f9c751e8233490c6a30dfb116d900709cc1
 
   //Buttons
   const backToMenu = () => {

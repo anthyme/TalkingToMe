@@ -52,16 +52,10 @@ const UserAnswerQuizz: React.FC<IProps> = (props) => {
       } catch (err) {
         console.log(err);
       }
-<<<<<<< HEAD
       setConnection(connect)
       connect.invoke("JoinGroup",groupId, ownerId);
       connect.invoke("GetCurrentQuizz",groupId);
     }
-=======
-      setConnection(connect);
-      connect.invoke('JoinGroup', groupId, ownerId);
-    };
->>>>>>> b0065f9c751e8233490c6a30dfb116d900709cc1
     createHubConnection();
   }, []);
 
@@ -105,5 +99,5 @@ const UserAnswerQuizz: React.FC<IProps> = (props) => {
       </>
     </React.Fragment>
   );
-};
+}; 
 export default UserAnswerQuizz;
