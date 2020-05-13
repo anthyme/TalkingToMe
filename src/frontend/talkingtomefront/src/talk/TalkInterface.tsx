@@ -22,13 +22,14 @@ interface StateProps {
 }
 
 const TalkInterface = () => {
+  const url = new URL(window.location.href)
   const [quizzId, setQuizzId] = useState('0')
   const [listQuizzes, setListQuizzes] = useState([{}])
   const [talkName, setTalkName] = useState('')
   const [showQuestion, setShowQuestion] = useState(false)
   const [connection, setConnection] = useState<HubConnection>();
   const [questionsData, setQuestionsData] = useState([{}])
-  const [groupId, setGroupId] = useState(uuidv4());
+  const [groupId, setGroupId] = useState(url.searchParams.get('groupId'));
  
   
   const { userIdRdx, tokenIdRdx } = useSelector<InitialState, StateProps>(
@@ -41,7 +42,7 @@ const TalkInterface = () => {
   )
   const qrString = `${siteUrl}TalkAnswer?talkId=${groupId}&ownerId=${userIdRdx}`;
 
-  const url = new URL(window.location.href)
+ 
   const TalkId: string | null = url.searchParams.get('talkId')
   const history = useHistory()
 

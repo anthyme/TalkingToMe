@@ -61,6 +61,7 @@ const UserAnswerQuizz: React.FC<IProps> = (props) => {
       }
       setConnection(connect)
       connect.invoke("JoinGroup",groupId, ownerId);
+      connect.invoke("GetCurrentQuizz",groupId);
     }
     createHubConnection();
   }, [])

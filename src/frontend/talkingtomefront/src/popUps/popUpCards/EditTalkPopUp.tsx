@@ -69,7 +69,7 @@ const EditTalkPopUp: React.FC<IProps> = (props) => {
       setSnackBarMessage("The talk's name is required");
     } else {
       props.onClose();
-      putTalk(json, id, tokenIdRdx);
+      putTalk('Talks/',json, id, tokenIdRdx);
       rootDispatcher.setChangeRequestRdx(changeRequestRdx + 1);
     }
   };

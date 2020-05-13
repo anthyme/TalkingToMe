@@ -109,5 +109,26 @@ namespace App.TalkCreation.Data
                 Console.WriteLine("error modifiying talk");
             }
         }
+
+        public void ChangeTalkUrl(dynamic data, int id)
+        {
+            TalkContextFactory talkFactory = new TalkContextFactory(_connectionString);
+            using TalkContext context = talkFactory.create();
+            try
+            {
+                string talkurl = data[0].url;
+                Console.WriteLine("talkurl");
+                Talk changeTalk = context.Talks.FirstOrDefault(item => item.Id == id);
+                changeTalk.Url = (talkurl.Equals("NULL"))? changeTalk.Url = null: changeTalk.Url = talkurl;
+                context.Talks.Update(changeTalk);
+                context.SaveChanges();
+            }
+            catch (ArgumentOutOfRangeException e)
+            {
+                Console.WriteLine("error modifiying talk url");
+            }
+        }
+
+        
     }
 }

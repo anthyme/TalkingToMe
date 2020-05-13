@@ -11,7 +11,6 @@ namespace App.TalkAnswer.Hubs
 {
     public class TalkAnswerHub : Hub
     {
-        private TalkSessionRepo _talkSessionRepo;
         private readonly UserServices _userServices;
         public TalkAnswerHub(UserServices userServices)
         {
@@ -22,9 +21,7 @@ namespace App.TalkAnswer.Hubs
             await Groups.AddToGroupAsync(Context.ConnectionId, groupId);
             Console.WriteLine("Owner context Id: " + Context.ConnectionId);
             _userServices.ChangeTalkById(groupId, talkId);
-            string placeholder = "placeholder";
-            var clients = Clients.Group(groupId).ToString();
-            await Clients.All.SendAsync("NewChannel", clients);
+            await Clients.All.SendAsync("NewChannel", "New Channel created");
         }
 
         //CHANGE DB SO TALKS HAS A CURRENT QUESTION ACTIVE
@@ -35,9 +32,11 @@ namespace App.TalkAnswer.Hubs
             await Clients.OthersInGroup(groupId).SendAsync("JoinedGroup", Context.ConnectionId);
         }
 
-        public async void GetCurrentQuizz(string groupId, int quizzId)
+        public async void GetCurrentQuizz(string groupId)
         {
             await Groups.AddToGroupAsync(Context.ConnectionId, groupId);
+            TalkSessionRepo _talkSessionRepo = TalkSessionRepo.GetInstance();
+            int quizzId = _talkSessionRepo.Get(groupId).currentQuizz;
             await Clients.User(Context.ConnectionId).SendAsync("SetCurrentQuizz", quizzId);
         }
 

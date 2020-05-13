@@ -7,10 +7,10 @@ namespace App.TalkAnswer.SaveTalkProgress
 {
     public class Session: Value
     {
-        public long groupid { get; }
-        public string currentQuizz { get; }
+        public string groupid { get; }
+        public int currentQuizz { get; }
 
-        public Session(long Groupid, string CurrentQuizz)
+        public Session(string Groupid, int CurrentQuizz)
         {
             groupid = Groupid;
             currentQuizz = CurrentQuizz;
@@ -33,10 +33,10 @@ namespace App.TalkAnswer.SaveTalkProgress
         {
             return HashCode.Combine(groupid, currentQuizz);
         }
-        public static readonly Session Invalid = new Session(-1, "Invalid");
+        public static readonly Session Invalid = new Session("Invalid", -1);
         public static Session Add(Session other)
         {
-            if (other.groupid == -1
+            if (other.groupid == "-1"
                 || other.Equals(Invalid))
                 return Session.Invalid;
             return new Session(other.groupid, other.currentQuizz);

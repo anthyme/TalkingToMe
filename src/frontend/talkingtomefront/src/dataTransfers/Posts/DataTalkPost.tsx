@@ -10,15 +10,17 @@ export const postTalk = async (jsonTalk: any, tokenId:string) => {
   await fetch(constants.urlDataBase + 'Talks', requestOptions);
 };
 
-export const putTalk = async (jsonTalk: any, id: number, tokenId:string) => {
+export const putTalk = async (apiUrl:string, jsonTalk: any, id: number, tokenId:string) => {
   let sentJson = jsonTalk;
   const requestOptions = {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' , "AuthorizationToken" : `${tokenId}`},
     body: JSON.stringify(sentJson),
   };
-  await fetch(constants.urlDataBase + 'Talks/' + id, requestOptions);
+  await fetch(constants.urlDataBase + apiUrl + id, requestOptions);
 };
+
+
 
 export const deleteTalkById = async (id: number, tokenId:string) => {
   const requestOptions = {

@@ -7,27 +7,22 @@ namespace App.TalkAnswer.SaveTalkProgress
 {
     sealed class TalkSessionRepo
     {
-        private static Dictionary<long, Session> Sessions { get; }
+        private static Dictionary<string, Session> Sessions { get; }
         private static readonly object padlock = new object();
-        private static TalkSessionRepo instance= null;
-        TalkSessionRepo()
+        private TalkSessionRepo()
         {
         }
-        public static TalkSessionRepo Instance
+        private static TalkSessionRepo _talkSessionRepo;
+        public static TalkSessionRepo GetInstance()
         {
-            get
+            if (_talkSessionRepo == null)
             {
-                lock (padlock)
-                {
-                    if (instance == null)
-                    {
-                        instance = new TalkSessionRepo();
-                    }
-                    return instance;
-                }
+                _talkSessionRepo = new TalkSessionRepo();
             }
+            return _talkSessionRepo;
         }
-        public Session Get(long sessionId)
+
+        public Session Get(string sessionId)
         {
             return Sessions[sessionId];
         }
@@ -36,7 +31,7 @@ namespace App.TalkAnswer.SaveTalkProgress
             Sessions[session.groupid] = session;
         }
 
-        public void EndSession(long sessionId)
+        public void EndSession(string sessionId)
         {
             if (Sessions.ContainsKey(sessionId)) {
                 Sessions.Remove(sessionId);

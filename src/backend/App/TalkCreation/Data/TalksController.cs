@@ -68,6 +68,14 @@ namespace App.TalkCreation.Data
             return talks;
         }
 
+        [HttpPut("ChangeUrl/{id}")]
+        public async Task<string> PutTalkurl([FromBody]dynamic talk, int id)
+        {
+            var parsedTalk = JArray.Parse(talk.ToString());
+            _talkServicePost.ChangeTalkUrl(parsedTalk, id);
+            return "{\"response\":\"Talk modified\"}";
+        }
+
         [HttpPut("{id}")]
         public async Task<string> PutQuizz([FromBody]dynamic talk)
         {
