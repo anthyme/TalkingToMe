@@ -43,6 +43,7 @@ namespace App.TalkCreation.Data
         {
             TalkContextFactory talkFactory = new TalkContextFactory(_connectionString);
             using TalkContext context = talkFactory.create();
+            List<QuestionDto> listDto = new List<QuestionDto>();
             try
             {
                 List<Question> response = await context.Questions
@@ -50,7 +51,6 @@ namespace App.TalkCreation.Data
                         .Include(p => p.Answers)
                         .ToListAsync();
 
-                List<QuestionDto> listDto = new List<QuestionDto>();
                 foreach (Question quest in response)
                 {
                     QuestionDto dto =
@@ -70,7 +70,9 @@ namespace App.TalkCreation.Data
             }
             catch (ArgumentOutOfRangeException e)
             {
-                return null;
+                QuestionDto dto =new QuestionDto{Id = -1};
+                listDto.Add(dto);
+                return listDto;
             }
         }
     }

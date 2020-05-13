@@ -7,6 +7,9 @@ using System.Linq;
 using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
 using App.TalkAnswer.SaveTalkProgress;
+using App.TalkCreation.Data.DataFetch.Dto;
+using App.TalkCreation.Data.DataFetch;
+using App.TalkCreation.Data;
 
 namespace App.TalkAnswer
 {
@@ -14,10 +17,14 @@ namespace App.TalkAnswer
     {
         private string _connectionString;
         private readonly ILogger _logger;
-        public UserServices(IConfiguration configuration, ILogger<UserServices> logger)
+        private readonly QuizzServiceFetch _quizzServiceFetch;
+        private readonly QuestionServiceFetch _questionServiceFetch;
+        public UserServices(IConfiguration configuration, ILogger<UserServices> logger, QuizzServiceFetch quizzServiceFetch, QuestionServiceFetch questionServiceFetch)
         {
             _connectionString = configuration.GetConnectionString("DBString");
             _logger = logger;
+            _quizzServiceFetch =quizzServiceFetch;
+            _questionServiceFetch = questionServiceFetch;
         }
 
 
