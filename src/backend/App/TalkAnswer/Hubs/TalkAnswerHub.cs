@@ -6,18 +6,21 @@ using System.Threading.Tasks;
 using App.TalkCreation.Data;
 using App.TalkCreation.Models;
 using App.TalkAnswer.SaveTalkProgress;
+using App.TalkCreation.Data.DataFetch.Dto;
 
 namespace App.TalkAnswer.Hubs
 {
     public class TalkAnswerHub : Hub
     {
         private readonly UserServices _userServices;
-        public TalkAnswerHub(UserServices userServices)
+        private readonly QuestionServiceFetch _questionServiceFetch;
+        public TalkAnswerHub(UserServices userServices, QuestionServiceFetch questionServiceFetch)
         {
+            _questionServiceFetch = questionServiceFetch;
             _userServices = userServices;
         }
-        public async void CreateTalkGroup(string groupId,int talkId)
-       {
+        public async void CreateTalkGroup(string groupId, int talkId)
+        {
             await Groups.AddToGroupAsync(Context.ConnectionId, groupId);
             Console.WriteLine("Owner context Id: " + Context.ConnectionId);
             _userServices.ChangeTalkById(groupId, talkId);
@@ -40,10 +43,24 @@ namespace App.TalkAnswer.Hubs
             await Clients.User(Context.ConnectionId).SendAsync("SetCurrentQuizz", quizzId);
         }
 
-        public async void StartQuizz(string groupId, int quizzId)
+        public async Task StartQuizz(string groupId, int quizzId, string quizzName)
         {
             Console.WriteLine("Sending starting quizz info to group: " + groupId);
-            await Clients.Group(groupId).SendAsync("StartQuizz", quizzId);
+            List<QuestionDto> quests = await _questionServiceFetch.getQuestionsDtoByQuizzId(quizzId);
+            await Clients.Group(groupId).SendAsync("StartQuizz", quests, quizzId, quizzName);
+
         }
     }
+
+  /*  public class HubEventEmitter
+    {
+        private IHubContext<TalkAnswerHub> _hubContext;
+        private readonly QuestionServiceFetch _questionServiceFetch;
+
+        public HubEventEmitter(QuestionServiceFetch questionServiceFetch, IHubContext<TalkAnswerHub> hubContext)
+        {
+            _hubContext = hubContext;
+            _questionServiceFetch = questionServiceFetch;
+        }
+    }*/
 }

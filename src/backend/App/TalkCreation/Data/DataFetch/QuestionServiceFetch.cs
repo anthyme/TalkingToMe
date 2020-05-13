@@ -20,7 +20,8 @@ namespace App.TalkCreation.Data
         {
             _connectionString = configuration.GetConnectionString("DBString");
         }
-        public async Task<IEnumerable<Question>> getQuestionsByQuizzId(int quizzId)
+
+        public async Task<List<Question>> getQuestionsByQuizzId(int quizzId)
         {
             TalkContextFactory talkFactory = new TalkContextFactory(_connectionString);
             using TalkContext context = talkFactory.create();
@@ -31,7 +32,43 @@ namespace App.TalkCreation.Data
                         .Include(p => p.Answers)
                         .ToListAsync();
                 return response;
-            } catch (ArgumentOutOfRangeException e)
+            }
+            catch (ArgumentOutOfRangeException e)
+            {
+                return null;
+            }
+        }
+
+        public async Task<List<QuestionDto>> getQuestionsDtoByQuizzId(int quizzId)
+        {
+            TalkContextFactory talkFactory = new TalkContextFactory(_connectionString);
+            using TalkContext context = talkFactory.create();
+            try
+            {
+                List<Question> response = await context.Questions
+                        .Where(p => p.QuizzId == quizzId)
+                        .Include(p => p.Answers)
+                        .ToListAsync();
+
+                List<QuestionDto> listDto = new List<QuestionDto>();
+                foreach (Question quest in response)
+                {
+                    QuestionDto dto =
+                        new QuestionDto
+                        {
+                            Id = quest.Id,
+                            Question = quest.Quest,
+                            CorrectAn = quest.CorrectAn,
+                            Type = quest.Type
+                        };
+                    List<string> anss = new List<string>();
+                    foreach (Answer ans in quest.Answers) anss.Add(ans.Response);
+                    dto.Answers = anss;
+                    listDto.Add(dto);
+                }
+                return listDto;
+            }
+            catch (ArgumentOutOfRangeException e)
             {
                 return null;
             }
