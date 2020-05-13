@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
+using App.TalkAnswer.SaveTalkProgress;
 
 namespace App.TalkAnswer
 {
@@ -19,15 +20,23 @@ namespace App.TalkAnswer
             _logger = logger;
         }
 
+
         public void ChangeTalkById(string groupId, int talkId)
         {
             TalkContextFactory talkFactory = new TalkContextFactory(_connectionString);
             using TalkContext context = talkFactory.create();
+            TalkSessionRepo _talkSessionRepo = TalkSessionRepo.GetInstance();
             try 
             {
                 Talk modTalk = context.Talks.Where(p => p.Id == talkId).FirstOrDefault();
                 modTalk.Url = groupId;
                 context.SaveChanges();
+                if (talkId != -1)
+                {
+                    Session session = new Session(groupId, -1);
+                    _talkSessionRepo.Save(session);
+                }
+                Console.WriteLine("Change Talk");
             }
             catch (Exception e)
             {

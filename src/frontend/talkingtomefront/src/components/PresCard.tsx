@@ -1,45 +1,79 @@
-import React, { useState } from 'react';
-import Button from '@material-ui/core/Button';
-import Card from '@material-ui/core/Card';
-import CardActions from '@material-ui/core/CardActions';
-import CardContent from '@material-ui/core/CardContent';
-import Typography from '@material-ui/core/Typography';
-import EditTalkPopUp from '../popUps/popUpCards/EditTalkPopUp';
-import { Tooltip, Grid } from '@material-ui/core';
-import { useHistory } from 'react-router-dom';
-import PopupDelete from '../editQuizz/PopupDelete';
-import EditQuizzPopUp from '../popUps/popUpCards/EditQuizzPopUp';
-import AddTalkPopUp from '../popUps/popUpCards/AddTalkPopUp';
+import React, { useState } from 'react'
+import Button from '@material-ui/core/Button'
+import Card from '@material-ui/core/Card'
+import CardActions from '@material-ui/core/CardActions'
+import CardContent from '@material-ui/core/CardContent'
+import Typography from '@material-ui/core/Typography'
+import EditTalkPopUp from '../popUps/popUpCards/EditTalkPopUp'
+import { Tooltip, Grid } from '@material-ui/core'
+import { useHistory } from 'react-router-dom'
+import PopupDelete from '../editQuizz/PopupDelete'
+import EditQuizzPopUp from '../popUps/popUpCards/EditQuizzPopUp'
+import AddTalkPopUp from '../popUps/popUpCards/AddTalkPopUp'
+import { putTalk } from '../dataTransfers/Posts/DataTalkPost'
+import { InitialState } from '../store/reducers/MainReducer'
+import { v4 as uuidv4 } from 'uuid'
+import { useSelector, useDispatch } from 'react-redux'
+import { RootDispatcher } from '../store/MainDispatcher'
 
 interface IProps {
-  card: any;
-  type: string;
+  card: any
+  type: string
 }
 
+interface StateProps {
+  tokenIdRdx: string;
+  changeRequestRdx: number;
+}
 // TODO -Change Image and Add onclickModifier
 const PresCard: React.FC<IProps> = (props) => {
-  const card = props.card;
-  const type = props.type;
-  const history = useHistory();
+  const card = props.card
+  const type = props.type
+  const history = useHistory()
+  console.log(card);
+  const [open, setOpen] = useState(false)
+  const [addTalkOpen, setAddTalkOpen] = useState(false)
 
-  const [open, setOpen] = useState(false);
-  const [addTalkOpen, setAddTalkOpen] = useState(false);
+  const { tokenIdRdx, changeRequestRdx } = useSelector<InitialState, StateProps>(
+    (state: InitialState) => {
+      return {
+        tokenIdRdx: state.tokenIdRdx,
+        changeRequestRdx: state.changeRequestRdx,
+      };
+    },
+  );
+  const dispatch = useDispatch();
+  const rootDispatcher = new RootDispatcher(dispatch);
 
   const goToTalk = () => {
-    history.push(`/Talk?talkId=${card.id}`);
-  };
+    history.push(`/Talk?talkId=${card.id}&groupId=${uuidv4()}`)
+  }
+  
+  const resumeTalk = () => {
+    history.push(`/Talk?talkId=${card.id}&groupId=${card.url}`)
+  }
 
   const handleClickOpen = () => {
-    setOpen(true);
-  };
+    setOpen(true)
+  }
 
   const handleAddTalkOpen = () => {
-    setAddTalkOpen(true);
-  };
+    setAddTalkOpen(true)
+  }
+
+  const handleStop = async() => {
+    const json = [
+      {
+        url: "NULL"
+      },
+    ];
+    await putTalk('Talks/ChangeUrl/',json, card.id, tokenIdRdx);
+    await rootDispatcher.setChangeRequestRdx(changeRequestRdx+1);
+  }
 
   const handleClose = () => {
-    open ? setOpen(false) : setAddTalkOpen(false);
-  };
+    open ? setOpen(false) : setAddTalkOpen(false)
+  }
 
   switch (type) {
     case 'Talk':
@@ -66,17 +100,38 @@ const PresCard: React.FC<IProps> = (props) => {
                     open={open}
                   />
                 )}
-                <Button size="small" color="primary" onClick={goToTalk}>
-                  Start
-                </Button>
-                <Button size="small" color="primary" onClick={handleClickOpen}>
-                  Edit
-                </Button>
+                {card.url===null ? (
+                  <div>
+                    <Button size="small" color="primary" onClick={goToTalk}>
+                      Start
+                    </Button>
+                    <Button
+                      size="small"
+                      color="primary"
+                      onClick={handleClickOpen}
+                    >
+                      Edit
+                    </Button>
+                  </div>
+                ) : (
+                  <div>
+                    <Button size="small" color="primary" onClick={resumeTalk}>
+                      Resume
+                    </Button>
+                    <Button
+                      size="small"
+                      color="secondary"
+                      onClick={handleStop}
+                    >
+                      Stop
+                    </Button>
+                  </div>
+                )}
               </CardActions>
             </Card>
           </Grid>
         </>
-      );
+      )
     case 'Quizz':
       return (
         <>
@@ -122,9 +177,9 @@ const PresCard: React.FC<IProps> = (props) => {
             </Card>
           </Grid>
         </>
-      );
+      )
     default:
-      return <></>;
+      return <></>
   }
-};
-export default PresCard;
+}
+export default PresCard
