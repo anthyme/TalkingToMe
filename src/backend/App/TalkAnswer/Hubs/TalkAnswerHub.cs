@@ -7,6 +7,7 @@ using App.TalkCreation.Data;
 using App.TalkCreation.Models;
 using App.TalkAnswer.SaveTalkProgress;
 using App.TalkCreation.Data.DataFetch.Dto;
+using App.TalkCreation.Data.DataFetch;
 
 namespace App.TalkAnswer.Hubs
 {
@@ -14,10 +15,12 @@ namespace App.TalkAnswer.Hubs
     {
         private readonly UserServices _userServices;
         private readonly QuestionServiceFetch _questionServiceFetch;
-        public TalkAnswerHub(UserServices userServices, QuestionServiceFetch questionServiceFetch)
+        private readonly QuizzServiceFetch _quizzServiceFetch;
+        public TalkAnswerHub(UserServices userServices, QuestionServiceFetch questionServiceFetch, QuizzServiceFetch quizzServiceFetch)
         {
             _questionServiceFetch = questionServiceFetch;
             _userServices = userServices;
+            _quizzServiceFetch = quizzServiceFetch;
         }
         public async void CreateTalkGroup(string groupId, int talkId)
         {
@@ -35,32 +38,24 @@ namespace App.TalkAnswer.Hubs
             await Clients.OthersInGroup(groupId).SendAsync("JoinedGroup", Context.ConnectionId);
         }
 
-        public async void GetCurrentQuizz(string groupId)
+        public async Task GetCurrentQuizz(string groupId)
         {
-            await Groups.AddToGroupAsync(Context.ConnectionId, groupId);
             TalkSessionRepo _talkSessionRepo = TalkSessionRepo.GetInstance();
             int quizzId = _talkSessionRepo.Get(groupId).currentQuizz;
-            await Clients.User(Context.ConnectionId).SendAsync("SetCurrentQuizz", quizzId);
+            List<QuestionDto> quests = await _questionServiceFetch.getQuestionsDtoByQuizzId(quizzId);
+            QuizzDTO quizz = await _quizzServiceFetch.returnQuizzById(quizzId);
+            string quizzName = (quizz == null)? "" :quizz.Name;
+            await Clients.Client(Context.ConnectionId).SendAsync("SetCurrentQuizz", quests, quizzId, quizzName);
         }
 
         public async Task StartQuizz(string groupId, int quizzId, string quizzName)
         {
             Console.WriteLine("Sending starting quizz info to group: " + groupId);
+            TalkSessionRepo _talkSessionRepo = TalkSessionRepo.GetInstance();
+            _talkSessionRepo.Update(groupId, quizzId);
             List<QuestionDto> quests = await _questionServiceFetch.getQuestionsDtoByQuizzId(quizzId);
             await Clients.Group(groupId).SendAsync("StartQuizz", quests, quizzId, quizzName);
 
         }
     }
-
-  /*  public class HubEventEmitter
-    {
-        private IHubContext<TalkAnswerHub> _hubContext;
-        private readonly QuestionServiceFetch _questionServiceFetch;
-
-        public HubEventEmitter(QuestionServiceFetch questionServiceFetch, IHubContext<TalkAnswerHub> hubContext)
-        {
-            _hubContext = hubContext;
-            _questionServiceFetch = questionServiceFetch;
-        }
-    }*/
 }

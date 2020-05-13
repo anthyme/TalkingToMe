@@ -7,7 +7,7 @@ namespace App.TalkAnswer.SaveTalkProgress
 {
     sealed class TalkSessionRepo
     {
-        private static Dictionary<string, Session> Sessions { get; }
+        private static Dictionary<string, Session> Sessions = new Dictionary<string, Session>();
         private static readonly object padlock = new object();
         private TalkSessionRepo()
         {
@@ -24,11 +24,41 @@ namespace App.TalkAnswer.SaveTalkProgress
 
         public Session Get(string sessionId)
         {
-            return Sessions[sessionId];
+            try
+            {
+                Session session;
+                Sessions.TryGetValue(sessionId, out session);
+                return session;
+            }
+            catch(Exception e)
+            {
+                return Session.Invalid;
+            }
+        }
+
+        public void Update(string groupId, int quizzId)
+        {
+            try
+            {
+                if (Sessions.ContainsKey(groupId))
+                {
+                    Sessions[groupId].currentQuizz = quizzId;
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("The session could not be updated");
+            }
         }
         public void Save(Session session)
         {
-            Sessions[session.groupid] = session;
+            try
+            {
+                Sessions.Add(session.groupid, session);
+            } catch (Exception e)
+            {
+                Console.WriteLine("The session could not be added to the dictionnary");
+            }
         }
 
         public void EndSession(string sessionId)

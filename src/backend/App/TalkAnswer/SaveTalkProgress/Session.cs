@@ -8,7 +8,7 @@ namespace App.TalkAnswer.SaveTalkProgress
     public class Session: Value
     {
         public string groupid { get; }
-        public int currentQuizz { get; }
+        public int currentQuizz { get; set; }
 
         public Session(string Groupid, int CurrentQuizz)
         {

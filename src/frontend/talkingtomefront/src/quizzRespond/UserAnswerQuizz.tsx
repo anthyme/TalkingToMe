@@ -34,10 +34,15 @@ const UserAnswerQuizz: React.FC<IProps> = (props) => {
         showQuestions(quests);
       },
     );
-    connection.on('SetCurrentQuiz', function (responseData: any) {
-      if (responseData === -1) {
+    connection.on('SetCurrentQuizz',(quests: any, quizzId: number, quizzName: string) => {
+      console.log("Entered setCurrenQuizz")
+      if(quizzId!==-1){
+        setQuizzId(quizzId);
+        setQuizzName(quizzName);
+        showQuestions(quests);
       }
-    });
+    },
+    );
   }
 
   const showQuestions = (data: any) => {
