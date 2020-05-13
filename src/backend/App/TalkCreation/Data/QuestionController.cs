@@ -62,7 +62,7 @@ namespace App.TalkCreation.Data
         [HttpGet("fetchQuestionsByQuizzId/{quizzId}")] //Fetch custom to get all questions from a quizz
         public async Task<IEnumerable<Question>> fetchTalkAndQuizzes(int quizzId)
         {
-            Task<IEnumerable<Question>> quests = _questionServiceFetch.getQuestionsByQuizzId(quizzId);
+            Task<List<Question>> quests = _questionServiceFetch.getQuestionsByQuizzId(quizzId);
             return await quests;
         }
 

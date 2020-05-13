@@ -11,6 +11,7 @@ type QuestionInterfaceProps = {
   typeQuest: string;
   correctAn: string;
   answers: { response: string }[];
+  isPreview: boolean;
 };
 
 const QuestionInterface = ({
@@ -18,6 +19,7 @@ const QuestionInterface = ({
   typeQuest,
   answers,
   correctAn,
+  isPreview,
 }: QuestionInterfaceProps) => {
   const useStyles = makeStyles((theme) => ({
     typeStyle: {
@@ -62,7 +64,7 @@ const QuestionInterface = ({
                   }
                   control={<Radio />}
                   label=""
-                  disabled={true}
+                  disabled={isPreview}
                 />
                 {a}
               </div>
@@ -70,8 +72,8 @@ const QuestionInterface = ({
           </RadioGroup>
         ) : (
           <textarea
-            value="Answer placeholder"
-            disabled={true}
+            value={isPreview ? 'Answer placeholder' : ''}
+            disabled={isPreview}
             rows={5}
             cols={100}
             style={{ resize: 'none' }}
