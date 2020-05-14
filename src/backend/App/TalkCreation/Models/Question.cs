@@ -1,4 +1,5 @@
-﻿using System;
+﻿using App.TalkAnswer.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -13,6 +14,7 @@ namespace App.TalkCreation.Models
         public String Quest { get; set; }
         public String Type { get; set; }
         public ICollection<Answer> Answers { get; set; }
+        public ICollection<UserAnswer> UserAnswers { get; set; }
         public String CorrectAn { get; set; }
 
 

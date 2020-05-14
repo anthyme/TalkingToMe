@@ -30,7 +30,6 @@ const PresCard: React.FC<IProps> = (props) => {
   const card = props.card
   const type = props.type
   const history = useHistory()
-  console.log(card);
   const [open, setOpen] = useState(false)
   const [addTalkOpen, setAddTalkOpen] = useState(false)
 
@@ -154,6 +153,7 @@ const PresCard: React.FC<IProps> = (props) => {
                     quizz={card}
                     onClose={handleClose}
                     open={open}
+                    editing={true}
                   />
                 )}
                 {addTalkOpen && (

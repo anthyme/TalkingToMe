@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 import { InitialState } from '../store/reducers/MainReducer';
 import { v4 as uuidv4 } from 'uuid';
 import { getQuizzById } from '../dataTransfers/Fetchs/DataQuizzFetch';
-import { HubConnection } from '@aspnet/signalr';
+import { HubConnectionBuilder, HttpTransportType, HubConnection } from '@microsoft/signalr'
 import QuestionInterface from '../talk/questionsPreview/QuestionInterface';
 import {
   Typography,
@@ -41,16 +41,13 @@ const UserAnswerQuizz: React.FC<IProps> = (props) => {
         showQuestions(quests);
       },
     );
-    connection.on(
-      'SetCurrentQuizz',
-      (quests: any, quizzId: number, quizzName: string) => {
-        console.log('Entered setCurrenQuizz');
-        if (quizzId !== -1) {
-          setQuizzId(quizzId);
-          setQuizzName(quizzName);
-          showQuestions(quests);
-        }
-      },
+    connection.on('SetCurrentQuizz',(quests: any, quizzId: number, quizzName: string) => {
+      if(quizzId!==-1){
+        setQuizzId(quizzId);
+        setQuizzName(quizzName);
+        showQuestions(quests);
+      }
+    },
     );
   }
 

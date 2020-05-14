@@ -23,12 +23,12 @@ namespace App.TalkAnswer.SaveTalkProgress
             return _talkSessionRepo;
         }
 
-        public Session Get(string sessionId)
+        public Session Get(string groupId)
         {
             try
             {
                 Session session;
-                Sessions.TryGetValue(sessionId, out session);
+                Sessions.TryGetValue(groupId, out session);
                 return session;
             }
             catch (Exception e)
@@ -93,15 +93,13 @@ namespace App.TalkAnswer.SaveTalkProgress
             }
         }
 
-        public void EndSession(string sessionId)
+        public void EndSession(string groupId)
         {
-            if (Sessions.ContainsKey(sessionId))
+            if (Sessions.ContainsKey(groupId)) {
+                Sessions.Remove(groupId);
+            } else
             {
-                Sessions.Remove(sessionId);
-            }
-            else
-            {
-                throw new System.InvalidOperationException("The key " + sessionId + " does not exist in recorded sessions");
+                throw new System.InvalidOperationException("The key "+ groupId + " does not exist in recorded sessions" );
             }
         }
     }

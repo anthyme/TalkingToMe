@@ -8,6 +8,7 @@ import QuizzCreator from '../../quizzCreation/QuizzCreator';
 import { InitialState } from '../../store/reducers/MainReducer';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootDispatcher } from '../../store/MainDispatcher';
+import EditQuizzPopUp from './EditQuizzPopUp';
 
 interface StateProps {
   changeRequestRdx: number;
@@ -55,7 +56,14 @@ function CreateQuizzPopUp() {
         <DialogContent>
           <>
             <DialogContent>
-              <QuizzCreator />
+            {open && (
+                  <EditQuizzPopUp
+                    quizz={-1}
+                    onClose={handleClose}
+                    open={open}
+                    editing={false}
+                  />
+                )}
             </DialogContent>
           </>
         </DialogContent>
