@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-
+using App.TalkAnswer.SaveTalkProgress;
 
 namespace App.TalkCreation.Data
 {
@@ -119,9 +119,15 @@ namespace App.TalkCreation.Data
                 string talkurl = data[0].url;
                 Console.WriteLine("talkurl");
                 Talk changeTalk = context.Talks.FirstOrDefault(item => item.Id == id);
+                string oldTalkUrl = changeTalk.Url;
                 changeTalk.Url = (talkurl.Equals("NULL"))? changeTalk.Url = null: changeTalk.Url = talkurl;
                 context.Talks.Update(changeTalk);
                 context.SaveChanges();
+                if (talkurl.Equals("NULL"))
+                {
+                   TalkSessionRepo _talkSessionRepo = TalkSessionRepo.GetInstance();
+                   _talkSessionRepo.EndSession(oldTalkUrl);
+                }
             }
             catch (ArgumentOutOfRangeException e)
             {

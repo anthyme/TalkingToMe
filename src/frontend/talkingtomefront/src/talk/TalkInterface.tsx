@@ -14,7 +14,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { InitialState } from '../store/reducers/MainReducer';
 import { useSelector } from 'react-redux';
 import { siteUrl } from '../constants';
-import { HubConnection } from '@aspnet/signalr';
+import { HubConnectionBuilder, HttpTransportType, HubConnection } from '@microsoft/signalr'
 
 interface StateProps {
   userIdRdx: string;
@@ -54,15 +54,15 @@ const TalkInterface = () => {
     }
   };
   if (connection !== undefined) {
-    connection.on('JoinedGroup', function (responseData) {
+    connection.on('JoinedGroup', function (responseData: string) {
       console.log('A new User has joined the channel: ' + responseData);
     });
 
-    connection.on('NewChannel', function (responseData) {
+    connection.on('NewChannel', function (responseData: string) {
       console.log('The new channel is: ' + responseData);
     });
 
-    connection.on('RequestCurrentQuizz', function (responseData) {
+    connection.on('RequestCurrentQuizz', function (responseData: string) {
       connection.invoke('GetCurrentQuizz', groupId, quizzId);
     });
   }

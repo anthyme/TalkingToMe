@@ -63,7 +63,6 @@ export default function SignIn() {
     const userId: string = await checkUser(googleJson, response.tokenId);
     await rootDispatcher.setUserIdRdx(userId);
     await rootDispatcher.setTokenIdRdx(response.tokenId);
-    console.log(response.tokenId);
     if (userId !== '-1') {
       setSnackBarMessage('');
       history.push('/Menu');

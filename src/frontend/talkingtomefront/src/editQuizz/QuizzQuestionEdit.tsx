@@ -17,6 +17,7 @@ import HighlightOffIcon from '@material-ui/icons/HighlightOff';
 interface IProps {
   questionId: number;
   questionsJson: any;
+  editing: boolean;
 }
 
 interface StateProps {
@@ -36,7 +37,7 @@ const QuizzQuestionEdit: React.FC<IProps> = (props) => {
   const [show, setShow] = useState(true);
   const [questionId, setQuestionId] = useState(props.questionId);
   const questionsJson = props.questionsJson;
-
+  const editing = props.editing;
   const { currentAnswerRdx, currentAnswerIdRdx, questionIdRdx } = useSelector<
     InitialState,
     StateProps
@@ -135,19 +136,35 @@ const QuizzQuestionEdit: React.FC<IProps> = (props) => {
   };
 
   const loadQuestionJson = async (json: any) => {
-    let setZero = [];
-    for (var i = 0; i < questionsJson.answers.answers.length; i++) {
-      setZero.push(i);
+    if(editing){
+      let setZero = [];
+      for (var i = 0; i < questionsJson.answers.answers.length; i++) {
+        setZero.push(i);
+      }
+      setAnswersId(setZero);
+      setQuestionValue(questionsJson.question.questionValue);
+      setSelectedValue(questionsJson.type.selectedValue);
+      setValue(questionsJson.rightAnswer.value);
+      setAnswers(questionsJson.answers.answers);
+      setQuestionId(questionsJson.questionId.questionId);
+      setUpdateEnd(true);
+      setIsNew(false);
+    } else {
+      let setZero = [];
+      for (var i = 0; i < questionsJson.answers.length; i++) {
+        setZero.push(i);
+      }
+      setAnswersId(setZero);
+      setQuestionValue(questionsJson.question);
+      setSelectedValue(questionsJson.type);
+      setValue(questionsJson.rightAnswer);
+      setAnswers(questionsJson.answers);
+      setQuestionId(questionsJson.questionId);
+      setUpdateEnd(true);
+      setIsNew(true);
     }
-    setAnswersId(setZero);
-    setQuestionValue(questionsJson.question.questionValue);
-    setSelectedValue(questionsJson.type.selectedValue);
-    setValue(questionsJson.rightAnswer.value);
-    setAnswers(questionsJson.answers.answers);
-    setQuestionId(questionsJson.questionId.questionId);
-    setUpdateEnd(true);
-    setIsNew(false);
   };
+
   useEffect(() => {
     if (questionIdRdx === -1 && questionsJson.answers !== undefined) {
       loadQuestionJson(questionsJson);
