@@ -149,19 +149,9 @@ const QuizzQuestionEdit: React.FC<IProps> = (props) => {
       setQuestionId(questionsJson.questionId.questionId);
       setUpdateEnd(true);
       setIsNew(false);
-    } else {
-      let setZero = [];
-      for (var i = 0; i < questionsJson.answers.length; i++) {
-        setZero.push(i);
-      }
-      setAnswersId(setZero);
-      setQuestionValue(questionsJson.question);
-      setSelectedValue(questionsJson.type);
-      setValue(questionsJson.rightAnswer);
-      setAnswers(questionsJson.answers);
-      setQuestionId(questionsJson.questionId);
-      setUpdateEnd(true);
-      setIsNew(true);
+    }
+    if(!editing){
+      rootDispatcher.setQuestionIdRdx(0);
     }
   };
 

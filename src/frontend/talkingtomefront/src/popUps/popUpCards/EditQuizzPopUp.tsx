@@ -28,6 +28,7 @@ interface StateProps {
   questionRdx: Object
   changeRequestRdx: number
   tokenIdRdx: string
+  userIdRdx: string
 }
 
 const EditQuizzPopUp: React.FC<IProps> = (props) => {
@@ -44,32 +45,52 @@ const EditQuizzPopUp: React.FC<IProps> = (props) => {
     questionRdx,
     changeRequestRdx,
     tokenIdRdx,
+    userIdRdx
   } = useSelector<InitialState, StateProps>((state: InitialState) => {
     return {
       questionIdRdx: state.questionIdRdx,
       questionRdx: state.questionRdx,
       changeRequestRdx: state.changeRequestRdx,
       tokenIdRdx: state.tokenIdRdx,
+      userIdRdx: state.userIdRdx
     }
   })
   const dispatch = useDispatch()
   const rootDispatcher = new RootDispatcher(dispatch)
 
-  const showJson = () => {
-    console.log(questionsJson)
-  }
-  const PostOrPutQuizz = async () => {
-    if (editing) {
-      await putQuizz(questionsJson, quizzId, quizzName, tokenIdRdx)
-    } else {
-      await postQuizz(questionsJson, quizzId, quizzName, tokenIdRdx)
-    }
+  const reset = () => {
     setQuestionsId([0])
     setQuizzName('')
     setQuestionsJson([{}])
     rootDispatcher.setChangeRequestRdx(changeRequestRdx + 1)
   }
+  const PutQuizz = () => {
+    putQuizz(questionsJson, quizzId, quizzName, tokenIdRdx)
+    reset();
+  }
 
+  const PostQuizz = () => {
+    postQuizz(questionsJson, userIdRdx, quizzName, tokenIdRdx)
+    reset();
+  }
+
+  const createAsyncJson = async()=>{
+    let newQuestionJson = questionsJson
+    const questionValue = "";
+    const selectedValue= "";
+    const value= "";
+    const answers =["",""];
+    const questionId = 0;
+    newQuestionJson[0] = {
+      question: {questionValue},
+      type: {selectedValue},
+      answers: {answers},
+      rightAnswer: {value},
+      New: true,
+      questionId: {questionId}, 
+    }
+    return newQuestionJson;
+  }
   useEffect(() => {
     if (questionIdRdx !== -1) {
       let newQuestionJson = questionsJson
@@ -106,18 +127,12 @@ const EditQuizzPopUp: React.FC<IProps> = (props) => {
         })
       })
     } else {
-      let newQuestionJson = questionsJson
-      newQuestionJson[0] = {
-        question: '',
-        type: '',
-        answers: ['', ''],
-        rightAnswer: '',
-        New: true,
-        questionId: 0, 
+      createAsyncJson().then((newQuestionJson)=>{
+        setQuestionsJson(newQuestionJson)
+        setQuestionsId([0])
+        setBaseQuestions([0])  
       }
-      setQuestionsJson(newQuestionJson)
-      setQuestionsId([0])
-      setBaseQuestions([0])
+      )
     }
   }, [])
 
@@ -134,15 +149,27 @@ const EditQuizzPopUp: React.FC<IProps> = (props) => {
     rootDispatcher.setQuestionIdRdx(-1)
   }
 
-  const onSubmit = () => {
-    if (!quizzName || !questionsJson) {
-      setSnackBarMessage("The quizz's name is required")
+  const onSubmit = async () => {
+    if(editing){
+      if (!quizzName || !questionsJson) {
+        setSnackBarMessage("The quizz's name is required")
+      } else {
+        PutQuizz()
+        rootDispatcher.setAnswerIdRdx(-1)
+        rootDispatcher.setQuestionIdRdx(-1)
+        props.onClose()
+      }
     } else {
-      PostOrPutQuizz()
-      rootDispatcher.setAnswerIdRdx(-1)
-      rootDispatcher.setQuestionIdRdx(-1)
-      props.onClose()
+      if (!quizzName || !questionsJson) {
+        setSnackBarMessage("The quizz's name is required")
+      } else {
+        PostQuizz()
+        rootDispatcher.setAnswerIdRdx(-1)
+        rootDispatcher.setQuestionIdRdx(-1)
+        props.onClose()
+      }
     }
+
   }
 
   const handleQuestionChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -189,7 +216,7 @@ const EditQuizzPopUp: React.FC<IProps> = (props) => {
             onChange={handleQuestionChange}
             error={!quizzName && !!snackBarMessage}
           />
-          <QuizzEdit questionsID={questionsID} questionsJson={questionsJson} />
+          <QuizzEdit questionsID={questionsID} questionsJson={questionsJson} editing={editing}/>
         </DialogContent>
         <DialogActions className={classes.popUpActions}>
           <Tooltip
@@ -213,9 +240,6 @@ const EditQuizzPopUp: React.FC<IProps> = (props) => {
             </Button>
             <Button onClick={onSubmit} color="primary">
               Submit
-            </Button>
-            <Button onClick={showJson} color="primary">
-              show Json
             </Button>
           </div>
         </DialogActions>
