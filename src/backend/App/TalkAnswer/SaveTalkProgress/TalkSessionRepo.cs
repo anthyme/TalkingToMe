@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using App.TalkAnswer.Models;
 
 namespace App.TalkAnswer.SaveTalkProgress
 {
@@ -30,7 +31,7 @@ namespace App.TalkAnswer.SaveTalkProgress
                 Sessions.TryGetValue(sessionId, out session);
                 return session;
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 return Session.Invalid;
             }
@@ -50,12 +51,43 @@ namespace App.TalkAnswer.SaveTalkProgress
                 Console.WriteLine("The session could not be updated");
             }
         }
+
+        public void AddAnswers(string groupId, int quizzId, List<int> questIdList, List<string> answerList)
+        {
+            try
+            {
+                if (Sessions.ContainsKey(groupId))
+                {
+                    Dictionary<int, string> qADictTemp = new Dictionary<int, string>();
+                    for (int i = 0; i < answerList.Count; i++)
+                    {
+                        qADictTemp.Add(questIdList[i], answerList[i]);
+                    }
+                        int allAnswrsIndx = Sessions[groupId].allAnswers.FindIndex(qA => qA.quizzId == quizzId);
+                        if (allAnswrsIndx == -1)
+                        {
+                            List<Dictionary<int, string>> listAnswersTmp = new List<Dictionary<int, string>>();
+                            listAnswersTmp.Add(qADictTemp);
+                            Sessions[groupId].allAnswers.Add(new QuizzAnswers() { quizzId = quizzId, listAnswers = listAnswersTmp });
+                        }
+                        else
+                        {
+                            Sessions[groupId].allAnswers[allAnswrsIndx].listAnswers.Add(qADictTemp);
+                        }
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("The session could not be updated");
+            }
+        }
         public void Save(Session session)
         {
             try
             {
                 Sessions.Add(session.groupid, session);
-            } catch (Exception e)
+            }
+            catch (Exception e)
             {
                 Console.WriteLine("The session could not be added to the dictionnary");
             }
@@ -63,11 +95,13 @@ namespace App.TalkAnswer.SaveTalkProgress
 
         public void EndSession(string sessionId)
         {
-            if (Sessions.ContainsKey(sessionId)) {
-                Sessions.Remove(sessionId);
-            } else
+            if (Sessions.ContainsKey(sessionId))
             {
-                throw new System.InvalidOperationException("The key "+ sessionId+" does not exist in recorded sessions" );
+                Sessions.Remove(sessionId);
+            }
+            else
+            {
+                throw new System.InvalidOperationException("The key " + sessionId + " does not exist in recorded sessions");
             }
         }
     }

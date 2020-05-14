@@ -97,7 +97,7 @@ const QuestionInterface = ({
           </RadioGroup>
         ) : (
           <textarea
-            value={isPreview ? 'Answer placeholder' : response}
+            value={isPreview && !response ? 'Answer placeholder' : response}
             disabled={isPreview}
             rows={5}
             cols={100}

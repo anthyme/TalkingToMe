@@ -10,6 +10,7 @@ using App.TalkAnswer.SaveTalkProgress;
 using App.TalkCreation.Data.DataFetch.Dto;
 using App.TalkCreation.Data.DataFetch;
 using App.TalkCreation.Data;
+using App.TalkAnswer.Models;
 
 namespace App.TalkAnswer
 {
@@ -40,7 +41,7 @@ namespace App.TalkAnswer
                 context.SaveChanges();
                 if (talkId != -1)
                 {
-                    Session session = new Session(groupId, -1);
+                    Session session = new Session(groupId, -1, new List<QuizzAnswers> { new QuizzAnswers() { quizzId = -1, listAnswers = new List<Dictionary<int, string>> { new Dictionary<int, string>() } } });
                     _talkSessionRepo.Save(session);
                 }
                 Console.WriteLine("Change Talk");

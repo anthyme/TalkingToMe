@@ -55,7 +55,14 @@ namespace App.TalkAnswer.Hubs
             _talkSessionRepo.Update(groupId, quizzId);
             List<QuestionDto> quests = await _questionServiceFetch.getQuestionsDtoByQuizzId(quizzId);
             await Clients.Group(groupId).SendAsync("StartQuizz", quests, quizzId, quizzName);
+        }
 
+        public async void saveAnswers(string groupId, int quizzId, List<int> questIdList, List<string> answerList)
+        {
+            Console.WriteLine("Louis saveAnswer:", questIdList);
+            Console.WriteLine("Louis saveAnswer:", answerList);
+            TalkSessionRepo _talkSessionRepo = TalkSessionRepo.GetInstance();
+            _talkSessionRepo.AddAnswers(groupId, quizzId, questIdList, answerList);
         }
     }
 }
