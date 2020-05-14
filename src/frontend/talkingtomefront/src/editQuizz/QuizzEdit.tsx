@@ -24,6 +24,7 @@ const QuizzEdit: React.FC<IProps> = (props) => {
             key={qId}
             questionId={qId}
             questionsJson={questionsJson[questionsID.indexOf(qId)]}
+            editing={true}
           />
         ))}
       </div>

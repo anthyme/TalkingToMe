@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace App.TalkAnswer.Models
+namespace App.TalkAnswer.Dto
 {
     public class QuizzAnswers
     {

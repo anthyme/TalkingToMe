@@ -8,6 +8,7 @@ using App.TalkCreation.Models;
 using App.TalkAnswer.SaveTalkProgress;
 using App.TalkCreation.Data.DataFetch.Dto;
 using App.TalkCreation.Data.DataFetch;
+using App.TalkCreation.Data.DataPost;
 
 namespace App.TalkAnswer.Hubs
 {
@@ -16,11 +17,13 @@ namespace App.TalkAnswer.Hubs
         private readonly UserServices _userServices;
         private readonly QuestionServiceFetch _questionServiceFetch;
         private readonly QuizzServiceFetch _quizzServiceFetch;
-        public TalkAnswerHub(UserServices userServices, QuestionServiceFetch questionServiceFetch, QuizzServiceFetch quizzServiceFetch)
+        private readonly UserServicePost _userServicePost;
+        public TalkAnswerHub(UserServices userServices, QuestionServiceFetch questionServiceFetch, QuizzServiceFetch quizzServiceFetch, UserServicePost userServicePost)
         {
             _questionServiceFetch = questionServiceFetch;
             _userServices = userServices;
             _quizzServiceFetch = quizzServiceFetch;
+            _userServicePost = userServicePost;
         }
         public async void CreateTalkGroup(string groupId, int talkId)
         {
@@ -57,12 +60,17 @@ namespace App.TalkAnswer.Hubs
             await Clients.Group(groupId).SendAsync("StartQuizz", quests, quizzId, quizzName);
         }
 
-        public async void saveAnswers(string groupId, int quizzId, List<int> questIdList, List<string> answerList)
+        public async void SaveAnswers(string groupId, int quizzId, List<int> questIdList, List<string> answerList)
         {
-            Console.WriteLine("Louis saveAnswer:", questIdList);
-            Console.WriteLine("Louis saveAnswer:", answerList);
             TalkSessionRepo _talkSessionRepo = TalkSessionRepo.GetInstance();
             _talkSessionRepo.AddAnswers(groupId, quizzId, questIdList, answerList);
+        }
+
+        public async void StopQuizz(string groupId)
+        {
+            TalkSessionRepo _talkSessionRepo = TalkSessionRepo.GetInstance();
+            CurrentSession currentSession = _talkSessionRepo.Get(groupId);
+            _userServicePost.SaveSessionAndAnswers(currentSession);
         }
     }
 }

@@ -14,7 +14,11 @@ import { v4 as uuidv4 } from 'uuid';
 import { InitialState } from '../store/reducers/MainReducer';
 import { useSelector } from 'react-redux';
 import { siteUrl } from '../constants';
-import { HubConnectionBuilder, HttpTransportType, HubConnection } from '@microsoft/signalr'
+import {
+  HubConnectionBuilder,
+  HttpTransportType,
+  HubConnection,
+} from '@microsoft/signalr';
 
 interface StateProps {
   userIdRdx: string;
@@ -22,16 +26,16 @@ interface StateProps {
 }
 
 const TalkInterface = () => {
-  const url = new URL(window.location.href)
-  const [quizzId, setQuizzId] = useState('0')
-  const [listQuizzes, setListQuizzes] = useState([{}])
-  const [talkName, setTalkName] = useState('')
-  const [showQuestion, setShowQuestion] = useState(false)
+  const url = new URL(window.location.href);
+  const [quizzId, setQuizzId] = useState('0');
+  const [listQuizzes, setListQuizzes] = useState([{}]);
+  const [talkName, setTalkName] = useState('');
+  const [showQuestion, setShowQuestion] = useState(false);
   const [connection, setConnection] = useState<HubConnection>();
-  const [questionsData, setQuestionsData] = useState([{}])
+  const [questionsData, setQuestionsData] = useState([{}]);
   const [groupId, setGroupId] = useState(url.searchParams.get('groupId'));
- 
-  
+  const [quizzRunning, setQuizzRunning] = useState(false);
+
   const { userIdRdx, tokenIdRdx } = useSelector<InitialState, StateProps>(
     (state: InitialState) => {
       return {
@@ -42,9 +46,8 @@ const TalkInterface = () => {
   );
   const qrString = `${siteUrl}TalkAnswer?talkId=${groupId}&ownerId=${userIdRdx}`;
 
- 
-  const TalkId: string | null = url.searchParams.get('talkId')
-  const history = useHistory()
+  const TalkId: string | null = url.searchParams.get('talkId');
+  const history = useHistory();
 
   //Buttons
   const backToMenu = () => {
@@ -112,11 +115,18 @@ const TalkInterface = () => {
 
   const startQuizz = () => {
     if (connection !== undefined) {
-      let qz: any = listQuizzes.filter(
+      let quiz: any = listQuizzes.filter(
         (q: any) => q.id === parseInt(quizzId),
       )[0];
-      connection.invoke('StartQuizz', groupId, quizzId, qz.name);
-      console.log(`Starting quizz ${quizzId}`);
+      connection.invoke('StartQuizz', groupId, quizzId, quiz.name);
+      setQuizzRunning(true);
+    }
+  };
+
+  const stopQuizz = () => {
+    if (connection !== undefined) {
+      connection.invoke('StopQuizz', groupId);
+      setQuizzRunning(false);
     }
   };
 
@@ -194,15 +204,26 @@ const TalkInterface = () => {
                 ),
             )}
           </Select>
-          <Button
-            variant="outlined"
-            color="primary"
-            onClick={startQuizz}
-            className={classes.button}
-            disabled={quizzId === '0'}
-          >
-            Start Quizz
-          </Button>
+          {!quizzRunning ? (
+            <Button
+              variant="outlined"
+              color="primary"
+              onClick={startQuizz}
+              className={classes.button}
+              disabled={quizzId === '0'}
+            >
+              Start Quizz
+            </Button>
+          ) : (
+            <Button
+              variant="outlined"
+              color="secondary"
+              onClick={stopQuizz}
+              className={classes.button}
+            >
+              Stop Quizz
+            </Button>
+          )}
           <QRCode value={qrString} />
           <a
             href={`TalkAnswer?talkId=${groupId}&ownerId=${userIdRdx}&talkName=${talkName}`}

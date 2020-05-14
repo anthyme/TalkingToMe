@@ -136,7 +136,7 @@ const QuizzQuestionEdit: React.FC<IProps> = (props) => {
   };
 
   const loadQuestionJson = async (json: any) => {
-    if(editing){
+    if (editing) {
       let setZero = [];
       for (var i = 0; i < questionsJson.answers.answers.length; i++) {
         setZero.push(i);

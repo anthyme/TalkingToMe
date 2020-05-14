@@ -1,5 +1,5 @@
 //import * as signalR from '@aspnet/signalr';
-import { HubConnectionBuilder, HttpTransportType } from '@microsoft/signalr'
+import { HubConnectionBuilder, HttpTransportType } from '@microsoft/signalr';
 import { urlHub } from '../constants';
 
 export const CreateTalkHub = () => {

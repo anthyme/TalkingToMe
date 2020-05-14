@@ -10,7 +10,10 @@ namespace App.TalkAnswer.Models
         public int Id { get; set; }
         public String StartDate { get; set; }
         public String EndDate { get; set; }
+        public String groupId { get; set; }
+
 #nullable enable
+        public List<UserAnswer>? UserAnswers { get; set; }
         public List<SessionToQuizz>? Quizzes { get; set; }
 #nullable disable
     }

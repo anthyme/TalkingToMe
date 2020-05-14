@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using App.TalkCreation.Data;
+using App.TalkCreation.Data.DataPost;
+using App.TalkCreation.Data.DataFetch;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Mvc.NewtonsoftJson;
 using App.TalkCreation.Data.DataFetch;
@@ -58,6 +60,7 @@ namespace App
             services.AddScoped<TalksServicePost>();
             services.AddScoped<QuestionServiceFetch>();
             services.AddScoped<UserServiceFetch>();
+            services.AddScoped<UserServicePost>();
             services.AddScoped<HealthCheckOption>();
             services.AddScoped<UserServices>();
             services.AddScoped<JwtTokenValidation>();

@@ -13,6 +13,7 @@ using App.TalkCreation.Data.DataFetch;
 using App.TalkCreation.Data.DataFetch.Dto;
 using Microsoft.AspNetCore.Authorization;
 using App.TokenValidation;
+using App.TalkCreation.Data.DataPost;
 
 namespace App.TalkCreation.Data
 {

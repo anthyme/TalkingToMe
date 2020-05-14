@@ -48,6 +48,8 @@ namespace App.TalkCreation.Context
             modelBuilder.Entity<Answer>().HasOne(e => e.Question).WithMany(p=> p.Answers).HasForeignKey(p => p.QuestionId);
             modelBuilder.Entity<UserAnswer>().HasOne(e => e.Question).WithMany(p => p.UserAnswers).HasForeignKey(p => p.QuestionId);
             modelBuilder.Entity<Question>().HasMany(c => c.Answers).WithOne(e => e.Question);
+            modelBuilder.Entity<UserAnswer>().HasOne(e => e.Session).WithMany(e => e.UserAnswers).HasForeignKey(p => p.SessionId);
+            modelBuilder.Entity<Session>().HasMany(c => c.UserAnswers).WithOne(e => e.Session);
         }
     }
 }

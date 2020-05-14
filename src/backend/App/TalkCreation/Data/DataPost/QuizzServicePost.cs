@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace App.TalkCreation.Data
+namespace App.TalkCreation.Data.DataPost
 {
     public class QuizzServicePost
     {

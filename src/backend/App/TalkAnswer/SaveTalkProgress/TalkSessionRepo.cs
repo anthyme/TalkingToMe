@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using App.TalkAnswer.Models;
+using App.TalkAnswer.Dto;
 
 namespace App.TalkAnswer.SaveTalkProgress
 {
     sealed class TalkSessionRepo
     {
-        private static Dictionary<string, Session> Sessions = new Dictionary<string, Session>();
+        private static Dictionary<string, CurrentSession> Sessions = new Dictionary<string, CurrentSession>();
         private static readonly object padlock = new object();
         private TalkSessionRepo()
         {
@@ -23,17 +23,17 @@ namespace App.TalkAnswer.SaveTalkProgress
             return _talkSessionRepo;
         }
 
-        public Session Get(string groupId)
+        public CurrentSession Get(string groupId)
         {
             try
             {
-                Session session;
-                Sessions.TryGetValue(groupId, out session);
-                return session;
+                CurrentSession currentSession;
+                Sessions.TryGetValue(groupId, out currentSession);
+                return currentSession;
             }
             catch (Exception e)
             {
-                return Session.Invalid;
+                return CurrentSession.Invalid;
             }
         }
 
@@ -81,11 +81,11 @@ namespace App.TalkAnswer.SaveTalkProgress
                 Console.WriteLine("The session could not be updated");
             }
         }
-        public void Save(Session session)
+        public void Save(CurrentSession currentSession)
         {
             try
             {
-                Sessions.Add(session.groupid, session);
+                Sessions.Add(currentSession.groupid, currentSession);
             }
             catch (Exception e)
             {
