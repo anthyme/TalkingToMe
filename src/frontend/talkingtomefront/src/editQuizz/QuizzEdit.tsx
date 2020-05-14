@@ -10,11 +10,13 @@ interface StateProps {
 interface IProps {
   questionsID: number[];
   questionsJson: any;
+  editing:boolean
 }
 
 const QuizzEdit: React.FC<IProps> = (props) => {
   const questionsID = props.questionsID;
   const questionsJson = props.questionsJson;
+  const editing = props.editing;
 
   return (
     <React.Fragment>
@@ -24,6 +26,7 @@ const QuizzEdit: React.FC<IProps> = (props) => {
             key={qId}
             questionId={qId}
             questionsJson={questionsJson[questionsID.indexOf(qId)]}
+            editing= {editing}
           />
         ))}
       </div>
