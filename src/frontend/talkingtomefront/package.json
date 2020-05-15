@@ -5,6 +5,9 @@
   "dependencies": {
     "@aspnet/signalr": "^1.1.4",
     "@babel/core": "^7.9.0",
+    "@devexpress/dx-react-chart": "^2.6.3",
+    "@devexpress/dx-react-chart-material-ui": "^2.6.3",
+    "@devexpress/dx-react-core": "^2.6.3",
     "@material-ui/core": "^4.9.8",
     "@material-ui/icons": "^4.9.1",
     "@material-ui/styles": "^4.9.6",

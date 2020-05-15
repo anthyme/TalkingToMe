@@ -25,6 +25,7 @@ import {
   HttpTransportType,
   HubConnection,
 } from '@microsoft/signalr';
+import PieChartDemo from '../components/PieChartTest';
 
 interface StateProps {
   userIdRdx: string;
