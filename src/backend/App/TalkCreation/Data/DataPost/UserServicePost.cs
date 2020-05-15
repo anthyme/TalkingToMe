@@ -57,6 +57,16 @@ namespace App.TalkCreation.Data.DataPost
                                 dicAllAnswersByQuestion.Remove(entry.Key);
                                 dicAllAnswersByQuestion.Add(entry.Key, allAnswersList);
                             }
+                        } else
+                        {
+                            UserAnswer userAnswer = new UserAnswer
+                            {
+                                QuestionId = entry.Key,
+                                Response = entry.Value,
+                                Count = 1,
+                                SessionId = session.Id,
+                            };
+                            context.UserAnswers.Add(userAnswer);
                         }
                     }
                     Console.WriteLine("Count for dicAllAnswersByQuestion: " + dicAllAnswersByQuestion.Count());
