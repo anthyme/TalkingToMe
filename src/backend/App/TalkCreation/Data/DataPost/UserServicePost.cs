@@ -25,6 +25,12 @@ namespace App.TalkCreation.Data.DataPost
             using TalkContext context = talkFactory.create();
             try
             {
+                if (currentSession.allAnswers.Count() == 0)
+                {
+                    Session removedSession = context.Sessions.FirstOrDefault(p => p.groupId == currentSession.groupid);
+                    context.Sessions.Remove(removedSession);
+                    return;
+                }
                 Session session = context.Sessions.FirstOrDefault(p => p.groupId == currentSession.groupid);
                 int currentQuizzId = currentSession.currentQuizz;
                 int allAnswrsIndx = currentSession.allAnswers.FindIndex(qA => qA.quizzId == currentQuizzId);
@@ -57,6 +63,16 @@ namespace App.TalkCreation.Data.DataPost
                                 dicAllAnswersByQuestion.Remove(entry.Key);
                                 dicAllAnswersByQuestion.Add(entry.Key, allAnswersList);
                             }
+                        } else
+                        {
+                            UserAnswer userAnswer = new UserAnswer
+                            {
+                                QuestionId = entry.Key,
+                                Response = entry.Value,
+                                Count = 1,
+                                SessionId = session.Id,
+                            };
+                            context.UserAnswers.Add(userAnswer);
                         }
                     }
                     Console.WriteLine("Count for dicAllAnswersByQuestion: " + dicAllAnswersByQuestion.Count());
