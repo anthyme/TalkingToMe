@@ -36,7 +36,7 @@ const UserAnswerQuizz: React.FC<IProps> = (props) => {
   const talkName: string | null = url.searchParams.get('talkName');
   const listAnswer = new Map();
 
-  if (connection !== undefined) {
+  if (connection) {
     connection.on(
       'StartQuizz',
       (quests: any, quizzId: number, quizzName: string) => {
@@ -112,11 +112,6 @@ const UserAnswerQuizz: React.FC<IProps> = (props) => {
     };
     createHubConnection();
   }, []);
-
-  useEffect(() => {
-    if (quizzName !== '') {
-    }
-  }, [quizzName]);
 
   const useStyles = makeStyles((theme) => ({
     button: {

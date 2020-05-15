@@ -59,11 +59,11 @@ const TalkInterface = () => {
   //Buttons
   const backToMenu = () => {
     history.push('/Menu');
-    if (connection !== undefined) {
+    if (connection) {
       connection?.stop();
     }
   };
-  if (connection !== undefined) {
+  if (connection) {
     connection.on('JoinedGroup', function (responseData: string) {
       console.log('A new User has joined the channel: ' + responseData);
     });
@@ -103,7 +103,7 @@ const TalkInterface = () => {
   };
 
   const startQuizz = () => {
-    if (connection !== undefined) {
+    if (connection) {
       let quiz: any = listQuizzes.filter(
         (q: any) => q.id === parseInt(quizzId),
       )[0];
@@ -113,7 +113,7 @@ const TalkInterface = () => {
   };
 
   const stopQuizz = () => {
-    if (connection !== undefined) {
+    if (connection) {
       connection.invoke('StopQuizz', groupId);
       setQuizzRunning(false);
     }
