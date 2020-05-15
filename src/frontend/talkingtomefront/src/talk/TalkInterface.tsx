@@ -97,6 +97,9 @@ const TalkInterface = () => {
 
   //UseEffects
   useEffect(() => {
+    if (userIdRdx === '-1') {
+      history.push('/');
+    }
     const createHubConnection = async () => {
       const connect = CreateTalkHub();
       try {
@@ -162,7 +165,6 @@ const TalkInterface = () => {
 
   const classes = useStyles();
 
-  console.log('Louis userIdRdx', userIdRdx);
   return (
     <React.Fragment>
       <CssBaseline />
