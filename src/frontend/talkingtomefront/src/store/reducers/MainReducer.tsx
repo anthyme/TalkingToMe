@@ -16,7 +16,7 @@ const initialState: InitialState = {
   questionRdx: { Name: 'QuizzTest' },
   userIdRdx: '-1',
   changeRequestRdx: 0,
-  tokenIdRdx: "",
+  tokenIdRdx: '',
 };
 
 export interface DispatchAction extends Action {
@@ -46,6 +46,6 @@ export const mainReducer: Reducer<InitialState, DispatchAction> = (
   } else if (action.type === actions.UPDATE_CHANGEREQUEST_VALUE) {
     return { ...state, changeRequestRdx: action.payload.changeRequestRdx || 0 };
   } else if (action.type === actions.UPDATE_TOKENID_VALUE) {
-    return { ...state, tokenIdRdx: action.payload.tokenIdRdx || "" };
+    return { ...state, tokenIdRdx: action.payload.tokenIdRdx || '' };
   } else return state;
 };

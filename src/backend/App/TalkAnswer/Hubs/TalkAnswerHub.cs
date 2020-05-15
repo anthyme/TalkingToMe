@@ -44,11 +44,14 @@ namespace App.TalkAnswer.Hubs
         public async Task GetCurrentQuizz(string groupId)
         {
             TalkSessionRepo _talkSessionRepo = TalkSessionRepo.GetInstance();
-            int quizzId = _talkSessionRepo.Get(groupId).currentQuizz;
-            List<QuestionDto> quests = await _questionServiceFetch.getQuestionsDtoByQuizzId(quizzId);
-            QuizzDTO quizz = await _quizzServiceFetch.returnQuizzById(quizzId);
-            string quizzName = (quizz == null)? "" :quizz.Name;
-            await Clients.Client(Context.ConnectionId).SendAsync("SetCurrentQuizz", quests, quizzId, quizzName);
+            if (_talkSessionRepo.Get(groupId) != null)
+            { 
+                int quizzId = _talkSessionRepo.Get(groupId).currentQuizz;
+                List<QuestionDto> quests = await _questionServiceFetch.getQuestionsDtoByQuizzId(quizzId);
+                QuizzDTO quizz = await _quizzServiceFetch.returnQuizzById(quizzId);
+                string quizzName = (quizz == null) ? "" : quizz.Name;
+                await Clients.Client(Context.ConnectionId).SendAsync("SetCurrentQuizz", quests, quizzId, quizzName);
+            }            
         }
 
         public async Task StartQuizz(string groupId, int quizzId, string quizzName)
@@ -71,6 +74,8 @@ namespace App.TalkAnswer.Hubs
             TalkSessionRepo _talkSessionRepo = TalkSessionRepo.GetInstance();
             CurrentSession currentSession = _talkSessionRepo.Get(groupId);
             _userServicePost.SaveSessionAndAnswers(currentSession);
+            _talkSessionRepo.Update(groupId, currentSession.currentQuizz);
+            await Clients.Group(groupId).SendAsync("StopQuizz");
         }
     }
 }

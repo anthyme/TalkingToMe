@@ -150,12 +150,19 @@ const TalkInterface = () => {
       paddingRight: '40px',
     },
     selectNStart: {
-      marginBottom: '10px',
+      marginTop: '6%',
+    },
+    startNQr: {
+      display: 'flex',
+      justifyContent: 'space-between',
+      marginTop: '-5%',
+      paddingRight: '2%',
     },
   }));
 
   const classes = useStyles();
 
+  console.log('Louis userIdRdx', userIdRdx);
   return (
     <React.Fragment>
       <CssBaseline />
@@ -183,53 +190,58 @@ const TalkInterface = () => {
         >
           {talkName}
         </Typography>
-        <div className={classes.selectNStart}>
-          <Select
-            labelId="label"
-            id="select"
-            value={quizzId}
-            onChange={(e: any) => onChangeQuizz(e.target.value)}
-          >
-            {!showQuestion && (
-              <MenuItem value="0" disabled={true}>
-                Select a quizz
-              </MenuItem>
-            )}
-            {listQuizzes.map(
-              (quizz: any) =>
-                quizz.name && (
-                  <MenuItem value={quizz.id} key={quizz.id}>
-                    {quizz.name}
-                  </MenuItem>
-                ),
-            )}
-          </Select>
-          {!quizzRunning ? (
-            <Button
-              variant="outlined"
-              color="primary"
-              onClick={startQuizz}
-              className={classes.button}
-              disabled={quizzId === '0'}
+        <div className={classes.startNQr}>
+          <div className={classes.selectNStart}>
+            <Select
+              labelId="label"
+              id="select"
+              value={quizzId}
+              onChange={(e: any) => onChangeQuizz(e.target.value)}
+              disabled={quizzRunning}
             >
-              Start Quizz
-            </Button>
-          ) : (
-            <Button
-              variant="outlined"
-              color="secondary"
-              onClick={stopQuizz}
-              className={classes.button}
+              {!showQuestion && (
+                <MenuItem value="0" disabled={true}>
+                  Select a quizz
+                </MenuItem>
+              )}
+              {listQuizzes.map(
+                (quizz: any) =>
+                  quizz.name && (
+                    <MenuItem value={quizz.id} key={quizz.id}>
+                      {quizz.name}
+                    </MenuItem>
+                  ),
+              )}
+            </Select>
+            {!quizzRunning ? (
+              <Button
+                variant="outlined"
+                color="primary"
+                onClick={startQuizz}
+                className={classes.button}
+                disabled={quizzId === '0'}
+              >
+                Start Quizz
+              </Button>
+            ) : (
+              <Button
+                variant="outlined"
+                color="secondary"
+                onClick={stopQuizz}
+                className={classes.button}
+              >
+                Stop Quizz
+              </Button>
+            )}
+          </div>
+          <div>
+            <a
+              href={`TalkAnswer?talkId=${groupId}&ownerId=${userIdRdx}&talkName=${talkName}`}
             >
-              Stop Quizz
-            </Button>
-          )}
-          <QRCode value={qrString} />
-          <a
-            href={`TalkAnswer?talkId=${groupId}&ownerId=${userIdRdx}&talkName=${talkName}`}
-          >
-            Link to a user page
-          </a>
+              Link to a user page
+            </a>
+            <QRCode value={qrString} />
+          </div>
         </div>
         <div className={classes.quizzNQuest}>
           {showQuestion && <h3 className={classes.title}>Quizz preview</h3>}

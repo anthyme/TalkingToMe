@@ -55,6 +55,13 @@ const UserAnswerQuizz: React.FC<IProps> = (props) => {
         }
       },
     );
+    connection.on('StopQuizz', () => {
+      setWaitingQuizz(true);
+      setQuizzId(-1);
+      setQuizzName('');
+      setQuestionsData([{}]);
+      setHasValidated(false);
+    });
   }
 
   const showQuestions = (data: any) => {
