@@ -1,11 +1,8 @@
 import React from 'react';
 import Paper from '@material-ui/core/Paper';
-import {
-  Chart,
-  PieSeries,
-} from '@devexpress/dx-react-chart-material-ui';
+import { Chart, PieSeries } from '@devexpress/dx-react-chart-material-ui';
 
- const PieChartDemo = ()=>{
+const PieChartDemo = () => {
   const data = [
     { country: 'Russia', area: 12 },
     { country: 'Canada', area: 7 },
@@ -17,18 +14,13 @@ import {
     { country: 'Others', area: 55 },
   ];
 
-    return (
-      <Paper>
-        <Chart
-          data={data}
-        >
-          <PieSeries
-            valueField="area"
-            argumentField="country"
-          />
-        </Chart>
-      </Paper>
-    );
-  }
+  return (
+    <Paper>
+      <Chart data={data}>
+        <PieSeries valueField="area" argumentField="country" />
+      </Chart>
+    </Paper>
+  );
+};
 
 export default PieChartDemo;
