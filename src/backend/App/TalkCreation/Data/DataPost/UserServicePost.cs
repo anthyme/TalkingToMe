@@ -7,6 +7,7 @@ using App.TalkAnswer.Dto;
 using App.TalkAnswer.Models;
 using App.TalkAnswer.SaveTalkProgress;
 using App.TalkCreation.Context;
+using App.TalkCreation.Models;
 
 namespace App.TalkCreation.Data.DataPost
 {
@@ -27,24 +28,79 @@ namespace App.TalkCreation.Data.DataPost
                 Session session = context.Sessions.FirstOrDefault(p => p.groupId == currentSession.groupid);
                 int currentQuizzId = currentSession.currentQuizz;
                 int allAnswrsIndx = currentSession.allAnswers.FindIndex(qA => qA.quizzId == currentQuizzId);
-                List<Dictionary<int, string>> listAnswers = currentSession.allAnswers[allAnswrsIndx].listAnswers;
-                foreach (Dictionary<int, string> respsDic in listAnswers)
+                List<Question> quizzQuestions = context.Questions.Where(p => p.QuizzId == currentQuizzId).ToList();
+                List<Dictionary<int, string>> dicListAnswers = currentSession.allAnswers[allAnswrsIndx].listAnswers;
+                Dictionary<int, string> dicQuestionTypes = new Dictionary<int, string>();
+                foreach (Question question in quizzQuestions)
+                {
+                    dicQuestionTypes.Add(question.Id, question.Type);
+                }
+                Dictionary<int, List<string>> dicAllAnswersByQuestion = new Dictionary<int, List<string>>();
+
+                foreach (Dictionary<int, string> respsDic in dicListAnswers)
                 {
                     foreach (KeyValuePair<int, string> entry in respsDic)
                     {
-                        UserAnswer userAnswer = new UserAnswer();
-                        userAnswer.QuestionId = entry.Key;
-                        userAnswer.Response = entry.Value;
-                        userAnswer.Count = 1;
-                        userAnswer.SessionId = session.Id;
-                        context.UserAnswers.Add(userAnswer);
+                        if (dicQuestionTypes[entry.Key].Equals("UCQ"))
+                        {
+                            if (!dicAllAnswersByQuestion.ContainsKey(entry.Key))
+                            {
+                                List<string> allAnswersList = new List<string>();
+                                allAnswersList.Add(entry.Value);
+                                dicAllAnswersByQuestion.Add(entry.Key, allAnswersList);
+                            }
+                            else
+                            {
+                                List<string> allAnswersList = new List<string>();
+                                dicAllAnswersByQuestion.TryGetValue(entry.Key, out allAnswersList);
+                                allAnswersList.Add(entry.Value);
+                                dicAllAnswersByQuestion.Remove(entry.Key);
+                                dicAllAnswersByQuestion.Add(entry.Key, allAnswersList);
+                            }
+                        }
+                    }
+                    Console.WriteLine("Count for dicAllAnswersByQuestion: " + dicAllAnswersByQuestion.Count());
+                }
+                if (dicQuestionTypes.Count() != 0)
+                {
+                    Console.WriteLine("Count for dicQuestionTypes: " + dicQuestionTypes.Count());
+                    foreach (KeyValuePair<int, List<string>> entry in dicAllAnswersByQuestion)
+                    {
+                        Dictionary<string, int> dicCountAnswers = new Dictionary<string, int>();
+                        foreach (string listItem in entry.Value)
+                        {
+                            if (!dicCountAnswers.ContainsKey(listItem))
+                            {
+                                dicCountAnswers.Add(listItem, 1);
+                            }
+                            else
+                            {
+                                int count;
+                                dicCountAnswers.TryGetValue(listItem, out count);
+                                dicCountAnswers.Remove(listItem);
+                                count++;
+                                dicCountAnswers.Add(listItem, count);
+                            }
+                        }
+                        foreach (KeyValuePair<string, int> answer in dicCountAnswers)
+                        {
+                            UserAnswer userAnswer = new UserAnswer
+                            {
+                                QuestionId = entry.Key,
+                                Response = answer.Key,
+                                Count = answer.Value,
+                                SessionId = session.Id,
+                            };
+                            Console.WriteLine("For question: "+userAnswer.QuestionId+",the count was :"+userAnswer.Count);
+                            context.UserAnswers.Add(userAnswer);
+                        }
                     }
                 }
                 context.SaveChanges();
             }
             catch (ArgumentOutOfRangeException e)
             {
-                
+
             }
         }
     }
