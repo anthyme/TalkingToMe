@@ -3,7 +3,13 @@ import Button from '@material-ui/core/Button';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import { makeStyles } from '@material-ui/core/styles';
-import { Typography, CssBaseline, AppBar, Toolbar } from '@material-ui/core';
+import {
+  Typography,
+  CssBaseline,
+  AppBar,
+  Toolbar,
+  Dialog,
+} from '@material-ui/core';
 import { loadTalkNQuizzes } from '../dataTransfers/Fetchs/DataTalkFetch';
 import { loadQuizzContent } from '../dataTransfers/Fetchs/DataQuestionFetch';
 import QuestionInterface from './questionsPreview/QuestionInterface';
@@ -36,6 +42,7 @@ const TalkInterface = () => {
   const [questionsData, setQuestionsData] = useState([{}]);
   const [groupId, setGroupId] = useState(url.searchParams.get('groupId'));
   const [quizzRunning, setQuizzRunning] = useState(false);
+  const [bigQR, setBigQR] = useState(false);
 
   const { userIdRdx, tokenIdRdx } = useSelector<InitialState, StateProps>(
     (state: InitialState) => {
@@ -96,24 +103,6 @@ const TalkInterface = () => {
     setShowQuestion(true);
   };
 
-  //UseEffects
-  useEffect(() => {
-    const createHubConnection = async () => {
-      const connect = CreateTalkHub();
-      try {
-        await connect.start();
-        //Invoke method defined in server to add user to a specified group
-      } catch (err) {
-        console.log(err);
-      }
-      setConnection(connect);
-      console.log('CreateTalkGroup: ' + groupId);
-      connect.invoke('CreateTalkGroup', groupId, Number(TalkId));
-    };
-    createHubConnection();
-    loadInit();
-  }, []); //Load only once at first build
-
   const startQuizz = () => {
     if (connection !== undefined) {
       let quiz: any = listQuizzes.filter(
@@ -130,6 +119,27 @@ const TalkInterface = () => {
       setQuizzRunning(false);
     }
   };
+
+  //UseEffects
+  useEffect(() => {
+    if (userIdRdx === '-1') {
+      history.push('/');
+    }
+    const createHubConnection = async () => {
+      const connect = CreateTalkHub();
+      try {
+        await connect.start();
+        //Invoke method defined in server to add user to a specified group
+      } catch (err) {
+        console.log(err);
+      }
+      setConnection(connect);
+      console.log('CreateTalkGroup: ' + groupId);
+      connect.invoke('CreateTalkGroup', groupId, Number(TalkId));
+    };
+    createHubConnection();
+    loadInit();
+  }, []); //Load only once at first build
 
   //CSS
   const useStyles = makeStyles((theme) => ({
@@ -159,11 +169,16 @@ const TalkInterface = () => {
       marginTop: '-5%',
       paddingRight: '2%',
     },
+    smallQR: {
+      cursor: 'zoom-in',
+    },
+    bigQR: {
+      cursor: 'zoom-out',
+    },
   }));
 
   const classes = useStyles();
 
-  console.log('Louis userIdRdx', userIdRdx);
   return (
     <React.Fragment>
       <CssBaseline />
@@ -241,7 +256,20 @@ const TalkInterface = () => {
             >
               Link to a user page
             </a>
-            <QRCode value={qrString} />
+            <div className={classes.smallQR} onClick={() => setBigQR(true)}>
+              <QRCode value={qrString} />
+            </div>
+            {bigQR && (
+              <Dialog
+                open={bigQR}
+                onClose={() => setBigQR(false)}
+                aria-labelledby="form-dialog-title"
+              >
+                <div className={classes.bigQR} onClick={() => setBigQR(false)}>
+                  <QRCode value={qrString} size={512} />
+                </div>
+              </Dialog>
+            )}
           </div>
         </div>
         <div className={classes.quizzNQuest}>
