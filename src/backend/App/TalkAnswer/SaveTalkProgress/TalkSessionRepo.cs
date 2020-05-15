@@ -43,7 +43,14 @@ namespace App.TalkAnswer.SaveTalkProgress
             {
                 if (Sessions.ContainsKey(groupId))
                 {
-                    Sessions[groupId].currentQuizz = quizzId;
+                    if (Sessions[groupId].currentQuizz == quizzId)
+                    {
+                        Sessions[groupId].currentQuizz = -1;
+                    }
+                    else
+                    {
+                        Sessions[groupId].currentQuizz = quizzId;
+                    }
                 }
             }
             catch (Exception e)
