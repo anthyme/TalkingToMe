@@ -7,6 +7,7 @@ module.exports = {
         test: /\.tsx?$/,
         use: 'ts-loader',
         exclude: /node_modules/,
+        loader: 'file-loader?name=[name].[ext]',
       },
     ],
   },
