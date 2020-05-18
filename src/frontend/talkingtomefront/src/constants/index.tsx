@@ -1,3 +1,3 @@
-export const urlDataBase = 'https://localhost:44381/api/'; //'https://talkingtome-api.azurewebsites.net/api/';
-export const urlHub = 'https://localhost:44381/'; //'https://talkingtome-api.azurewebsites.net/';
-export const siteUrl = 'https://localhost:3000/'; //'https://talkingtome.azurewebsites.net/';
+export const urlDataBase = 'https://talkingtome-api.azurewebsites.net/api/'; //'https://localhost:44381/api/';
+export const urlHub = 'https://talkingtome-api.azurewebsites.net/'; //'https://localhost:44381/';
+export const siteUrl = 'https://talkingtome.azurewebsites.net/'; //'https://localhost:3000/';
