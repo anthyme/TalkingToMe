@@ -28,6 +28,7 @@ import {
 } from '@microsoft/signalr'
 import GraphInterface from '../graphs/GraphInterface'
 import { isEmpty } from 'lodash'
+import { putTalk } from '../dataTransfers/Posts/DataTalkPost';
 
 interface StateProps {
   userIdRdx: string
@@ -62,12 +63,21 @@ const TalkInterface = () => {
   const history = useHistory()
 
   //Buttons
-  const backToMenu = () => {
-    history.push('/Menu')
+  const backToMenu = async () => {
+    const json = [
+      {
+        url: 'NULL',
+      },
+    ];
+    if (TalkId) {
+      await putTalk('Talks/ChangeUrl/', json, parseInt(TalkId), tokenIdRdx);
+    }
+    history.push('/Menu');
     if (connection) {
       connection?.stop()
     }
-  }
+  };
+
   if (connection) {
     connection.on('JoinedGroup', function (responseData: string) {
       console.log('A new User has joined the channel: ' + responseData)
@@ -209,7 +219,7 @@ const TalkInterface = () => {
             onClick={backToMenu}
             className={classes.button}
           >
-            Back to talks menu
+            End talk session
           </Button>
         </Toolbar>
       </AppBar>
