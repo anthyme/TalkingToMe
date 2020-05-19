@@ -1,145 +1,162 @@
-import React, { useState, useEffect } from 'react';
-import Button from '@material-ui/core/Button';
-import Select from '@material-ui/core/Select';
-import MenuItem from '@material-ui/core/MenuItem';
-import { makeStyles } from '@material-ui/core/styles';
+import React, { useState, useEffect } from 'react'
+import Button from '@material-ui/core/Button'
+import Select from '@material-ui/core/Select'
+import MenuItem from '@material-ui/core/MenuItem'
+import { makeStyles } from '@material-ui/core/styles'
 import {
   Typography,
   CssBaseline,
   AppBar,
   Toolbar,
   Dialog,
-} from '@material-ui/core';
-import { loadTalkNQuizzes } from '../dataTransfers/Fetchs/DataTalkFetch';
-import { loadQuizzContent } from '../dataTransfers/Fetchs/DataQuestionFetch';
-import QuestionInterface from './questionsPreview/QuestionInterface';
-import { useHistory } from 'react-router-dom';
-import QRCode from 'qrcode.react';
-import { CreateTalkHub } from '../signalR/CreateHub';
-import { v4 as uuidv4 } from 'uuid';
-import { InitialState } from '../store/reducers/MainReducer';
-import { useSelector } from 'react-redux';
-import { siteUrl } from '../constants';
+  Box,
+} from '@material-ui/core'
+import { loadTalkNQuizzes } from '../dataTransfers/Fetchs/DataTalkFetch'
+import { loadQuizzContent } from '../dataTransfers/Fetchs/DataQuestionFetch'
+import QuestionInterface from './questionsPreview/QuestionInterface'
+import { useHistory } from 'react-router-dom'
+import QRCode from 'qrcode.react'
+import { CreateTalkHub } from '../signalR/CreateHub'
+import { v4 as uuidv4 } from 'uuid'
+import { InitialState } from '../store/reducers/MainReducer'
+import { useSelector } from 'react-redux'
+import { siteUrl } from '../constants'
 import {
   HubConnectionBuilder,
   HttpTransportType,
   HubConnection,
-} from '@microsoft/signalr';
-import PieChartDemo from '../components/PieChartTest';
+} from '@microsoft/signalr'
+import GraphInterface from '../graphs/GraphInterface'
+import { isEmpty } from 'lodash'
 
 interface StateProps {
-  userIdRdx: string;
-  tokenIdRdx: string;
+  userIdRdx: string
+  tokenIdRdx: string
 }
 
 const TalkInterface = () => {
-  const url = new URL(window.location.href);
-  const [quizzId, setQuizzId] = useState('0');
-  const [listQuizzes, setListQuizzes] = useState([{}]);
-  const [talkName, setTalkName] = useState('');
-  const [showQuestion, setShowQuestion] = useState(false);
-  const [connection, setConnection] = useState<HubConnection>();
-  const [questionsData, setQuestionsData] = useState([{}]);
-  const [groupId, setGroupId] = useState(url.searchParams.get('groupId'));
-  const [quizzRunning, setQuizzRunning] = useState(false);
-  const [bigQR, setBigQR] = useState(false);
+  const url = new URL(window.location.href)
+  const [quizzId, setQuizzId] = useState('0')
+  const [results, setResults] = useState(Object)
+  const [showResults, setShowResults] = useState(false)
+  const [listQuizzes, setListQuizzes] = useState([{}])
+  const [talkName, setTalkName] = useState('')
+  const [showQuestion, setShowQuestion] = useState(false)
+  const [connection, setConnection] = useState<HubConnection>()
+  const [questionsData, setQuestionsData] = useState([{}])
+  const [groupId, setGroupId] = useState(url.searchParams.get('groupId'))
+  const [quizzRunning, setQuizzRunning] = useState(false)
+  const [bigQR, setBigQR] = useState(false)
 
   const { userIdRdx, tokenIdRdx } = useSelector<InitialState, StateProps>(
     (state: InitialState) => {
       return {
         userIdRdx: state.userIdRdx,
         tokenIdRdx: state.tokenIdRdx,
-      };
+      }
     },
-  );
-  const qrString = `${siteUrl}TalkAnswer?talkId=${groupId}&ownerId=${userIdRdx}`;
+  )
+  const qrString = `${siteUrl}TalkAnswer?talkId=${groupId}&ownerId=${userIdRdx}`
 
-  const TalkId: string | null = url.searchParams.get('talkId');
-  const history = useHistory();
+  const TalkId: string | null = url.searchParams.get('talkId')
+  const history = useHistory()
 
   //Buttons
   const backToMenu = () => {
-    history.push('/Menu');
+    history.push('/Menu')
     if (connection) {
-      connection?.stop();
+      connection?.stop()
     }
-  };
+  }
   if (connection) {
     connection.on('JoinedGroup', function (responseData: string) {
-      console.log('A new User has joined the channel: ' + responseData);
-    });
+      console.log('A new User has joined the channel: ' + responseData)
+    })
 
     connection.on('NewChannel', function (responseData: string) {
-      console.log('The new channel is: ' + responseData);
-    });
+      console.log('The new channel is: ' + responseData)
+    })
 
     connection.on('RequestCurrentQuizz', function (responseData: string) {
-      connection.invoke('GetCurrentQuizz', groupId, quizzId);
-    });
+      connection.invoke('GetCurrentQuizz', groupId, quizzId)
+    })
+
+    connection.on('ShowResults', function (responseData: any) {
+      setResults(responseData.listQuestions);
+    })
   }
 
   //Data Fetching
   const onChangeQuizz = async (value: string) => {
-    setQuizzId(value);
-    const responseData = await loadQuizzContent(value, tokenIdRdx);
-    responseData && showQuestions(responseData);
-  };
+    setQuizzId(value)
+    setShowResults(false);
+    const responseData = await loadQuizzContent(value, tokenIdRdx)
+    responseData && showQuestions(responseData)
+  }
 
   const loadInit = async () => {
-    const responseData = await loadTalkNQuizzes(TalkId, tokenIdRdx);
-    responseData && showInitialFetchedData(responseData);
-  };
+    const responseData = await loadTalkNQuizzes(TalkId, tokenIdRdx)
+    responseData && showInitialFetchedData(responseData)
+  }
 
   //Data Showing
   const showInitialFetchedData = (data: any) => {
-    setTalkName(data.talkName);
+    setTalkName(data.talkName)
     for (let quizz of data.quizzes) {
-      setListQuizzes((listQuizzes) => [...listQuizzes, quizz]);
+      setListQuizzes((listQuizzes) => [...listQuizzes, quizz])
     }
-  };
+  }
 
   const showQuestions = (data: any) => {
-    setQuestionsData(data);
-    setShowQuestion(true);
-  };
+    setQuestionsData(data)
+    setShowQuestion(true)
+  }
 
   const startQuizz = () => {
     if (connection) {
       let quiz: any = listQuizzes.filter(
         (q: any) => q.id === parseInt(quizzId),
-      )[0];
-      connection.invoke('StartQuizz', groupId, quizzId, quiz.name);
-      setQuizzRunning(true);
+      )[0]
+      connection.invoke('StartQuizz', groupId, quizzId, quiz.name)
+      setQuizzRunning(true)
     }
-  };
+  }
 
   const stopQuizz = () => {
     if (connection) {
-      connection.invoke('StopQuizz', groupId);
-      setQuizzRunning(false);
+      connection.invoke('StopQuizz', groupId, quizzId)
+      setQuizzRunning(false)
     }
-  };
+  }
 
+  useEffect(() => {
+    if(!isEmpty(results)){
+      setShowResults(true);
+    }
+    }, [results]) //Load only once at first build
+  
   //UseEffects
   useEffect(() => {
     if (userIdRdx === '-1') {
-      history.push('/');
+      history.push('/')
     }
+    setResults({});
+    console.log(results);
     const createHubConnection = async () => {
-      const connect = CreateTalkHub();
+      const connect = CreateTalkHub()
       try {
-        await connect.start();
+        await connect.start()
         //Invoke method defined in server to add user to a specified group
       } catch (err) {
-        console.log(err);
+        console.log(err)
       }
-      setConnection(connect);
-      console.log('CreateTalkGroup: ' + groupId);
-      connect.invoke('CreateTalkGroup', groupId, Number(TalkId));
-    };
-    createHubConnection();
-    loadInit();
-  }, []); //Load only once at first build
+      setConnection(connect)
+      console.log('CreateTalkGroup: ' + groupId)
+      connect.invoke('CreateTalkGroup', groupId, Number(TalkId))
+    }
+    createHubConnection()
+    loadInit()
+  }, []) //Load only once at first build
 
   //CSS
   const useStyles = makeStyles((theme) => ({
@@ -175,9 +192,9 @@ const TalkInterface = () => {
     bigQR: {
       cursor: 'zoom-out',
     },
-  }));
+  }))
 
-  const classes = useStyles();
+  const classes = useStyles()
 
   return (
     <React.Fragment>
@@ -278,28 +295,35 @@ const TalkInterface = () => {
             questionsData.map(
               (question: any) =>
                 question && (
-                  <QuestionInterface
-                    key={question.id}
-                    questId={question.id}
-                    quest={question.quest}
-                    typeQuest={question.type}
-                    answers={question.answers.map(
-                      (ans: {
-                        id: number;
-                        questionId: number;
-                        response: string;
-                      }) => ans.response,
-                    )}
-                    isPreview={true}
-                    correctAn={question.correctAn}
-                    addAnswer={() => {}} //Prop only useful for users but typescript needs us to declare it here too
-                  />
+                  <div>
+                  <Box display="Flex"  flexDirection="row" p={1} m={1}>
+                    <Box>
+                      <QuestionInterface
+                        key={question.id}
+                        questId={question.id}
+                        quest={question.quest}
+                        typeQuest={question.type}
+                        answers={question.answers.map(
+                          (ans: {
+                            id: number
+                            questionId: number
+                            response: string
+                          }) => ans.response,
+                        )}
+                        isPreview={true}
+                        correctAn={question.correctAn}
+                        addAnswer={() => {}} //Prop only useful for users but typescript needs us to declare it here too
+                      />
+                    </Box>
+                    <Box width="100%">{showResults?<GraphInterface results={results} questionId={question.id} typeQuest={question.type}/> :  <></>}</Box>
+                  </Box>
+                </div>
                 ),
             )}
         </div>
       </div>
     </React.Fragment>
-  );
-};
+  )
+}
 
-export default TalkInterface;
+export default TalkInterface

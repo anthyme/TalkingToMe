@@ -32,7 +32,7 @@ namespace App.TokenValidation
             }
         }
 
-        private string CLIENT_ID = "326711242697-pj0ob8eu4autok3fs93vnnt0juace2d2.apps.googleusercontent.com";
+        private string CLIENT_ID = "401730606164-p774q8osiptncb4mfl8cgfs2gr6lrs92.apps.googleusercontent.com";
         public async Task<bool> ValidateToken(string idToken)
         {
             try

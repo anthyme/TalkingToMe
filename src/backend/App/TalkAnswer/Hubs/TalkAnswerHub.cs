@@ -9,6 +9,7 @@ using App.TalkAnswer.SaveTalkProgress;
 using App.TalkCreation.Data.DataFetch.Dto;
 using App.TalkCreation.Data.DataFetch;
 using App.TalkCreation.Data.DataPost;
+using App.TalkAnswer.Dto.QuizzResultsDTO;
 
 namespace App.TalkAnswer.Hubs
 {
@@ -63,19 +64,22 @@ namespace App.TalkAnswer.Hubs
             await Clients.Group(groupId).SendAsync("StartQuizz", quests, quizzId, quizzName);
         }
 
-        public async void SaveAnswers(string groupId, int quizzId, List<int> questIdList, List<string> answerList)
+        public async Task SaveAnswers(string groupId, int quizzId, List<int> questIdList, List<string> answerList)
         {
             TalkSessionRepo _talkSessionRepo = TalkSessionRepo.GetInstance();
             _talkSessionRepo.AddAnswers(groupId, quizzId, questIdList, answerList);
+           
         }
 
-        public async void StopQuizz(string groupId)
+        public async Task StopQuizz(string groupId, int quizzId)
         {
             TalkSessionRepo _talkSessionRepo = TalkSessionRepo.GetInstance();
             CurrentSession currentSession = _talkSessionRepo.Get(groupId);
             _userServicePost.SaveSessionAndAnswers(currentSession);
             _talkSessionRepo.Update(groupId, currentSession.currentQuizz);
             await Clients.Group(groupId).SendAsync("StopQuizz");
+            QuizzResults quizzResults = _userServices.GetQuizzResults(groupId, quizzId);
+            await Clients.Client(Context.ConnectionId).SendAsync("ShowResults", quizzResults);
         }
     }
 }

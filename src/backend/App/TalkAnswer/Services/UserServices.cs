@@ -12,6 +12,7 @@ using App.TalkCreation.Data.DataFetch;
 using App.TalkCreation.Data;
 using App.TalkAnswer.Dto;
 using App.TalkAnswer.Models;
+using App.TalkAnswer.Dto.QuizzResultsDTO;
 
 namespace App.TalkAnswer
 {
@@ -53,6 +54,50 @@ namespace App.TalkAnswer
             catch (Exception e)
             {
                 _logger.LogError("The Talk could not update its url", e);
+            }
+        }
+
+        public QuizzResults GetQuizzResults(string groupId, int quizzId)
+        {
+            TalkContextFactory talkFactory = new TalkContextFactory(_connectionString);
+            using TalkContext context = talkFactory.create();
+            TalkSessionRepo _talkSessionRepo = TalkSessionRepo.GetInstance();
+            try
+            {
+                QuizzResults quizzResults = new QuizzResults
+                {
+                    quizzId = quizzId,
+                    listQuestions = new List<QuestionResults>(),
+                };
+                List<Question> listQuestions = context.Questions.Where(p => p.Quizz.Id == quizzId).ToList();
+                foreach(Question question in listQuestions)
+                {
+                    QuestionResults questionResults = new QuestionResults
+                    {
+                        questionId = question.Id,
+                        listAnswers = new List<AnswerResults>(),
+                        type = question.Type,
+                    };
+                    List<UserAnswer> listUserAnswers = context.UserAnswers.Where(p => p.QuestionId == question.Id && p.Session.groupId.Equals(groupId)).ToList();
+                    foreach(UserAnswer userAnswer in listUserAnswers)
+                    {
+                        AnswerResults answerResults = new AnswerResults
+                        {
+                            answer = userAnswer.Response,
+                            count = userAnswer.Count,
+                        };
+                        questionResults.listAnswers.Add(answerResults);
+                    }
+                    quizzResults.listQuestions.Add(questionResults);
+                    
+                }
+                return quizzResults;
+                Console.WriteLine("Change Talk");
+            }
+            catch (Exception e)
+            {
+                _logger.LogError("The Talk could not update its url", e);
+                return null;
             }
         }
     }
