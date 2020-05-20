@@ -11,10 +11,12 @@ import {
 
 interface IProps{
   results: [Object]
+  quest:string
 }
 
  const BarGraph: React.FC<IProps> = (props) => {
   const results =props.results;
+  const quest = props.quest;
 
     return (
       <Paper>
@@ -27,7 +29,7 @@ interface IProps{
             valueField="count"
             argumentField="answer"
           />
-          <Title text="Answers" />
+          <Title text={quest} />
 
         </Chart>
       </Paper>

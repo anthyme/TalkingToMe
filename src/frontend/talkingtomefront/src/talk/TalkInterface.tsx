@@ -28,7 +28,7 @@ import {
 } from '@microsoft/signalr'
 import GraphInterface from '../graphs/GraphInterface'
 import { isEmpty } from 'lodash'
-import { putTalk } from '../dataTransfers/Posts/DataTalkPost';
+import { putTalk } from '../dataTransfers/Posts/DataTalkPost'
 
 interface StateProps {
   userIdRdx: string
@@ -68,15 +68,15 @@ const TalkInterface = () => {
       {
         url: 'NULL',
       },
-    ];
+    ]
     if (TalkId) {
-      await putTalk('Talks/ChangeUrl/', json, parseInt(TalkId), tokenIdRdx);
+      await putTalk('Talks/ChangeUrl/', json, parseInt(TalkId), tokenIdRdx)
     }
-    history.push('/Menu');
+    history.push('/Menu')
     if (connection) {
       connection?.stop()
     }
-  };
+  }
 
   if (connection) {
     connection.on('JoinedGroup', function (responseData: string) {
@@ -92,14 +92,14 @@ const TalkInterface = () => {
     })
 
     connection.on('ShowResults', function (responseData: any) {
-      setResults(responseData.listQuestions);
+      setResults(responseData.listQuestions)
     })
   }
 
   //Data Fetching
   const onChangeQuizz = async (value: string) => {
     setQuizzId(value)
-    setShowResults(false);
+    setShowResults(false)
     const responseData = await loadQuizzContent(value, tokenIdRdx)
     responseData && showQuestions(responseData)
   }
@@ -140,18 +140,18 @@ const TalkInterface = () => {
   }
 
   useEffect(() => {
-    if(!isEmpty(results)){
-      setShowResults(true);
+    if (!isEmpty(results)) {
+      setShowResults(true)
     }
-    }, [results]) //Load only once at first build
-  
+  }, [results]) //Load only once at first build
+
   //UseEffects
   useEffect(() => {
     if (userIdRdx === '-1') {
       history.push('/')
     }
-    setResults({});
-    console.log(results);
+    setResults({})
+    console.log(results)
     const createHubConnection = async () => {
       const connect = CreateTalkHub()
       try {
@@ -306,28 +306,39 @@ const TalkInterface = () => {
               (question: any) =>
                 question && (
                   <div>
-                  <Box display="Flex"  flexDirection="row" p={1} m={1}>
-                    <Box>
-                      <QuestionInterface
-                        key={question.id}
-                        questId={question.id}
-                        quest={question.quest}
-                        typeQuest={question.type}
-                        answers={question.answers.map(
-                          (ans: {
-                            id: number
-                            questionId: number
-                            response: string
-                          }) => ans.response,
-                        )}
-                        isPreview={true}
-                        correctAn={question.correctAn}
-                        addAnswer={() => {}} //Prop only useful for users but typescript needs us to declare it here too
-                      />
+                    <Box display="Flex" flexDirection="row" p={1} m={1}>
+                      <Box>
+                        <QuestionInterface
+                          key={question.id}
+                          questId={question.id}
+                          quest={question.quest}
+                          typeQuest={question.type}
+                          answers={question.answers.map(
+                            (ans: {
+                              id: number
+                              questionId: number
+                              response: string
+                            }) => ans.response,
+                          )}
+                          isPreview={true}
+                          correctAn={question.correctAn}
+                          addAnswer={() => {}} //Prop only useful for users but typescript needs us to declare it here too
+                        />
+                      </Box>
+                        <Box width="40%" height="20%">
+                          {showResults ? (
+                            <GraphInterface
+                              results={results}
+                              questionId={question.id}
+                              typeQuest={question.type}
+                              quest={question.quest}
+                            />
+                          ) : (
+                            <></>
+                          )}
+                        </Box>
                     </Box>
-                    <Box width="100%">{showResults?<GraphInterface results={results} questionId={question.id} typeQuest={question.type}/> :  <></>}</Box>
-                  </Box>
-                </div>
+                  </div>
                 ),
             )}
         </div>
