@@ -7,7 +7,7 @@
 
 # testing
 /coverage
-/cypress_constants
+.cypressLogins.js
 
 # misc
 .DS_Store
