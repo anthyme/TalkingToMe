@@ -7,7 +7,7 @@
 
 # testing
 /coverage
-src/frontend/talkingtomefront/cypress/cypressLogins.js
+/cypress/cypressLogins.js
 
 # misc
 .DS_Store
