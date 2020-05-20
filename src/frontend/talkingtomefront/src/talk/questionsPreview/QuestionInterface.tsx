@@ -24,7 +24,7 @@ const QuestionInterface = ({
   correctAn,
   isPreview,
   addAnswer,
-}: QuestionInterfaceProps) => {
+}: QuestionInterfaceProps) => { 
   const [response, setResponse] = useState('');
   const isUCQ = typeQuest === 'UCQ';
 
@@ -94,6 +94,9 @@ const QuestionInterface = ({
                 {a}
               </div>
             ))}
+            {isPreview
+              ? <></>
+              : <></>}
           </RadioGroup>
         ) : (
           <textarea
