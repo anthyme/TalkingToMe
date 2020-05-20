@@ -129,6 +129,7 @@ const TalkInterface = () => {
       )[0]
       connection.invoke('StartQuizz', groupId, quizzId, quiz.name)
       setQuizzRunning(true)
+      setShowResults(false);
     }
   }
 
@@ -307,7 +308,7 @@ const TalkInterface = () => {
                 question && (
                   <div>
                     <Box display="Flex" flexDirection="row" p={1} m={1}>
-                      <Box>
+                      <Box width="50%">
                         <QuestionInterface
                           key={question.id}
                           questId={question.id}

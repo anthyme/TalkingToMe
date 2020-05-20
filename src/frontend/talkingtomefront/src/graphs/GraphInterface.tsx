@@ -12,6 +12,7 @@ import {
   makeStyles,
 } from '@material-ui/core'
 import Radio from '@material-ui/core/Radio'
+import TextGraph from './TextGraph'
 
 interface IProps {
   results: any
@@ -29,7 +30,6 @@ const GraphInterface: React.FC<IProps> = (props) => {
   const questionId = props.questionId
   const typeQuest = props.typeQuest
   const quest = props.quest
-
 
   const useStyles = makeStyles(() => ({
     gridSpacing: {
@@ -77,15 +77,15 @@ const GraphInterface: React.FC<IProps> = (props) => {
                 value={value}
                 onChange={handleChange}
               >
-                <Grid container spacing={6} className={classes.gridSpacing}>
-                  <Grid item xs={6}>
+                <Grid container spacing={8} className={classes.gridSpacing}>
+                  <Grid item xs={3}>
                     <FormControlLabel
                       value="Pie graph"
                       control={<Radio />}
                       label="Pie graph"
                     />
                   </Grid>
-                  <Grid item xs={6}>
+                  <Grid item xs={3}>
                     <FormControlLabel
                       value="Bar graph"
                       control={<Radio />}
@@ -100,17 +100,17 @@ const GraphInterface: React.FC<IProps> = (props) => {
           )}
           {showResults ? (
             value === 'Pie graph' ? (
-              <PieGraph results={results} quest={quest}/>
+              <PieGraph results={results} quest={quest} />
             ) : (
-              <BarGraph results={results} quest={quest}/>
+              <BarGraph results={results} quest={quest} />
             )
           ) : (
             <></>
           )}
         </div>
       )
-    case 'TEXT':
-      return <div>Text answers not yet implemented</div>
+    case 'Text':
+      return <div>{showResults ? <TextGraph results={results} quest={quest}/> : <></>}</div>
     default:
       return <></>
   }
