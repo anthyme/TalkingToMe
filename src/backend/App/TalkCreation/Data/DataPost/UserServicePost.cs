@@ -113,5 +113,38 @@ namespace App.TalkCreation.Data.DataPost
 
             }
         }
+        public UserQuestionsDTO SaveQuestion(string groupId, string question, string username)
+        {
+            TalkContextFactory talkFactory = new TalkContextFactory(_connectionString);
+            using TalkContext context = talkFactory.create();
+            Session currentSession = context.Sessions.Where(p => p.groupId == groupId).FirstOrDefault();
+            UserQuestion userQuestion = new UserQuestion
+            {
+                Question = question,
+                Upvotes = 0,
+                SessionId = currentSession.Id,
+                Username = username,
+            };
+            context.UserQuestions.Add(userQuestion);
+            context.SaveChanges();
+            UserQuestionsDTO userQuestionsDTO = new UserQuestionsDTO
+            {
+                Id = userQuestion.Id,
+                Question = question,
+                Upvotes = 0,
+                SessionId = currentSession.Id,
+                Username = username,
+            };
+            return userQuestionsDTO;
+        }
+        
+        public List<UserQuestion> GetQuestionsBySession(string groupId)
+        {
+            TalkContextFactory talkFactory = new TalkContextFactory(_connectionString);
+            using TalkContext context = talkFactory.create();
+            Session currentSession = context.Sessions.Where(p => p.groupId == groupId).FirstOrDefault();
+            List<UserQuestion> userQuestions = context.UserQuestions.Where(p => p.SessionId == currentSession.Id).ToList();
+            return userQuestions;
+        }
     }
 }

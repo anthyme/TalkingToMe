@@ -12,6 +12,7 @@ namespace App.TalkCreation.Context
     {
         public TalkContext(DbContextOptions<TalkContext> options) : base(options)
         { }
+        public DbSet<UserQuestion> UserQuestions { get; set; }
         public DbSet<Session> Sessions { get; set; }
         public DbSet<SessionToQuizz> SessionToQuizzes { get; set; }
         public DbSet<Quizz> Quizzes { get; set; }
@@ -33,6 +34,7 @@ namespace App.TalkCreation.Context
             modelBuilder.Entity<Answer>().ToTable("Answers");
             modelBuilder.Entity<UserAnswer>().ToTable("UserAnswers");
             modelBuilder.Entity<User>().ToTable("Users");
+            modelBuilder.Entity<UserQuestion>().ToTable("UserQuestions");
 
             modelBuilder.Entity<Session>().HasMany(e => e.Quizzes).WithOne();
             modelBuilder.Entity<Talk>().HasMany(e => e.Quizzes).WithOne();
@@ -50,6 +52,8 @@ namespace App.TalkCreation.Context
             modelBuilder.Entity<Question>().HasMany(c => c.Answers).WithOne(e => e.Question);
             modelBuilder.Entity<UserAnswer>().HasOne(e => e.Session).WithMany(e => e.UserAnswers).HasForeignKey(p => p.SessionId);
             modelBuilder.Entity<Session>().HasMany(c => c.UserAnswers).WithOne(e => e.Session);
+            modelBuilder.Entity<UserQuestion>().HasOne(e => e.Session).WithMany(p => p.UserQuestions).HasForeignKey(p => p.SessionId);
+            modelBuilder.Entity<Session>().HasMany(c => c.UserQuestions).WithOne(e => e.Session);
         }
     }
 }
