@@ -94,6 +94,7 @@ export default function SignIn() {
           onFailure={responseGoogle}
           isSignedIn={true}
           cookiePolicy={'single_host_origin'}
+          className={'googleLogin'}
         />
       </div>
       <Box mt={8}>

@@ -66,9 +66,8 @@ namespace App.TalkAnswer.Hubs
 
         public async Task SaveAnswers(string groupId, int quizzId, List<int> questIdList, List<string> answerList)
         {
-            TalkSessionRepo _talkSessionRepo = TalkSessionRepo.GetInstance();
+            var _talkSessionRepo = TalkSessionRepo.GetInstance();
             _talkSessionRepo.AddAnswers(groupId, quizzId, questIdList, answerList);
-           
         }
 
         public async Task StopQuizz(string groupId, int quizzId)

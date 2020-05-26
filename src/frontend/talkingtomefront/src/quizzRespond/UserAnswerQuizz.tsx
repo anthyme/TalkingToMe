@@ -144,13 +144,21 @@ const UserAnswerQuizz: React.FC<IProps> = (props) => {
         {waitingQuizz ? (
           <div className={classes.center}>
             <p>
-              You don't have anything to do for now, just listen to the talk 😊
+              You don't have anything to do for now, just listen to the talk{' '}
+              <span role="img" aria-label="Smiling Face with Smiling Eyes">
+                😊
+              </span>
             </p>
           </div>
         ) : (
           <div>
             <div className={classes.center}>
-              <p>Please answer the following quizz 🤓</p>
+              <p>
+                Please answer the following quizz{' '}
+                <span role="img" aria-label="Nerd Face">
+                  🤓
+                </span>
+              </p>
             </div>
             <Typography
               variant="h5"
