@@ -8,13 +8,17 @@ import {
   FormLabel,
   RadioGroup,
   FormControlLabel,
+  Grid,
+  makeStyles,
 } from '@material-ui/core'
 import Radio from '@material-ui/core/Radio'
+import TextGraph from './TextGraph'
 
 interface IProps {
   results: any
   questionId: number
   typeQuest: string
+  quest: string
 }
 
 const GraphInterface: React.FC<IProps> = (props) => {
@@ -25,6 +29,14 @@ const GraphInterface: React.FC<IProps> = (props) => {
   const questionResults = props.results
   const questionId = props.questionId
   const typeQuest = props.typeQuest
+  const quest = props.quest
+
+  const useStyles = makeStyles(() => ({
+    gridSpacing: {
+      padding: '2%',
+    },
+  }))
+  const classes = useStyles()
 
   const handleChange = (event: any) => {
     setValue(event.target.value)
@@ -65,16 +77,22 @@ const GraphInterface: React.FC<IProps> = (props) => {
                 value={value}
                 onChange={handleChange}
               >
-                <FormControlLabel
-                  value="Pie graph"
-                  control={<Radio />}
-                  label="Pie graph"
-                />
-                <FormControlLabel
-                  value="Bar graph"
-                  control={<Radio />}
-                  label="Bar graph"
-                />
+                <Grid container spacing={8} className={classes.gridSpacing}>
+                  <Grid item xs={3}>
+                    <FormControlLabel
+                      value="Pie graph"
+                      control={<Radio />}
+                      label="Pie graph"
+                    />
+                  </Grid>
+                  <Grid item xs={3}>
+                    <FormControlLabel
+                      value="Bar graph"
+                      control={<Radio />}
+                      label="Bar graph"
+                    />
+                  </Grid>
+                </Grid>
               </RadioGroup>
             </FormControl>
           ) : (
@@ -82,17 +100,17 @@ const GraphInterface: React.FC<IProps> = (props) => {
           )}
           {showResults ? (
             value === 'Pie graph' ? (
-              <PieGraph results={results} />
+              <PieGraph results={results} quest={quest} />
             ) : (
-              <BarGraph results={results} />
+              <BarGraph results={results} quest={quest} />
             )
           ) : (
             <></>
           )}
         </div>
       )
-    case 'TEXT':
-      return <div>Text answers not yet implemented</div>
+    case 'Text':
+      return <div>{showResults ? <TextGraph results={results} quest={quest}/> : <></>}</div>
     default:
       return <></>
   }
