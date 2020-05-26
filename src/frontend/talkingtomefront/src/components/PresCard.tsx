@@ -16,6 +16,7 @@ import { InitialState } from '../store/reducers/MainReducer';
 import { v4 as uuidv4 } from 'uuid';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootDispatcher } from '../store/MainDispatcher';
+import OldSessions from '../popUps/popUpCards/OldSessions';
 
 interface IProps {
   card: any;
@@ -33,6 +34,7 @@ const PresCard: React.FC<IProps> = (props) => {
   const history = useHistory();
   const [open, setOpen] = useState(false);
   const [addTalkOpen, setAddTalkOpen] = useState(false);
+  const [openOldSessions, setOpenOldSessions] = useState(false);
 
   const { tokenIdRdx, changeRequestRdx } = useSelector<
     InitialState,
@@ -76,6 +78,10 @@ const PresCard: React.FC<IProps> = (props) => {
     open ? setOpen(false) : setAddTalkOpen(false);
   };
 
+  const handleCloseOldSessions = () => {
+    openOldSessions && setOpenOldSessions(false);
+  };
+
   switch (type) {
     case 'Talk':
       return (
@@ -108,18 +114,25 @@ const PresCard: React.FC<IProps> = (props) => {
                     open={open}
                   />
                 )}
+                {openOldSessions && (
+                  <OldSessions
+                    talk={card}
+                    onClose={handleCloseOldSessions}
+                    open={openOldSessions}
+                  />
+                )}
                 {card.url === null ? (
                   <div>
                     <Button size="small" color="primary" onClick={goToTalk}>
                       Start session
                     </Button>
-                    {/* <Button
+                    <Button
                       size="small"
                       color="primary"
-                      onClick={() => console.log('Louis previous sessions')}
+                      onClick={() => setOpenOldSessions(true)}
                     >
-                      Old sessions
-                    </Button> */}
+                      History
+                    </Button>
                   </div>
                 ) : (
                   <div>

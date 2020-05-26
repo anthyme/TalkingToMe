@@ -26,7 +26,7 @@ namespace App.TalkAnswer
         {
             _connectionString = configuration.GetConnectionString("DBString");
             _logger = logger;
-            _quizzServiceFetch =quizzServiceFetch;
+            _quizzServiceFetch = quizzServiceFetch;
             _questionServiceFetch = questionServiceFetch;
         }
 
@@ -36,24 +36,19 @@ namespace App.TalkAnswer
             TalkContextFactory talkFactory = new TalkContextFactory(_connectionString);
             using TalkContext context = talkFactory.create();
             TalkSessionRepo _talkSessionRepo = TalkSessionRepo.GetInstance();
-            try 
+            Talk modTalk = context.Talks.Where(p => p.Id == talkId).FirstOrDefault();
+            modTalk.Url = groupId;
+            if (talkId != -1)
             {
-                Talk modTalk = context.Talks.Where(p => p.Id == talkId).FirstOrDefault();
-                modTalk.Url = groupId;
-                if (talkId != -1)
+                string now = DateTime.Now.ToString();
+                Session dbSession = new Session { StartDate = now, groupId = groupId };
+                context.Sessions.Add(dbSession);
+                CurrentSession currentSession = new CurrentSession(groupId, -1, DateTime.Now, new List<QuizzAnswers> { new QuizzAnswers() { quizzId = -1, listAnswers = new List<Dictionary<int, string>> { new Dictionary<int, string>() } } });
+                if (!context.Sessions.Where(s => s.groupId == groupId).Any())
                 {
-                    string now = DateTime.Now.ToString();
-                    Session dbSession = new Session { StartDate = now, groupId = groupId };
-                    context.Sessions.Add(dbSession);
-                    CurrentSession currentSession = new CurrentSession(groupId, -1, DateTime.Now, new List<QuizzAnswers> { new QuizzAnswers() { quizzId = -1, listAnswers = new List<Dictionary<int, string>> { new Dictionary<int, string>() } } });
                     _talkSessionRepo.Save(currentSession);
+                    context.SaveChanges();
                 }
-                context.SaveChanges();
-                Console.WriteLine("Change Talk");
-            }
-            catch (Exception e)
-            {
-                _logger.LogError("The Talk could not update its url", e);
             }
         }
 
@@ -70,7 +65,7 @@ namespace App.TalkAnswer
                     listQuestions = new List<QuestionResults>(),
                 };
                 List<Question> listQuestions = context.Questions.Where(p => p.Quizz.Id == quizzId).ToList();
-                foreach(Question question in listQuestions)
+                foreach (Question question in listQuestions)
                 {
                     QuestionResults questionResults = new QuestionResults
                     {
@@ -79,7 +74,7 @@ namespace App.TalkAnswer
                         type = question.Type,
                     };
                     List<UserAnswer> listUserAnswers = context.UserAnswers.Where(p => p.QuestionId == question.Id && p.Session.groupId.Equals(groupId)).ToList();
-                    foreach(UserAnswer userAnswer in listUserAnswers)
+                    foreach (UserAnswer userAnswer in listUserAnswers)
                     {
                         AnswerResults answerResults = new AnswerResults
                         {
@@ -89,10 +84,9 @@ namespace App.TalkAnswer
                         questionResults.listAnswers.Add(answerResults);
                     }
                     quizzResults.listQuestions.Add(questionResults);
-                    
+
                 }
                 return quizzResults;
-                Console.WriteLine("Change Talk");
             }
             catch (Exception e)
             {

@@ -3,10 +3,7 @@ using App.TalkCreation.Models;
 using App.TalkCreation.Context;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
 using App.TalkAnswer.SaveTalkProgress;
 
 namespace App.TalkCreation.Data.DataPost
@@ -117,11 +114,13 @@ namespace App.TalkCreation.Data.DataPost
             try
             {
                 string talkurl = data[0].url;
-                Console.WriteLine("talkurl");
                 Talk changeTalk = context.Talks.FirstOrDefault(item => item.Id == id);
                 string groupId = changeTalk.Url;
                 changeTalk.Url = (talkurl.Equals("NULL"))? changeTalk.Url = null: changeTalk.Url = talkurl;
                 context.Talks.Update(changeTalk);
+                var closingSession = context.Sessions.FirstOrDefault(s => s.groupId == groupId);
+                closingSession.EndDate = DateTime.Now.ToString();
+                context.Sessions.Update(closingSession);
                 context.SaveChanges();
                 if (talkurl.Equals("NULL"))
                 {
