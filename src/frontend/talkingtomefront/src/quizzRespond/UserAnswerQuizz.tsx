@@ -18,6 +18,7 @@ import {
   makeStyles,
   Button,
 } from '@material-ui/core';
+import ChatInterface from '../chatBox/ChatInterface';
 interface StateProps {
   userIdRdx: string;
   tokenIdRdx: string;
@@ -25,6 +26,7 @@ interface StateProps {
 interface IProps {}
 const UserAnswerQuizz: React.FC<IProps> = (props) => {
   const [quizzName, setQuizzName] = useState('');
+  const [tab, setTab] = useState('Quizz');
   const [quizzId, setQuizzId] = useState(-1);
   const [questionsData, setQuestionsData] = useState([{}]);
   const [waitingQuizz, setWaitingQuizz] = useState(true);
@@ -73,6 +75,14 @@ const UserAnswerQuizz: React.FC<IProps> = (props) => {
       setWaitingQuizz(false);
     }
   };
+
+  const changeToChat = ()=>{
+    setTab('Chat');
+  };
+
+  const changeToQuizz =()=>{
+    setTab("Quizz");
+  }
 
   const addAnswerToList = (questId: number, resp: string) => {
     listAnswer.set(questId, resp);
@@ -129,7 +139,7 @@ const UserAnswerQuizz: React.FC<IProps> = (props) => {
   }));
 
   const classes = useStyles();
-
+  
   return (
     <React.Fragment>
       <>
@@ -138,10 +148,12 @@ const UserAnswerQuizz: React.FC<IProps> = (props) => {
             <Typography variant="h4" align="center" color="inherit">
               {talkName}
             </Typography>
+            <Button onClick = {changeToChat}>Chat</Button>
+            <Button onClick = {changeToQuizz}>Quizz</Button>
           </Toolbar>
         </AppBar>
 
-        {waitingQuizz ? (
+        {tab==="Quizz"?(waitingQuizz ? (
           <div className={classes.center}>
             <p>
               You don't have anything to do for now, just listen to the talk{' '}
@@ -196,6 +208,8 @@ const UserAnswerQuizz: React.FC<IProps> = (props) => {
               </Button>
             </div>
           </div>
+        )):(
+          <ChatInterface connection={connection} groupId={groupId}/>
         )}
       </>
     </React.Fragment>

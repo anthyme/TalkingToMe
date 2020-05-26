@@ -10,6 +10,7 @@ using App.TalkCreation.Data.DataFetch.Dto;
 using App.TalkCreation.Data.DataFetch;
 using App.TalkCreation.Data.DataPost;
 using App.TalkAnswer.Dto.QuizzResultsDTO;
+using App.TalkAnswer.Dto;
 
 namespace App.TalkAnswer.Hubs
 {
@@ -79,6 +80,18 @@ namespace App.TalkAnswer.Hubs
             await Clients.Group(groupId).SendAsync("StopQuizz");
             QuizzResults quizzResults = _userServices.GetQuizzResults(groupId, quizzId);
             await Clients.Client(Context.ConnectionId).SendAsync("ShowResults", quizzResults);
+        }
+
+        public async Task PostQuestion(string groupId, string question,string userName)
+        {
+            UserQuestionsDTO userQuestion=_userServicePost.SaveQuestion(groupId, question, userName);
+            await Clients.Group(groupId).SendAsync("ShowResults", userQuestion);
+        }
+
+        public async Task GetSessionQuestions(string groupId)
+        {
+            List<UserQuestion> userQuestions = _userServicePost.GetQuestionsBySession(groupId);
+            await Clients.Group(groupId).SendAsync("ShowResults", userQuestions);
         }
     }
 }
