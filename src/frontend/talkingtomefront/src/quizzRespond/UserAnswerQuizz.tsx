@@ -29,6 +29,7 @@ const UserAnswerQuizz: React.FC<IProps> = (props) => {
   const [tab, setTab] = useState('Quizz')
   const [quizzId, setQuizzId] = useState(-1)
   const [questionsData, setQuestionsData] = useState([{}])
+  const [likedQuestions, setLikedQuestions] = useState<number[]>([]);
   const [waitingQuizz, setWaitingQuizz] = useState(true)
   const [connection, setConnection] = useState<HubConnection>()
   const [hasValidated, setHasValidated] = useState(false)
@@ -41,6 +42,16 @@ const UserAnswerQuizz: React.FC<IProps> = (props) => {
   window.onbeforeunload = function () {
     connection?.stop()
   }
+const changeLikedQuestions = (upvoted:boolean, questionId: number) =>{
+  if(upvoted===true){
+    let newLikedQuestions = [...likedQuestions, questionId];
+    setLikedQuestions(newLikedQuestions);
+  } else {
+    let newLikedQuestions = likedQuestions;
+    newLikedQuestions.splice(newLikedQuestions.indexOf(questionId),1);
+    setLikedQuestions(newLikedQuestions);
+  }
+};
 
   if (connection) {
     connection.on(
@@ -140,6 +151,13 @@ const UserAnswerQuizz: React.FC<IProps> = (props) => {
       display: 'flex',
       justifyContent: 'center',
     },
+    rightButton:{
+       right: '0%',
+       marginLeft:"100px",
+       marginRight:"100px",
+       color: "white",
+       backgroundColor: "blue"
+    },
   }))
 
   const classes = useStyles()
@@ -149,11 +167,11 @@ const UserAnswerQuizz: React.FC<IProps> = (props) => {
       <>
         <AppBar position="relative">
           <Toolbar className={classes.center}>
+          <Button onClick={changeToQuizz} className={classes.rightButton}>Quizz</Button>
             <Typography variant="h4" align="center" color="inherit">
               {talkName}
             </Typography>
-            <Button onClick={changeToChat}>Chat</Button>
-            <Button onClick={changeToQuizz}>Quizz</Button>
+            <Button onClick={changeToChat} className={classes.rightButton}>Chat</Button>
           </Toolbar>
         </AppBar>
 
@@ -208,7 +226,7 @@ const UserAnswerQuizz: React.FC<IProps> = (props) => {
             </div>
           )
         ) : (
-          <ChatInterface connection={connection} groupId={groupId} />
+          <ChatInterface connection={connection} groupId={groupId} likedQuestions={likedQuestions} changeLikedQuestions={changeLikedQuestions}/>
         )}
       </>
     </React.Fragment>

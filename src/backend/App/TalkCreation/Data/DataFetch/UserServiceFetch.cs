@@ -10,6 +10,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.IO;
 using Microsoft.Extensions.Logging;
+using App.TalkAnswer.SaveTalkProgress;
+using App.TalkAnswer.Models;
+using App.TalkAnswer.Dto;
 
 namespace App.TalkCreation.Data
 {
@@ -60,6 +63,34 @@ namespace App.TalkCreation.Data
                 _logger.LogWarning("Message displayed: {Message} at {RequestTime}", message, DateTime.Now);
                 return "{\"response\":\"-1\"}" ;
             }
+        }
+
+        public List<UserQuestionsDTO> GetQuestionsBySession(string groupId)
+        {
+            TalkSessionRepo _talkSessionRepo = TalkSessionRepo.GetInstance();
+            CurrentSession currentSession = _talkSessionRepo.Get(groupId);
+            if (currentSession == null)
+            {
+                return null;
+            }
+            TalkContextFactory talkFactory = new TalkContextFactory(_connectionString);
+            using TalkContext context = talkFactory.create();
+            Session session = context.Sessions.Where(p => p.groupId == groupId).FirstOrDefault();
+            List<UserQuestion> userQuestions = context.UserQuestions.Where(p => p.SessionId == session.Id).ToList();
+            List<UserQuestionsDTO> userQuestionsDTO = new List<UserQuestionsDTO>();
+            foreach (UserQuestion userQuestion in userQuestions)
+            {
+                UserQuestionsDTO userQuestionDTO = new UserQuestionsDTO
+                {
+                    Id = userQuestion.Id,
+                    Question = userQuestion.Question,
+                    Upvotes = userQuestion.Upvotes,
+                    SessionId = session.Id,
+                    Username = userQuestion.Username,
+                };
+                userQuestionsDTO.Add(userQuestionDTO);
+            }
+            return userQuestionsDTO;
         }
 
     }

@@ -148,20 +148,26 @@ namespace App.TalkCreation.Data.DataPost
             }
             return null;
         }
-        
-        public List<UserQuestion> GetQuestionsBySession(string groupId)
+
+        public void ChangeUpVote(int id, bool addUpvote)
         {
-            TalkSessionRepo _talkSessionRepo = TalkSessionRepo.GetInstance();
-            CurrentSession currentSession = _talkSessionRepo.Get(groupId);
-            if (currentSession == null)
-            {
-                return null;
-            }
             TalkContextFactory talkFactory = new TalkContextFactory(_connectionString);
-            using TalkContext context = talkFactory.create();
-            Session session = context.Sessions.Where(p => p.groupId == groupId).FirstOrDefault();
-            List<UserQuestion> userQuestions = context.UserQuestions.Where(p => p.SessionId == session.Id).ToList();
-            return userQuestions;
+            using (TalkContext context = talkFactory.create())
+            {
+                UserQuestion userQuestion = context.UserQuestions.FirstOrDefault(p => p.Id == id);
+                if (addUpvote)
+                {
+                    userQuestion.Upvotes += 1;
+                }
+                else
+                {
+                    userQuestion.Upvotes -= 1;
+                }
+                context.UserQuestions.Update(userQuestion);
+                context.SaveChanges();
+            }
+
         }
+
     }
 }

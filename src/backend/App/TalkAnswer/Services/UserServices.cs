@@ -47,10 +47,10 @@ namespace App.TalkAnswer
                         context.Sessions.Add(dbSession);
                         CurrentSession currentSession = new CurrentSession(groupId, -1, DateTime.Now, new List<QuizzAnswers> { new QuizzAnswers() { quizzId = -1, listAnswers = new List<Dictionary<int, string>> { new Dictionary<int, string>() } } });
                         if (!context.Sessions.Where(s => s.groupId == groupId).Any())
-                    {
+                         {
                         _talkSessionRepo.Save(currentSession);
 
-                    }
+                         }
                     }
                     context.SaveChanges();
             }

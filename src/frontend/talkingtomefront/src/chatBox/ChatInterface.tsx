@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
@@ -31,6 +31,8 @@ const useStyles = makeStyles((theme) => ({
 interface IProps {
   connection: any
   groupId: string | null
+  likedQuestions: number[]
+  changeLikedQuestions: Function
 }
 
 const ChatInterface: React.FC<IProps> = (props) => {
@@ -41,17 +43,11 @@ const ChatInterface: React.FC<IProps> = (props) => {
   const connection = props.connection
   const groupId = props.groupId
 
-  if (connection) {
-    connection.on('AddNewQuestion', (result: any) => {
-      console.log(result);
-      let newQuestionList=[...messages, result];
-      setMessages(newQuestionList);
-    })
-  }
   const SendNewQuestions = () => {
     if (connection) {
       connection.invoke('PostQuestion', groupId, question, userName)
     }
+    setQuestion('');
   }
   const handleQuestionChange = (event: any) => {
     setQuestion(event.target.value)
@@ -59,6 +55,31 @@ const ChatInterface: React.FC<IProps> = (props) => {
   const handleUserNameChange = (event: any) => {
     setUserName(event.target.value)
   }
+  useEffect(() => {
+    connection.invoke("GetCurrentSessionUserQuestions", groupId);
+    connection.on('AddNewQuestion', async (result: any) => {
+      if(messages[0]==={}){
+        await setMessages([result]);
+      } else{
+        let newQuestionList=messages;
+        newQuestionList.push(result);
+        console.log(newQuestionList)
+        await setMessages([...messages]);
+      }
+    });
+    connection.on('ShowCurrentUserQuestions', async (results: any) => {
+        let newQuestionList=messages;
+        console.log(results)
+        if(results!==null){
+          results.forEach((element: Object) => {
+            newQuestionList.push(element);
+          });
+          console.log(newQuestionList)
+          await setMessages([...messages]);
+        }
+    })
+    
+  }, []) //Load only on
   return (
     <div>
       <TextField
@@ -72,9 +93,9 @@ const ChatInterface: React.FC<IProps> = (props) => {
       />
       <div className={classes.overflow}>
       <List className={classes.root}>
-      {messages ? (messages.map(
+      {messages.length!==1 ? (messages.map(
               (message: any) =>
-                  <Message connection={connection} message={message}/>
+                  <Message connection={connection} message={message} likedQuestions={props.likedQuestions} changeLikedQuestions={props.changeLikedQuestions}/>
             )) : <></>}
       </List>
       </div>
@@ -84,6 +105,7 @@ const ChatInterface: React.FC<IProps> = (props) => {
           cols={50}
           name="comment"
           form="usrform"
+          value={question}
           onChange={handleQuestionChange}
           placeholder="Enter text here..."
         />
