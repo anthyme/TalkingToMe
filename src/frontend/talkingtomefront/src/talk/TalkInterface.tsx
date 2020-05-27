@@ -57,8 +57,6 @@ const TalkInterface = () => {
       };
     },
   );
-  const TalkId: string | null = url.searchParams.get('talkId');
-  const groupId: string | null = url.searchParams.get('groupId');
 
   const qrString =
     groupId && `${siteUrl}TalkAnswer?talkId=${groupId}&ownerId=${userIdRdx}`;

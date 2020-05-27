@@ -55,7 +55,9 @@ namespace App.TalkAnswer
                 catch (Exception e)
                 {
                     _logger.LogError("The Talk could not update its url", e);
+                    _talkSessionRepo.Save(currentSession);
                 }
+                context.SaveChanges();
             }
         }
 
