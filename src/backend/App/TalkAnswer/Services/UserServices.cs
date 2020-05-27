@@ -37,8 +37,7 @@ namespace App.TalkAnswer
             using (TalkContext context = talkFactory.create())
             {
                 TalkSessionRepo _talkSessionRepo = TalkSessionRepo.GetInstance();
-                try
-                {
+
                     Talk modTalk = context.Talks.Where(p => p.Id == talkId).FirstOrDefault();
                     modTalk.Url = groupId;
                     if (talkId != -1)
@@ -47,17 +46,13 @@ namespace App.TalkAnswer
                         Session dbSession = new Session { StartDate = now, groupId = groupId };
                         context.Sessions.Add(dbSession);
                         CurrentSession currentSession = new CurrentSession(groupId, -1, DateTime.Now, new List<QuizzAnswers> { new QuizzAnswers() { quizzId = -1, listAnswers = new List<Dictionary<int, string>> { new Dictionary<int, string>() } } });
+                        if (!context.Sessions.Where(s => s.groupId == groupId).Any())
+                    {
                         _talkSessionRepo.Save(currentSession);
+
+                    }
                     }
                     context.SaveChanges();
-                    Console.WriteLine("Change Talk");
-                }
-                catch (Exception e)
-                {
-                    _logger.LogError("The Talk could not update its url", e);
-                    _talkSessionRepo.Save(currentSession);
-                }
-                context.SaveChanges();
             }
         }
 
