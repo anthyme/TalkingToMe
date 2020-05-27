@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react'
-import Button from '@material-ui/core/Button'
-import Select from '@material-ui/core/Select'
-import MenuItem from '@material-ui/core/MenuItem'
-import { makeStyles } from '@material-ui/core/styles'
+import React, { useState, useEffect } from 'react';
+import Button from '@material-ui/core/Button';
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
+import { makeStyles } from '@material-ui/core/styles';
 import {
   Typography,
   CssBaseline,
@@ -25,14 +25,14 @@ import {
   HubConnectionBuilder,
   HttpTransportType,
   HubConnection,
-} from '@microsoft/signalr'
-import GraphInterface from '../graphs/GraphInterface'
-import { isEmpty } from 'lodash'
-import { putTalk } from '../dataTransfers/Posts/DataTalkPost'
+} from '@microsoft/signalr';
+import GraphInterface from '../graphs/GraphInterface';
+import { isEmpty } from 'lodash';
+import { putTalk } from '../dataTransfers/Posts/DataTalkPost';
 
 interface StateProps {
-  userIdRdx: string
-  tokenIdRdx: string
+  userIdRdx: string;
+  tokenIdRdx: string;
 }
 
 const TalkInterface = () => {
@@ -54,10 +54,14 @@ const TalkInterface = () => {
       return {
         userIdRdx: state.userIdRdx,
         tokenIdRdx: state.tokenIdRdx,
-      }
+      };
     },
-  )
-  const qrString = `${siteUrl}TalkAnswer?talkId=${groupId}&ownerId=${userIdRdx}`
+  );
+  const TalkId: string | null = url.searchParams.get('talkId');
+  const groupId: string | null = url.searchParams.get('groupId');
+
+  const qrString =
+    groupId && `${siteUrl}TalkAnswer?talkId=${groupId}&ownerId=${userIdRdx}`;
 
   const TalkId: string | null = url.searchParams.get('talkId')
   const history = useHistory()
@@ -84,15 +88,15 @@ const TalkInterface = () => {
       {
         url: 'NULL',
       },
-    ]
+    ];
     if (TalkId) {
-      await putTalk('Talks/ChangeUrl/', json, parseInt(TalkId), tokenIdRdx)
+      await putTalk('Talks/ChangeUrl/', json, parseInt(TalkId), tokenIdRdx);
     }
-    history.push('/Menu')
+    history.push('/Menu');
     if (connection) {
-      connection?.stop()
+      connection?.stop();
     }
-  }
+  };
 
   if (connection) {
     connection.on('NewChannel', function (responseData: string) {
@@ -105,46 +109,46 @@ const TalkInterface = () => {
       connection.invoke('GetCurrentQuizz', groupId, quizzId)
     })
     connection.on('ShowResults', function (responseData: any) {
-      setResults(responseData.listQuestions)
-    })
+      setResults(responseData.listQuestions);
+    });
   }
 
   //Data Fetching
   const onChangeQuizz = async (value: string) => {
-    setQuizzId(value)
-    setShowResults(false)
-    const responseData = await loadQuizzContent(value, tokenIdRdx)
-    responseData && showQuestions(responseData)
-  }
+    setQuizzId(value);
+    setShowResults(false);
+    const responseData = await loadQuizzContent(value, tokenIdRdx);
+    responseData && showQuestions(responseData);
+  };
 
   const loadInit = async () => {
-    const responseData = await loadTalkNQuizzes(TalkId, tokenIdRdx)
-    responseData && showInitialFetchedData(responseData)
-  }
+    const responseData = await loadTalkNQuizzes(TalkId, tokenIdRdx);
+    responseData && showInitialFetchedData(responseData);
+  };
 
   //Data Showing
   const showInitialFetchedData = (data: any) => {
-    setTalkName(data.talkName)
+    setTalkName(data.talkName);
     for (let quizz of data.quizzes) {
-      setListQuizzes((listQuizzes) => [...listQuizzes, quizz])
+      setListQuizzes((listQuizzes) => [...listQuizzes, quizz]);
     }
-  }
+  };
 
   const showQuestions = (data: any) => {
-    setQuestionsData(data)
-    setShowQuestion(true)
-  }
+    setQuestionsData(data);
+    setShowQuestion(true);
+  };
 
   const startQuizz = () => {
     if (connection) {
       let quiz: any = listQuizzes.filter(
         (q: any) => q.id === parseInt(quizzId),
-      )[0]
-      connection.invoke('StartQuizz', groupId, quizzId, quiz.name)
-      setQuizzRunning(true)
+      )[0];
+      connection.invoke('StartQuizz', groupId, quizzId, quiz.name);
+      setQuizzRunning(true);
       setShowResults(false);
     }
-  }
+  };
 
   const stopQuizz = async () => {
     if (connection) {
@@ -152,20 +156,20 @@ const TalkInterface = () => {
       connection.stop();
       setQuizzRunning(false)
     }
-  }
+  };
 
   useEffect(() => {
     if (!isEmpty(results)) {
-      setShowResults(true)
+      setShowResults(true);
     }
-  }, [results]) //Load only once at first build
+  }, [results]); //Load only once at first build
 
   
 
   //UseEffects
   useEffect(() => {
     if (userIdRdx === '-1') {
-      history.push('/')
+      history.push('/');
     }
     setResults({})
     console.log(results)
@@ -207,9 +211,9 @@ const TalkInterface = () => {
     bigQR: {
       cursor: 'zoom-out',
     },
-  }))
+  }));
 
-  const classes = useStyles()
+  const classes = useStyles();
 
   return (
     <React.Fragment>
@@ -289,7 +293,7 @@ const TalkInterface = () => {
               Link to a user page
             </a>
             <div className={classes.smallQR} onClick={() => setBigQR(true)}>
-              <QRCode value={qrString} />
+              <QRCode value={qrString ? qrString : ''} />
             </div>
             {bigQR && (
               <Dialog
@@ -298,7 +302,7 @@ const TalkInterface = () => {
                 aria-labelledby="form-dialog-title"
               >
                 <div className={classes.bigQR} onClick={() => setBigQR(false)}>
-                  <QRCode value={qrString} size={512} />
+                  <QRCode value={qrString ? qrString : ''} size={512} />
                 </div>
               </Dialog>
             )}
@@ -320,9 +324,9 @@ const TalkInterface = () => {
                           typeQuest={question.type}
                           answers={question.answers.map(
                             (ans: {
-                              id: number
-                              questionId: number
-                              response: string
+                              id: number;
+                              questionId: number;
+                              response: string;
                             }) => ans.response,
                           )}
                           isPreview={true}
@@ -330,18 +334,18 @@ const TalkInterface = () => {
                           addAnswer={() => {}} //Prop only useful for users but typescript needs us to declare it here too
                         />
                       </Box>
-                        <Box width="40%" height="20%">
-                          {showResults ? (
-                            <GraphInterface
-                              results={results}
-                              questionId={question.id}
-                              typeQuest={question.type}
-                              quest={question.quest}
-                            />
-                          ) : (
-                            <></>
-                          )}
-                        </Box>
+                      <Box width="40%" height="20%">
+                        {showResults ? (
+                          <GraphInterface
+                            results={results}
+                            questionId={question.id}
+                            typeQuest={question.type}
+                            quest={question.quest}
+                          />
+                        ) : (
+                          <></>
+                        )}
+                      </Box>
                     </Box>
                   </div>
                 ),
@@ -349,7 +353,7 @@ const TalkInterface = () => {
         </div>
       </div>
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default TalkInterface
+export default TalkInterface;

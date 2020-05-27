@@ -9,9 +9,6 @@ using Microsoft.Extensions.Hosting;
 using App.TalkCreation.Data;
 using App.TalkCreation.Data.DataPost;
 using App.TalkCreation.Data.DataFetch;
-using Newtonsoft.Json;
-using Microsoft.AspNetCore.Mvc.NewtonsoftJson;
-using App.TalkCreation.Data.DataFetch;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using App.HeathChecks;
@@ -28,6 +25,7 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using App.TokenValidation;
 using System;
+using Microsoft.ApplicationInsights.AspNetCore.Extensions;
 
 namespace App
 {
@@ -85,6 +83,13 @@ namespace App
             services.AddControllers();
 
             services.AddSignalR();
+
+            services.AddApplicationInsightsTelemetry(
+                   new ApplicationInsightsServiceOptions
+                   {
+                       RequestCollectionOptions = { TrackExceptions = true },
+                       EnableRequestTrackingTelemetryModule = true,
+                   });
 
             services.AddControllersWithViews()
             .AddNewtonsoftJson(options =>

@@ -5,7 +5,8 @@ import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import EditTalkPopUp from '../popUps/popUpCards/EditTalkPopUp';
-import { Tooltip, Grid } from '@material-ui/core';
+import { Tooltip, Grid, IconButton } from '@material-ui/core';
+import EditIcon from '@material-ui/icons/Edit';
 import { useHistory } from 'react-router-dom';
 import PopupDelete from '../editQuizz/PopupDelete';
 import EditQuizzPopUp from '../popUps/popUpCards/EditQuizzPopUp';
@@ -15,6 +16,7 @@ import { InitialState } from '../store/reducers/MainReducer';
 import { v4 as uuidv4 } from 'uuid';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootDispatcher } from '../store/MainDispatcher';
+import OldSessions from '../popUps/popUpCards/OldSessions';
 
 interface IProps {
   card: any;
@@ -32,6 +34,7 @@ const PresCard: React.FC<IProps> = (props) => {
   const history = useHistory();
   const [open, setOpen] = useState(false);
   const [addTalkOpen, setAddTalkOpen] = useState(false);
+  const [openOldSessions, setOpenOldSessions] = useState(false);
 
   const { tokenIdRdx, changeRequestRdx } = useSelector<
     InitialState,
@@ -75,6 +78,10 @@ const PresCard: React.FC<IProps> = (props) => {
     open ? setOpen(false) : setAddTalkOpen(false);
   };
 
+  const handleCloseOldSessions = () => {
+    openOldSessions && setOpenOldSessions(false);
+  };
+
   switch (type) {
     case 'Talk':
       return (
@@ -82,6 +89,13 @@ const PresCard: React.FC<IProps> = (props) => {
           <Grid item key={card.id} xs={12} sm={6} md={4}>
             <Card>
               <Grid container justify="flex-end">
+                <IconButton
+                  aria-label="edit"
+                  onClick={handleClickOpen}
+                  className="deleteButton"
+                >
+                  <EditIcon color="primary" fontSize="small" />
+                </IconButton>
                 <Tooltip title={'Delete ' + card.name} placement="right">
                   <PopupDelete card={card} type={type} />
                 </Tooltip>
@@ -100,6 +114,13 @@ const PresCard: React.FC<IProps> = (props) => {
                     open={open}
                   />
                 )}
+                {openOldSessions && (
+                  <OldSessions
+                    talk={card}
+                    onClose={handleCloseOldSessions}
+                    open={openOldSessions}
+                  />
+                )}
                 {card.url === null ? (
                   <div>
                     <Button size="small" color="primary" onClick={goToTalk}>
@@ -108,9 +129,9 @@ const PresCard: React.FC<IProps> = (props) => {
                     <Button
                       size="small"
                       color="primary"
-                      onClick={handleClickOpen}
+                      onClick={() => setOpenOldSessions(true)}
                     >
-                      Edit
+                      History
                     </Button>
                   </div>
                 ) : (
@@ -134,6 +155,13 @@ const PresCard: React.FC<IProps> = (props) => {
           <Grid item key={card.id} xs={12} sm={6} md={4}>
             <Card>
               <Grid container justify="flex-end">
+                <IconButton
+                  aria-label="edit"
+                  onClick={handleClickOpen}
+                  className="deleteButton"
+                >
+                  <EditIcon color="primary" fontSize="small" />
+                </IconButton>
                 <Tooltip title={'Delete ' + card.name} placement="right">
                   <PopupDelete card={card} type={type} />
                 </Tooltip>
@@ -166,9 +194,6 @@ const PresCard: React.FC<IProps> = (props) => {
                   onClick={handleAddTalkOpen}
                 >
                   Associated talks
-                </Button>
-                <Button size="small" color="primary" onClick={handleClickOpen}>
-                  Edit
                 </Button>
               </CardActions>
             </Card>

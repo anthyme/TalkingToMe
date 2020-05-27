@@ -61,33 +61,28 @@ namespace App.TalkAnswer.SaveTalkProgress
 
         public void AddAnswers(string groupId, int quizzId, List<int> questIdList, List<string> answerList)
         {
-            try
+
+            if (Sessions.ContainsKey(groupId))
             {
-                if (Sessions.ContainsKey(groupId))
+                Dictionary<int, string> qADictTemp = new Dictionary<int, string>();
+                for (int i = 0; i < answerList.Count; i++)
                 {
-                    Dictionary<int, string> qADictTemp = new Dictionary<int, string>();
-                    for (int i = 0; i < answerList.Count; i++)
-                    {
-                        qADictTemp.Add(questIdList[i], answerList[i]);
-                    }
-                        int allAnswrsIndx = Sessions[groupId].allAnswers.FindIndex(qA => qA.quizzId == quizzId);
-                        if (allAnswrsIndx == -1)
-                        {
-                            List<Dictionary<int, string>> listAnswersTmp = new List<Dictionary<int, string>>();
-                            listAnswersTmp.Add(qADictTemp);
-                            Sessions[groupId].allAnswers.Add(new QuizzAnswers() { quizzId = quizzId, listAnswers = listAnswersTmp });
-                        }
-                        else
-                        {
-                            Sessions[groupId].allAnswers[allAnswrsIndx].listAnswers.Add(qADictTemp);
-                        }
+                    qADictTemp.Add(questIdList[i], answerList[i]);
+                }
+                int allAnswrsIndx = Sessions[groupId].allAnswers.FindIndex(qA => qA.quizzId == quizzId);
+                if (allAnswrsIndx == -1)
+                {
+                    List<Dictionary<int, string>> listAnswersTmp = new List<Dictionary<int, string>>();
+                    listAnswersTmp.Add(qADictTemp);
+                    Sessions[groupId].allAnswers.Add(new QuizzAnswers() { quizzId = quizzId, listAnswers = listAnswersTmp });
+                }
+                else
+                {
+                    Sessions[groupId].allAnswers[allAnswrsIndx].listAnswers.Add(qADictTemp);
                 }
             }
-            catch (Exception e)
-            {
-                Console.WriteLine("The session could not be updated");
-            }
         }
+
         public void Save(CurrentSession currentSession)
         {
             try
@@ -102,11 +97,13 @@ namespace App.TalkAnswer.SaveTalkProgress
 
         public void EndSession(string groupId)
         {
-            if (Sessions.ContainsKey(groupId)) {
-                Sessions.Remove(groupId);
-            } else
+            if (Sessions.ContainsKey(groupId))
             {
-                throw new System.InvalidOperationException("The key "+ groupId + " does not exist in recorded sessions" );
+                Sessions.Remove(groupId);
+            }
+            else
+            {
+                throw new System.InvalidOperationException("The key " + groupId + " does not exist in recorded sessions");
             }
         }
     }
