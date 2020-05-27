@@ -47,8 +47,8 @@ namespace App.TalkAnswer
                 if (!context.Sessions.Where(s => s.groupId == groupId).Any())
                 {
                     _talkSessionRepo.Save(currentSession);
-                    context.SaveChanges();
                 }
+                context.SaveChanges();
             }
         }
 
