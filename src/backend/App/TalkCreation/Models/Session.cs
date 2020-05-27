@@ -12,6 +12,7 @@ namespace App.TalkAnswer.Models
         public String StartDate { get; set; }
         public String EndDate { get; set; }
         public String groupId { get; set; }
+        public int TalkId { get; set; }
 
 #nullable enable
         public List<UserAnswer>? UserAnswers { get; set; }
