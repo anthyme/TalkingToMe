@@ -20,7 +20,7 @@ import { CreateTalkHub } from '../signalR/CreateHub'
 import { v4 as uuidv4 } from 'uuid'
 import { InitialState } from '../store/reducers/MainReducer'
 import { useSelector } from 'react-redux'
-import { siteUrl } from '../constants'
+import { siteUrl, urlHub } from '../constants'
 import {
   HubConnectionBuilder,
   HttpTransportType,
@@ -43,7 +43,7 @@ const TalkInterface = () => {
   const [listQuizzes, setListQuizzes] = useState([{}])
   const [talkName, setTalkName] = useState('')
   const [showQuestion, setShowQuestion] = useState(false)
-  const [connection, setConnection] = useState<HubConnection>()
+  const [connection, setConnection] = useState<HubConnection>(CreateTalkHub())
   const [questionsData, setQuestionsData] = useState([{}])
   const [groupId, setGroupId] = useState(url.searchParams.get('groupId'))
   const [quizzRunning, setQuizzRunning] = useState(false)
@@ -61,7 +61,23 @@ const TalkInterface = () => {
 
   const TalkId: string | null = url.searchParams.get('talkId')
   const history = useHistory()
-
+  window.onbeforeunload = function(){
+    connection?.stop();
+ }
+ const createHubConnection = async () => {
+  //const connect = CreateTalkHub()
+  try {
+   // await connect.start()
+    //Invoke method defined in server to add user to a specified group
+  } catch (err) {
+    console.log(err)
+  }
+ //await setConnection(connect)
+  connection.start().then(()=>{
+      connection.invoke('CreateTalkGroup', groupId, Number(TalkId))
+    });
+  console.log('CreateTalkGroup: ' + groupId)
+}
   //Buttons
   const backToMenu = async () => {
     const json = [
@@ -79,18 +95,15 @@ const TalkInterface = () => {
   }
 
   if (connection) {
-    connection.on('JoinedGroup', function (responseData: string) {
-      console.log('A new User has joined the channel: ' + responseData)
-    })
-
     connection.on('NewChannel', function (responseData: string) {
       console.log('The new channel is: ' + responseData)
     })
-
+    connection.on('JoinedGroup', function (responseData: string) {
+      console.log('A new User has joined the channel: ' + responseData)
+    })
     connection.on('RequestCurrentQuizz', function (responseData: string) {
       connection.invoke('GetCurrentQuizz', groupId, quizzId)
     })
-
     connection.on('ShowResults', function (responseData: any) {
       setResults(responseData.listQuestions)
     })
@@ -133,9 +146,10 @@ const TalkInterface = () => {
     }
   }
 
-  const stopQuizz = () => {
+  const stopQuizz = async () => {
     if (connection) {
-      connection.invoke('StopQuizz', groupId, quizzId)
+      await connection.invoke('StopQuizz', groupId, quizzId)
+      connection.stop();
       setQuizzRunning(false)
     }
   }
@@ -146,6 +160,8 @@ const TalkInterface = () => {
     }
   }, [results]) //Load only once at first build
 
+  
+
   //UseEffects
   useEffect(() => {
     if (userIdRdx === '-1') {
@@ -153,18 +169,6 @@ const TalkInterface = () => {
     }
     setResults({})
     console.log(results)
-    const createHubConnection = async () => {
-      const connect = CreateTalkHub()
-      try {
-        await connect.start()
-        //Invoke method defined in server to add user to a specified group
-      } catch (err) {
-        console.log(err)
-      }
-      setConnection(connect)
-      console.log('CreateTalkGroup: ' + groupId)
-      connect.invoke('CreateTalkGroup', groupId, Number(TalkId))
-    }
     createHubConnection()
     loadInit()
   }, []) //Load only once at first build

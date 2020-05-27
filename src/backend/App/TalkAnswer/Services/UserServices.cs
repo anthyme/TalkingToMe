@@ -26,78 +26,82 @@ namespace App.TalkAnswer
         {
             _connectionString = configuration.GetConnectionString("DBString");
             _logger = logger;
-            _quizzServiceFetch =quizzServiceFetch;
+            _quizzServiceFetch = quizzServiceFetch;
             _questionServiceFetch = questionServiceFetch;
         }
 
 
-        public void ChangeTalkById(string groupId, int talkId)
+        public async Task ChangeTalkById(string groupId, int talkId)
         {
             TalkContextFactory talkFactory = new TalkContextFactory(_connectionString);
-            using TalkContext context = talkFactory.create();
-            TalkSessionRepo _talkSessionRepo = TalkSessionRepo.GetInstance();
-            try 
+            using (TalkContext context = talkFactory.create())
             {
-                Talk modTalk = context.Talks.Where(p => p.Id == talkId).FirstOrDefault();
-                modTalk.Url = groupId;
-                if (talkId != -1)
+                TalkSessionRepo _talkSessionRepo = TalkSessionRepo.GetInstance();
+                try
                 {
-                    string now = DateTime.Now.ToString();
-                    Session dbSession = new Session { StartDate = now, groupId = groupId };
-                    context.Sessions.Add(dbSession);
-                    CurrentSession currentSession = new CurrentSession(groupId, -1, DateTime.Now, new List<QuizzAnswers> { new QuizzAnswers() { quizzId = -1, listAnswers = new List<Dictionary<int, string>> { new Dictionary<int, string>() } } });
-                    _talkSessionRepo.Save(currentSession);
+                    Talk modTalk = context.Talks.Where(p => p.Id == talkId).FirstOrDefault();
+                    modTalk.Url = groupId;
+                    if (talkId != -1)
+                    {
+                        string now = DateTime.Now.ToString();
+                        Session dbSession = new Session { StartDate = now, groupId = groupId };
+                        context.Sessions.Add(dbSession);
+                        CurrentSession currentSession = new CurrentSession(groupId, -1, DateTime.Now, new List<QuizzAnswers> { new QuizzAnswers() { quizzId = -1, listAnswers = new List<Dictionary<int, string>> { new Dictionary<int, string>() } } });
+                        _talkSessionRepo.Save(currentSession);
+                    }
+                    context.SaveChanges();
+                    Console.WriteLine("Change Talk");
                 }
-                context.SaveChanges();
-                Console.WriteLine("Change Talk");
-            }
-            catch (Exception e)
-            {
-                _logger.LogError("The Talk could not update its url", e);
+                catch (Exception e)
+                {
+                    _logger.LogError("The Talk could not update its url", e);
+                }
             }
         }
 
         public QuizzResults GetQuizzResults(string groupId, int quizzId)
         {
             TalkContextFactory talkFactory = new TalkContextFactory(_connectionString);
-            using TalkContext context = talkFactory.create();
-            TalkSessionRepo _talkSessionRepo = TalkSessionRepo.GetInstance();
-            try
+            using (TalkContext context = talkFactory.create())
             {
-                QuizzResults quizzResults = new QuizzResults
+                TalkSessionRepo _talkSessionRepo = TalkSessionRepo.GetInstance();
+                try
                 {
-                    quizzId = quizzId,
-                    listQuestions = new List<QuestionResults>(),
-                };
-                List<Question> listQuestions = context.Questions.Where(p => p.Quizz.Id == quizzId).ToList();
-                foreach(Question question in listQuestions)
-                {
-                    QuestionResults questionResults = new QuestionResults
+                    QuizzResults quizzResults = new QuizzResults
                     {
-                        questionId = question.Id,
-                        listAnswers = new List<AnswerResults>(),
-                        type = question.Type,
+                        quizzId = quizzId,
+                        listQuestions = new List<QuestionResults>(),
                     };
-                    List<UserAnswer> listUserAnswers = context.UserAnswers.Where(p => p.QuestionId == question.Id && p.Session.groupId.Equals(groupId)).ToList();
-                    foreach(UserAnswer userAnswer in listUserAnswers)
+                    List<Question> listQuestions = context.Questions.Where(p => p.Quizz.Id == quizzId).ToList();
+                    foreach (Question question in listQuestions)
                     {
-                        AnswerResults answerResults = new AnswerResults
+                        QuestionResults questionResults = new QuestionResults
                         {
-                            answer = userAnswer.Response,
-                            count = userAnswer.Count,
+                            questionId = question.Id,
+                            listAnswers = new List<AnswerResults>(),
+                            type = question.Type,
                         };
-                        questionResults.listAnswers.Add(answerResults);
+                        List<UserAnswer> listUserAnswers = context.UserAnswers.Where(p => p.QuestionId == question.Id && p.Session.groupId.Equals(groupId)).ToList();
+                        foreach (UserAnswer userAnswer in listUserAnswers)
+                        {
+                            AnswerResults answerResults = new AnswerResults
+                            {
+                                answer = userAnswer.Response,
+                                count = userAnswer.Count,
+                            };
+                            questionResults.listAnswers.Add(answerResults);
+                        }
+                        quizzResults.listQuestions.Add(questionResults);
+
                     }
-                    quizzResults.listQuestions.Add(questionResults);
-                    
+                    return quizzResults;
+                    Console.WriteLine("Change Talk");
                 }
-                return quizzResults;
-                Console.WriteLine("Change Talk");
-            }
-            catch (Exception e)
-            {
-                _logger.LogError("The Talk could not update its url", e);
-                return null;
+                catch (Exception e)
+                {
+                    _logger.LogError("The Talk could not update its url", e);
+                    return null;
+                }
             }
         }
     }

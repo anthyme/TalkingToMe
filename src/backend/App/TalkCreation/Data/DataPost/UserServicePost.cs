@@ -113,17 +113,26 @@ namespace App.TalkCreation.Data.DataPost
 
             }
         }
-        public UserQuestionsDTO SaveQuestion(string groupId, string question, string username)
+        public UserQuestionsDTO SaveQuestion(string groupId, string question, string userName)
         {
             TalkContextFactory talkFactory = new TalkContextFactory(_connectionString);
             using TalkContext context = talkFactory.create();
-            Session currentSession = context.Sessions.Where(p => p.groupId == groupId).FirstOrDefault();
+            TalkSessionRepo _talkSessionRepo = TalkSessionRepo.GetInstance();
+            CurrentSession currentSession = _talkSessionRepo.Get(groupId);
+            if (currentSession != null)
+            {
+            Session session = context.Sessions.Where(p => p.groupId == groupId).FirstOrDefault();
+            string savedUserName = userName;
+            if (userName.Equals(""))
+            {
+                savedUserName = "Anonymous";
+            }
             UserQuestion userQuestion = new UserQuestion
             {
                 Question = question,
                 Upvotes = 0,
-                SessionId = currentSession.Id,
-                Username = username,
+                SessionId = session.Id,
+                Username = savedUserName,
             };
             context.UserQuestions.Add(userQuestion);
             context.SaveChanges();
@@ -132,18 +141,26 @@ namespace App.TalkCreation.Data.DataPost
                 Id = userQuestion.Id,
                 Question = question,
                 Upvotes = 0,
-                SessionId = currentSession.Id,
-                Username = username,
+                SessionId = session.Id,
+                Username = savedUserName,
             };
-            return userQuestionsDTO;
+            return userQuestionsDTO; 
+            }
+            return null;
         }
         
         public List<UserQuestion> GetQuestionsBySession(string groupId)
         {
+            TalkSessionRepo _talkSessionRepo = TalkSessionRepo.GetInstance();
+            CurrentSession currentSession = _talkSessionRepo.Get(groupId);
+            if (currentSession == null)
+            {
+                return null;
+            }
             TalkContextFactory talkFactory = new TalkContextFactory(_connectionString);
             using TalkContext context = talkFactory.create();
-            Session currentSession = context.Sessions.Where(p => p.groupId == groupId).FirstOrDefault();
-            List<UserQuestion> userQuestions = context.UserQuestions.Where(p => p.SessionId == currentSession.Id).ToList();
+            Session session = context.Sessions.Where(p => p.groupId == groupId).FirstOrDefault();
+            List<UserQuestion> userQuestions = context.UserQuestions.Where(p => p.SessionId == session.Id).ToList();
             return userQuestions;
         }
     }

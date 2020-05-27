@@ -8,15 +8,24 @@ import ListItemAvatar from '@material-ui/core/ListItemAvatar'
 import Avatar from '@material-ui/core/Avatar'
 import Typography from '@material-ui/core/Typography'
 import { Button, TextField } from '@material-ui/core'
+import Message from './Message'
 
 const useStyles = makeStyles((theme) => ({
   root: {
     width: '100%',
-    maxWidth: '36ch',
+    maxWidth: '70%',
     backgroundColor: theme.palette.background.paper,
+
   },
+  bottom: {
+    position: "absolute", 
+    bottom: "5px",
+},
   inline: {
-    display: 'inline',
+    display: 'center',
+  },
+  overflow: {
+    overflow: "auto",
   },
 }))
 interface IProps {
@@ -28,11 +37,16 @@ const ChatInterface: React.FC<IProps> = (props) => {
   const classes = useStyles()
   const [question, setQuestion] = useState('')
   const [userName, setUserName] = useState('')
+  const [messages, setMessages] = useState([{}])
   const connection = props.connection
   const groupId = props.groupId
 
   if (connection) {
-    connection.on('AddNewQuestion', () => {})
+    connection.on('AddNewQuestion', (result: any) => {
+      console.log(result);
+      let newQuestionList=[...messages, result];
+      setMessages(newQuestionList);
+    })
   }
   const SendNewQuestions = () => {
     if (connection) {
@@ -56,39 +70,23 @@ const ChatInterface: React.FC<IProps> = (props) => {
         autoComplete="fname"
         onChange={handleUserNameChange}
       />
+      <div className={classes.overflow}>
       <List className={classes.root}>
-        <ListItem alignItems="flex-start">
-          <ListItemAvatar>
-            <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
-          </ListItemAvatar>
-          <ListItemText
-            secondary={
-              <React.Fragment>
-                <Typography
-                  component="span"
-                  variant="body2"
-                  className={classes.inline}
-                  color="textPrimary"
-                >
-                  Ali Connors
-                </Typography>
-                {" — I'll be in your neighborhood doing errands this…"}
-              </React.Fragment>
-            }
-          />
-        </ListItem>
-        <Divider variant="inset" component="li" />
+      {messages ? (messages.map(
+              (message: any) =>
+                  <Message connection={connection} message={message}/>
+            )) : <></>}
       </List>
-      <div>
+      </div>
+      <div className={classes.bottom}>
         <textarea
           rows={4}
           cols={50}
           name="comment"
           form="usrform"
           onChange={handleQuestionChange}
-        >
-          Enter text here...
-        </textarea>
+          placeholder="Enter text here..."
+        />
         <Button onClick={SendNewQuestions}>Send</Button>
       </div>
     </div>

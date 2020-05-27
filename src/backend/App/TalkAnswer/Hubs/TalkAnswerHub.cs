@@ -31,8 +31,8 @@ namespace App.TalkAnswer.Hubs
         {
             await Groups.AddToGroupAsync(Context.ConnectionId, groupId);
             Console.WriteLine("Owner context Id: " + Context.ConnectionId);
-            _userServices.ChangeTalkById(groupId, talkId);
-            await Clients.All.SendAsync("NewChannel", "New Channel created");
+            await _userServices.ChangeTalkById(groupId, talkId);
+            Clients.Client(Context.ConnectionId).SendAsync("NewChannel", "New Channel created");
         }
 
         //CHANGE DB SO TALKS HAS A CURRENT QUESTION ACTIVE
@@ -86,7 +86,7 @@ namespace App.TalkAnswer.Hubs
         public async Task PostQuestion(string groupId, string question,string userName)
         {
             UserQuestionsDTO userQuestion=_userServicePost.SaveQuestion(groupId, question, userName);
-            await Clients.Group(groupId).SendAsync("ShowResults", userQuestion);
+            await Clients.Group(groupId).SendAsync("AddNewQuestion", userQuestion);
         }
 
         public async Task GetSessionQuestions(string groupId)
