@@ -13,6 +13,8 @@ using App.TalkCreation.Data.DataFetch.Dto;
 using Microsoft.Extensions.Logging;
 using App.TokenValidation;
 using App.TalkCreation.Data.DataPost;
+using App.TalkAnswer.Models;
+using App.TalkAnswer.Dto;
 
 namespace App.TalkCreation.Data
 {
@@ -55,7 +57,7 @@ namespace App.TalkCreation.Data
             return talks;
         }
 
-        [HttpGet("fetchTalkAndQuizzes/{id}")] //Fetch custom for specific DTO
+        [HttpGet("fetchTalkAndQuizzes/{id}")]
         public async Task<TalkAndQuizzesDTO> fetchTalkAndQuizzes(int id)
         {
             Task<TalkAndQuizzesDTO> talk = _talkServiceFetch.getTalkAndQuizzes(id);

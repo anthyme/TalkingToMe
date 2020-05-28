@@ -62,6 +62,8 @@ namespace App
             services.AddScoped<HealthCheckOption>();
             services.AddScoped<UserServices>();
             services.AddScoped<JwtTokenValidation>();
+            services.AddScoped<SessionServiceFetch>();
+            services.AddScoped<SessionServicePost>();
 
             services.AddCors(o => o.AddPolicy("ReactPolicy", builder =>
             {

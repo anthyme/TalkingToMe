@@ -1,6 +1,22 @@
-import React, { useEffect } from 'react';
-import { Dialog, DialogTitle, Button, DialogActions } from '@material-ui/core';
-import TalkCardView from '../../menu/TalkCardViews';
+import React, { useEffect, useState } from 'react';
+import {
+  Dialog,
+  DialogTitle,
+  Button,
+  DialogActions,
+  DialogContent,
+  List,
+  ListItemText,
+  ListItem,
+  IconButton,
+  ListItemSecondaryAction,
+  DialogContentText,
+} from '@material-ui/core';
+import DeleteIcon from '@material-ui/icons/Delete';
+import { useSelector } from 'react-redux';
+import { InitialState } from '../../store/reducers/MainReducer';
+import { getSessionsByTalkId } from '../../dataTransfers/Fetchs/DataSessionFetch';
+import DeleteSessionPopUp from './DeleteSessionPopUp';
 
 interface IProps {
   talk: any;
@@ -8,7 +24,46 @@ interface IProps {
   open: boolean;
 }
 
+interface StateProps {
+  tokenIdRdx: string;
+}
+
 const OldSessions: React.FC<IProps> = (props) => {
+  const [sessions, setSessions] = useState<any>([]);
+  const [openDeleteSession, setOpenDeleteSession] = useState(false);
+  const [sessionIdToDelete, setSessionIdToDelete] = useState(-1);
+
+  const { tokenIdRdx } = useSelector<InitialState, StateProps>(
+    (state: InitialState) => {
+      return {
+        tokenIdRdx: state.tokenIdRdx,
+      };
+    },
+  );
+
+  const displayDateLine = (session: any) => {
+    var options = {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: 'numeric',
+      minute: 'numeric',
+      timeZone: 'Europe/Paris',
+    };
+    return new Date(session.startDate).toLocaleString('en-US', options);
+  };
+
+  const onClickDelete = (sessionId: number) => {
+    setSessionIdToDelete(sessionId);
+    setOpenDeleteSession(!openDeleteSession);
+  };
+
+  useEffect(() => {
+    getSessionsByTalkId(props.talk.id, tokenIdRdx).then((json) =>
+      setSessions(json),
+    );
+  }, [openDeleteSession, props.talk.id, tokenIdRdx]);
+
   return (
     <div>
       <Dialog
@@ -20,17 +75,46 @@ const OldSessions: React.FC<IProps> = (props) => {
         <DialogTitle id="form-dialog-title">
           Previous sessions of {props.talk.name}
         </DialogTitle>
+        <DialogContent>
+          {sessions && sessions.length ? (
+            <List dense>
+              {sessions.map(
+                (session: any) =>
+                  session && (
+                    <ListItem button>
+                      <ListItemText
+                        primary={displayDateLine(session)}
+                        secondary={'This session lasted ' + session.timeLasted}
+                      />
+                      <ListItemSecondaryAction>
+                        <IconButton
+                          edge="end"
+                          aria-label="delete"
+                          onClick={() => onClickDelete(session.id)}
+                        >
+                          <DeleteIcon />
+                        </IconButton>
+                      </ListItemSecondaryAction>
+                    </ListItem>
+                  ),
+              )}
+            </List>
+          ) : (
+            <DialogContentText>
+              The sessions history for this talk is empty
+            </DialogContentText>
+          )}
+        </DialogContent>
+        {openDeleteSession && (
+          <DeleteSessionPopUp
+            open={openDeleteSession}
+            sessionId={sessionIdToDelete}
+            handleClose={() => setOpenDeleteSession(false)}
+          />
+        )}
         <DialogActions>
           <Button onClick={props.onClose} color="primary">
-            Cancel
-          </Button>
-          <Button
-            onClick={() => {
-              console.log('Louis do smthg');
-            }}
-            color="primary"
-          >
-            View Session
+            Exit
           </Button>
         </DialogActions>
       </Dialog>

@@ -9,6 +9,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.IO;
+using App.TalkAnswer.Models;
+using App.TalkAnswer.Dto;
+using System.Runtime.InteropServices.ComTypes;
 
 namespace App.TalkCreation.Data
 {
@@ -79,6 +82,7 @@ namespace App.TalkCreation.Data
                 return null;
             }
         }
+
 
         public async Task<List<Talk>> getTalksByUserId(int id)
         {
