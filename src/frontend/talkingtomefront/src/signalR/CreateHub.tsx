@@ -8,7 +8,7 @@ export const CreateTalkHub = () => {
       skipNegotiation: true,
       transport: HttpTransportType.WebSockets,
     })
-    .withAutomaticReconnect()
+    //.withAutomaticReconnect()
     .build();
   return connection;
 };

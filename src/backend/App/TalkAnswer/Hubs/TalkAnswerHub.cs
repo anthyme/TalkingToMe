@@ -20,19 +20,21 @@ namespace App.TalkAnswer.Hubs
         private readonly QuestionServiceFetch _questionServiceFetch;
         private readonly QuizzServiceFetch _quizzServiceFetch;
         private readonly UserServicePost _userServicePost;
-        public TalkAnswerHub(UserServices userServices, QuestionServiceFetch questionServiceFetch, QuizzServiceFetch quizzServiceFetch, UserServicePost userServicePost)
+        private readonly UserServiceFetch _userServiceFetch;
+        public TalkAnswerHub(UserServiceFetch userServiceFetch,UserServices userServices, QuestionServiceFetch questionServiceFetch, QuizzServiceFetch quizzServiceFetch, UserServicePost userServicePost)
         {
             _questionServiceFetch = questionServiceFetch;
             _userServices = userServices;
             _quizzServiceFetch = quizzServiceFetch;
             _userServicePost = userServicePost;
+            _userServiceFetch = userServiceFetch;
         }
         public async void CreateTalkGroup(string groupId, int talkId)
         {
             await Groups.AddToGroupAsync(Context.ConnectionId, groupId);
             Console.WriteLine("Owner context Id: " + Context.ConnectionId);
             _userServices.ChangeTalkById(groupId, talkId);
-            await Clients.All.SendAsync("NewChannel", "New Channel created");
+            await Clients.Client(Context.ConnectionId).SendAsync("NewChannel", "New Channel created");
         }
 
         //CHANGE DB SO TALKS HAS A CURRENT QUESTION ACTIVE
@@ -82,16 +84,27 @@ namespace App.TalkAnswer.Hubs
             await Clients.Client(Context.ConnectionId).SendAsync("ShowResults", quizzResults);
         }
 
-        public async Task PostQuestion(string groupId, string question,string userName)
+        public async Task PostQuestion(string groupId, string question,string userName,string date)
         {
-            UserQuestionsDTO userQuestion=_userServicePost.SaveQuestion(groupId, question, userName);
-            await Clients.Group(groupId).SendAsync("ShowResults", userQuestion);
+            UserQuestionsDTO userQuestion=_userServicePost.SaveQuestion(groupId, question, userName, date);
+            await Clients.Group(groupId).SendAsync("AddNewQuestion", userQuestion);
         }
 
-        public async Task GetSessionQuestions(string groupId)
+        public async Task GetCurrentSessionUserQuestions(string groupId)
         {
-            List<UserQuestion> userQuestions = _userServicePost.GetQuestionsBySession(groupId);
-            await Clients.Group(groupId).SendAsync("ShowResults", userQuestions);
+            List<UserQuestionsDTO> userQuestionsDTO = _userServiceFetch.GetQuestionsBySession(groupId);
+            await Clients.Client(Context.ConnectionId).SendAsync("ShowCurrentUserQuestions", userQuestionsDTO);
+        }
+
+        public async Task ChangeUpVote(string groupId, int id, bool addUpvote)
+        {
+            int upvotes = _userServicePost.ChangeUpVote(id, addUpvote);
+            UpVotesDTO upvotesDTO = new UpVotesDTO
+            {
+                id = id,
+                upvotes = upvotes
+            };
+            await Clients.Group(groupId).SendAsync("ConfirmChangedUpvote", upvotesDTO);
         }
     }
 }

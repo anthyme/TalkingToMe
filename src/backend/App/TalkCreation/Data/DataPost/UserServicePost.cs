@@ -113,17 +113,27 @@ namespace App.TalkCreation.Data.DataPost
 
             }
         }
-        public UserQuestionsDTO SaveQuestion(string groupId, string question, string username)
+        public UserQuestionsDTO SaveQuestion(string groupId, string question, string userName, string date)
         {
             TalkContextFactory talkFactory = new TalkContextFactory(_connectionString);
             using TalkContext context = talkFactory.create();
-            Session currentSession = context.Sessions.Where(p => p.groupId == groupId).FirstOrDefault();
+            TalkSessionRepo _talkSessionRepo = TalkSessionRepo.GetInstance();
+            CurrentSession currentSession = _talkSessionRepo.Get(groupId);
+            if (currentSession != null)
+            {
+            Session session = context.Sessions.Where(p => p.groupId == groupId).FirstOrDefault();
+            string savedUserName = userName;
+            if (userName.Equals(""))
+            {
+                savedUserName = "Anonymous";
+            }
             UserQuestion userQuestion = new UserQuestion
             {
                 Question = question,
                 Upvotes = 0,
-                SessionId = currentSession.Id,
-                Username = username,
+                SessionId = session.Id,
+                Username = savedUserName,
+                Date= date,
             };
             context.UserQuestions.Add(userQuestion);
             context.SaveChanges();
@@ -132,19 +142,35 @@ namespace App.TalkCreation.Data.DataPost
                 Id = userQuestion.Id,
                 Question = question,
                 Upvotes = 0,
-                SessionId = currentSession.Id,
-                Username = username,
+                SessionId = session.Id,
+                Username = savedUserName,
+                Date = date,
             };
-            return userQuestionsDTO;
+            return userQuestionsDTO; 
+            }
+            return null;
         }
-        
-        public List<UserQuestion> GetQuestionsBySession(string groupId)
+
+        public int ChangeUpVote(int id, bool addUpvote)
         {
             TalkContextFactory talkFactory = new TalkContextFactory(_connectionString);
-            using TalkContext context = talkFactory.create();
-            Session currentSession = context.Sessions.Where(p => p.groupId == groupId).FirstOrDefault();
-            List<UserQuestion> userQuestions = context.UserQuestions.Where(p => p.SessionId == currentSession.Id).ToList();
-            return userQuestions;
+            using (TalkContext context = talkFactory.create())
+            {
+                UserQuestion userQuestion = context.UserQuestions.FirstOrDefault(p => p.Id == id);
+                if (addUpvote)
+                {
+                    userQuestion.Upvotes += 1;
+                }
+                else
+                {
+                    userQuestion.Upvotes -= 1;
+                }
+                context.UserQuestions.Update(userQuestion);
+                context.SaveChanges();
+                return userQuestion.Upvotes;
+            }
+
         }
+
     }
 }

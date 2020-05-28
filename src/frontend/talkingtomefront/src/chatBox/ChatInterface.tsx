@@ -1,43 +1,53 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import List from '@material-ui/core/List'
-import ListItem from '@material-ui/core/ListItem'
-import Divider from '@material-ui/core/Divider'
-import ListItemText from '@material-ui/core/ListItemText'
-import ListItemAvatar from '@material-ui/core/ListItemAvatar'
-import Avatar from '@material-ui/core/Avatar'
-import Typography from '@material-ui/core/Typography'
-import { Button, TextField } from '@material-ui/core'
+import SendIcon from '@material-ui/icons/Send'
+import { Button, TextField, IconButton } from '@material-ui/core'
+import Message from './Message'
 
 const useStyles = makeStyles((theme) => ({
   root: {
     width: '100%',
-    maxWidth: '36ch',
+    maxWidth: '70%',
     backgroundColor: theme.palette.background.paper,
   },
+  bottom: {
+    position: 'absolute',
+    //bottom: '5px',
+  },
   inline: {
-    display: 'inline',
+    display: 'center',
+  },
+  overflow: {
+    overflowY: "scroll",
+    height: "545px",
+  },
+  textArea: {
+    resize: "none",
   },
 }))
 interface IProps {
   connection: any
   groupId: string | null
+  likedQuestions: number[]
+  changeLikedQuestions: Function
 }
 
 const ChatInterface: React.FC<IProps> = (props) => {
   const classes = useStyles()
   const [question, setQuestion] = useState('')
   const [userName, setUserName] = useState('')
+  const [messages, setMessages] = useState([{}])
   const connection = props.connection
   const groupId = props.groupId
 
-  if (connection) {
-    connection.on('AddNewQuestion', () => {})
-  }
   const SendNewQuestions = () => {
     if (connection) {
-      connection.invoke('PostQuestion', groupId, question, userName)
+      const date = new Date();
+      const dateString =date.getHours()+":"+date.getMinutes()+":"+date.getSeconds()+" | "+date.getDay()+"/"+date.getMonth()+"/"+date.getFullYear(); 
+      connection.invoke('PostQuestion', groupId, question, userName, dateString)
     }
+    setQuestion('')
   }
   const handleQuestionChange = (event: any) => {
     setQuestion(event.target.value)
@@ -45,6 +55,39 @@ const ChatInterface: React.FC<IProps> = (props) => {
   const handleUserNameChange = (event: any) => {
     setUserName(event.target.value)
   }
+  useEffect(() => {
+    connection.invoke('GetCurrentSessionUserQuestions', groupId)
+    connection.on('AddNewQuestion', async (result: any) => {
+      if (messages[0] === {}) {
+        await setMessages([result])
+      } else {
+        let newQuestionList = messages
+        newQuestionList.push(result)
+        await setMessages([...messages])
+      }
+      const scrollMessages = document.getElementById('scrollMessages');
+      if(scrollMessages!==null){
+        const shouldScroll = scrollMessages.scrollTop + scrollMessages.clientHeight >= scrollMessages.scrollHeight-100;
+        if(shouldScroll){
+          scrollMessages.scrollTop = scrollMessages.scrollHeight;
+        }
+      }
+    })
+    connection.on('ShowCurrentUserQuestions', async (results: any) => {
+      let newQuestionList = messages
+      console.log(results)
+      if (results !== null) {
+        results.forEach((element: Object) => {
+          newQuestionList.push(element)
+        })
+        await setMessages([...messages])
+      }
+      const scrollMessages = document.getElementById('scrollMessages');
+      if(scrollMessages!==null){
+        scrollMessages.scrollTop = scrollMessages.scrollHeight;
+      }
+    })
+  }, []) //Load only on
   return (
     <div>
       <TextField
@@ -56,40 +99,41 @@ const ChatInterface: React.FC<IProps> = (props) => {
         autoComplete="fname"
         onChange={handleUserNameChange}
       />
-      <List className={classes.root}>
-        <ListItem alignItems="flex-start">
-          <ListItemAvatar>
-            <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
-          </ListItemAvatar>
-          <ListItemText
-            secondary={
-              <React.Fragment>
-                <Typography
-                  component="span"
-                  variant="body2"
-                  className={classes.inline}
-                  color="textPrimary"
-                >
-                  Ali Connors
-                </Typography>
-                {" — I'll be in your neighborhood doing errands this…"}
-              </React.Fragment>
-            }
-          />
-        </ListItem>
-        <Divider variant="inset" component="li" />
-      </List>
-      <div>
+      <div className={classes.overflow} id="scrollMessages">
+        <List className={classes.root}>
+          {messages.length !== 1 ? (
+            messages.map((message: any) => (
+              <Message
+                connection={connection}
+                message={message}
+                likedQuestions={props.likedQuestions}
+                changeLikedQuestions={props.changeLikedQuestions}
+                groupId={groupId}
+              />
+            ))
+          ) : (
+            <></>
+          )}
+        </List>
+      </div>
+      <div className={classes.bottom}>
         <textarea
-          rows={4}
+          className={classes.textArea}
+          rows={2}
           cols={50}
           name="comment"
           form="usrform"
+          value={question}
           onChange={handleQuestionChange}
-        >
-          Enter text here...
-        </textarea>
-        <Button onClick={SendNewQuestions}>Send</Button>
+          placeholder="Enter text here..."
+        />
+        <IconButton onClick={SendNewQuestions} className="tooltiptext" disabled={question===""}>
+          {question ? (
+            <SendIcon color="primary" fontSize="large" />
+          ) : (
+            <SendIcon color="disabled" fontSize="large"/>
+          )}
+        </IconButton>
       </div>
     </div>
   )
