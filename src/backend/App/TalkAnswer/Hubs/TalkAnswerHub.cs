@@ -96,10 +96,15 @@ namespace App.TalkAnswer.Hubs
             await Clients.Client(Context.ConnectionId).SendAsync("ShowCurrentUserQuestions", userQuestionsDTO);
         }
 
-        public async Task ChangeUpVote(int id, bool addUpvote)
+        public async Task ChangeUpVote(string groupId, int id, bool addUpvote)
         {
-            _userServicePost.ChangeUpVote(id, addUpvote);
-            await Clients.Client(Context.ConnectionId).SendAsync("ConfirmChangedUpvote", "changedUpvote");
+            int upvotes = _userServicePost.ChangeUpVote(id, addUpvote);
+            UpVotesDTO upvotesDTO = new UpVotesDTO
+            {
+                id = id,
+                upvotes = upvotes
+            };
+            await Clients.Group(groupId).SendAsync("ConfirmChangedUpvote", upvotesDTO);
         }
     }
 }

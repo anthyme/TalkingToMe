@@ -106,6 +106,7 @@ const ChatInterface: React.FC<IProps> = (props) => {
                 message={message}
                 likedQuestions={props.likedQuestions}
                 changeLikedQuestions={props.changeLikedQuestions}
+                groupId={groupId}
               />
             ))
           ) : (

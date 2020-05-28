@@ -149,7 +149,7 @@ namespace App.TalkCreation.Data.DataPost
             return null;
         }
 
-        public void ChangeUpVote(int id, bool addUpvote)
+        public int ChangeUpVote(int id, bool addUpvote)
         {
             TalkContextFactory talkFactory = new TalkContextFactory(_connectionString);
             using (TalkContext context = talkFactory.create())
@@ -165,6 +165,7 @@ namespace App.TalkCreation.Data.DataPost
                 }
                 context.UserQuestions.Update(userQuestion);
                 context.SaveChanges();
+                return userQuestion.Upvotes;
             }
 
         }
