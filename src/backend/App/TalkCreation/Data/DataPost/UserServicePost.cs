@@ -113,7 +113,7 @@ namespace App.TalkCreation.Data.DataPost
 
             }
         }
-        public UserQuestionsDTO SaveQuestion(string groupId, string question, string userName)
+        public UserQuestionsDTO SaveQuestion(string groupId, string question, string userName, string date)
         {
             TalkContextFactory talkFactory = new TalkContextFactory(_connectionString);
             using TalkContext context = talkFactory.create();
@@ -133,6 +133,7 @@ namespace App.TalkCreation.Data.DataPost
                 Upvotes = 0,
                 SessionId = session.Id,
                 Username = savedUserName,
+                Date= date,
             };
             context.UserQuestions.Add(userQuestion);
             context.SaveChanges();
@@ -143,6 +144,7 @@ namespace App.TalkCreation.Data.DataPost
                 Upvotes = 0,
                 SessionId = session.Id,
                 Username = savedUserName,
+                Date = date,
             };
             return userQuestionsDTO; 
             }

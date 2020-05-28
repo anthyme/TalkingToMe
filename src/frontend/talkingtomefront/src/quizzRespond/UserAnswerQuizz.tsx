@@ -156,7 +156,7 @@ const changeLikedQuestions = (upvoted:boolean, questionId: number) =>{
        marginLeft:"100px",
        marginRight:"100px",
        color: "white",
-       backgroundColor: "blue"
+       backgroundColor: "#3f51b5"
     },
   }))
 

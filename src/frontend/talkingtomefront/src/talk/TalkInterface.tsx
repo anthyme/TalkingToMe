@@ -16,8 +16,7 @@ import { loadQuizzContent } from '../dataTransfers/Fetchs/DataQuestionFetch'
 import QuestionInterface from './questionsPreview/QuestionInterface'
 import { useHistory } from 'react-router-dom'
 import QRCode from 'qrcode.react'
-import { CreateTalkHub } from '../signalR/CreateHub'
-import { v4 as uuidv4 } from 'uuid'
+import ChatInterface from '../chatBox/ChatInterface'
 import { InitialState } from '../store/reducers/MainReducer'
 import { useSelector } from 'react-redux'
 import { siteUrl, urlHub } from '../constants'
@@ -42,6 +41,8 @@ const TalkInterface = () => {
   const [showResults, setShowResults] = useState(false)
   const [listQuizzes, setListQuizzes] = useState([{}])
   const [talkName, setTalkName] = useState('')
+  const [tab, setTab] = useState('Talk')
+  const [likedQuestions, setLikedQuestions] = useState<number[]>([])
   const [showQuestion, setShowQuestion] = useState(false)
   const [connection, setConnection] = useState<HubConnection>()
   const [questionsData, setQuestionsData] = useState([{}])
@@ -63,6 +64,16 @@ const TalkInterface = () => {
   const history = useHistory()
   window.onbeforeunload = function () {
     connection?.stop()
+  }
+  const changeLikedQuestions = (upvoted: boolean, questionId: number) => {
+    if (upvoted === true) {
+      let newLikedQuestions = [...likedQuestions, questionId]
+      setLikedQuestions(newLikedQuestions)
+    } else {
+      let newLikedQuestions = likedQuestions
+      newLikedQuestions.splice(newLikedQuestions.indexOf(questionId), 1)
+      setLikedQuestions(newLikedQuestions)
+    }
   }
   //Buttons
   const backToMenu = async () => {
@@ -116,6 +127,13 @@ const TalkInterface = () => {
       setShowResults(false)
     }
   }
+  const changeToTalk = () => {
+    setTab('Talk')
+  }
+
+  const changeToChat = () => {
+    setTab('Chat')
+  }
 
   const stopQuizz = async () => {
     if (connection) {
@@ -160,18 +178,6 @@ const TalkInterface = () => {
       setResults(responseData.listQuestions)
     })
     setConnection(connection)
-    /*const createHubConnection = async () => {
-      const connect = CreateTalkHub();
-      try {
-        await connect.start();
-        //Invoke method defined in server to add user to a specified group
-      } catch (err) {
-        console.log(err);
-      }
-      setConnection(connect);
-      connect.invoke('CreateTalkGroup', groupId, Number(TalkId));
-    };
-    createHubConnection();*/
     loadInit()
   }, []) //Load only once at first build
 
@@ -219,7 +225,8 @@ const TalkInterface = () => {
       <AppBar position="relative">
         <Toolbar className={classes.toolbar}>
           <Typography variant="h6" color="inherit" noWrap>
-            Talk
+            <Button onClick={changeToTalk} color="inherit">Talk</Button>
+            <Button onClick={changeToChat} color="inherit">Chat</Button>
           </Typography>
           <Button
             variant="contained"
@@ -230,126 +237,138 @@ const TalkInterface = () => {
           </Button>
         </Toolbar>
       </AppBar>
-      <div className={classes.fragmentMargin}>
-        <Typography
-          component="h2"
-          variant="h3"
-          align="center"
-          color="textPrimary"
-          gutterBottom
-        >
-          {talkName}
-        </Typography>
-        <div className={classes.startNQr}>
-          <div className={classes.selectNStart}>
-            <Select
-              labelId="label"
-              id="select"
-              value={quizzId}
-              onChange={(e: any) => onChangeQuizz(e.target.value)}
-              disabled={quizzRunning}
-            >
-              {!showQuestion && (
-                <MenuItem value="0" disabled={true}>
-                  Select a quizz
-                </MenuItem>
+      {tab === 'Talk' ? (
+        <div className={classes.fragmentMargin}>
+          <Typography
+            component="h2"
+            variant="h3"
+            align="center"
+            color="textPrimary"
+            gutterBottom
+          >
+            {talkName}
+          </Typography>
+          <div className={classes.startNQr}>
+            <div className={classes.selectNStart}>
+              <Select
+                labelId="label"
+                id="select"
+                value={quizzId}
+                onChange={(e: any) => onChangeQuizz(e.target.value)}
+                disabled={quizzRunning}
+              >
+                {!showQuestion && (
+                  <MenuItem value="0" disabled={true}>
+                    Select a quizz
+                  </MenuItem>
+                )}
+                {listQuizzes.map(
+                  (quizz: any) =>
+                    quizz.name && (
+                      <MenuItem value={quizz.id} key={quizz.id}>
+                        {quizz.name}
+                      </MenuItem>
+                    ),
+                )}
+              </Select>
+              {!quizzRunning ? (
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  onClick={startQuizz}
+                  className={classes.button}
+                  disabled={quizzId === '0'}
+                >
+                  Start Quizz
+                </Button>
+              ) : (
+                <Button
+                  variant="outlined"
+                  color="secondary"
+                  onClick={stopQuizz}
+                  className={classes.button}
+                >
+                  Stop Quizz
+                </Button>
               )}
-              {listQuizzes.map(
-                (quizz: any) =>
-                  quizz.name && (
-                    <MenuItem value={quizz.id} key={quizz.id}>
-                      {quizz.name}
-                    </MenuItem>
+            </div>
+            <div>
+              <a
+                href={`TalkAnswer?talkId=${groupId}&ownerId=${userIdRdx}&talkName=${talkName}`}
+              >
+                Link to a user page
+              </a>
+              <div className={classes.smallQR} onClick={() => setBigQR(true)}>
+                <QRCode value={qrString ? qrString : ''} />
+              </div>
+              {bigQR && (
+                <Dialog
+                  open={bigQR}
+                  onClose={() => setBigQR(false)}
+                  aria-labelledby="form-dialog-title"
+                >
+                  <div
+                    className={classes.bigQR}
+                    onClick={() => setBigQR(false)}
+                  >
+                    <QRCode value={qrString ? qrString : ''} size={512} />
+                  </div>
+                </Dialog>
+              )}
+            </div>
+          </div>
+          <div className={classes.quizzNQuest}>
+            {showQuestion && <h3 className={classes.title}>Quizz preview</h3>}
+            {showQuestion &&
+              questionsData.map(
+                (question: any) =>
+                  question && (
+                    <div>
+                      <Box display="Flex" flexDirection="row" p={1} m={1}>
+                        <Box width="50%">
+                          <QuestionInterface
+                            key={question.id}
+                            questId={question.id}
+                            quest={question.quest}
+                            typeQuest={question.type}
+                            answers={question.answers.map(
+                              (ans: {
+                                id: number
+                                questionId: number
+                                response: string
+                              }) => ans.response,
+                            )}
+                            isPreview={true}
+                            correctAn={question.correctAn}
+                            addAnswer={() => {}} //Prop only useful for users but typescript needs us to declare it here too
+                          />
+                        </Box>
+                        <Box width="40%" height="20%">
+                          {showResults ? (
+                            <GraphInterface
+                              results={results}
+                              questionId={question.id}
+                              typeQuest={question.type}
+                              quest={question.quest}
+                            />
+                          ) : (
+                            <></>
+                          )}
+                        </Box>
+                      </Box>
+                    </div>
                   ),
               )}
-            </Select>
-            {!quizzRunning ? (
-              <Button
-                variant="outlined"
-                color="primary"
-                onClick={startQuizz}
-                className={classes.button}
-                disabled={quizzId === '0'}
-              >
-                Start Quizz
-              </Button>
-            ) : (
-              <Button
-                variant="outlined"
-                color="secondary"
-                onClick={stopQuizz}
-                className={classes.button}
-              >
-                Stop Quizz
-              </Button>
-            )}
-          </div>
-          <div>
-            <a
-              href={`TalkAnswer?talkId=${groupId}&ownerId=${userIdRdx}&talkName=${talkName}`}
-            >
-              Link to a user page
-            </a>
-            <div className={classes.smallQR} onClick={() => setBigQR(true)}>
-              <QRCode value={qrString ? qrString : ''} />
-            </div>
-            {bigQR && (
-              <Dialog
-                open={bigQR}
-                onClose={() => setBigQR(false)}
-                aria-labelledby="form-dialog-title"
-              >
-                <div className={classes.bigQR} onClick={() => setBigQR(false)}>
-                  <QRCode value={qrString ? qrString : ''} size={512} />
-                </div>
-              </Dialog>
-            )}
           </div>
         </div>
-        <div className={classes.quizzNQuest}>
-          {showQuestion && <h3 className={classes.title}>Quizz preview</h3>}
-          {showQuestion &&
-            questionsData.map(
-              (question: any) =>
-                question && (
-                  <div>
-                    <Box display="Flex" flexDirection="row" p={1} m={1}>
-                      <Box width="50%">
-                        <QuestionInterface
-                          key={question.id}
-                          questId={question.id}
-                          quest={question.quest}
-                          typeQuest={question.type}
-                          answers={question.answers.map(
-                            (ans: {
-                              id: number
-                              questionId: number
-                              response: string
-                            }) => ans.response,
-                          )}
-                          isPreview={true}
-                          correctAn={question.correctAn}
-                          addAnswer={() => {}} //Prop only useful for users but typescript needs us to declare it here too
-                        />
-                      </Box>
-                      <Box width="40%" height="20%">
-                        {showResults ? (
-                          <GraphInterface
-                            results={results}
-                            questionId={question.id}
-                            typeQuest={question.type}
-                            quest={question.quest}
-                          />
-                        ) : (
-                          <></>
-                        )}
-                      </Box>
-                    </Box>
-                  </div>
-                ),
-            )}
-        </div>
-      </div>
+      ) : (
+        <ChatInterface
+          connection={connection}
+          groupId={groupId}
+          likedQuestions={likedQuestions}
+          changeLikedQuestions={changeLikedQuestions}
+        />
+      )}
     </React.Fragment>
   )
 }

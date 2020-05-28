@@ -12,5 +12,6 @@ namespace App.TalkAnswer.Dto
         public string Question { get; set; }
         public int Upvotes { get; set; }
         public int SessionId { get; set; }
+        public string Date { get; set; }
     }
 }

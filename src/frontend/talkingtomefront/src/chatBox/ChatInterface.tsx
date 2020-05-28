@@ -13,7 +13,7 @@ const useStyles = makeStyles((theme) => ({
   },
   bottom: {
     position: 'absolute',
-    bottom: '5px',
+    //bottom: '5px',
   },
   inline: {
     display: 'center',
@@ -43,7 +43,9 @@ const ChatInterface: React.FC<IProps> = (props) => {
 
   const SendNewQuestions = () => {
     if (connection) {
-      connection.invoke('PostQuestion', groupId, question, userName)
+      const date = new Date();
+      const dateString =date.getHours()+":"+date.getMinutes()+":"+date.getSeconds()+" | "+date.getDay()+"/"+date.getMonth()+"/"+date.getFullYear(); 
+      connection.invoke('PostQuestion', groupId, question, userName, dateString)
     }
     setQuestion('')
   }

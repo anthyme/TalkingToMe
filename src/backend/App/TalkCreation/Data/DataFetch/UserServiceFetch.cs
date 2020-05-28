@@ -87,6 +87,7 @@ namespace App.TalkCreation.Data
                     Upvotes = userQuestion.Upvotes,
                     SessionId = session.Id,
                     Username = userQuestion.Username,
+                    Date = userQuestion.Date,
                 };
                 userQuestionsDTO.Add(userQuestionDTO);
             }

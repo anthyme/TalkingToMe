@@ -84,9 +84,9 @@ namespace App.TalkAnswer.Hubs
             await Clients.Client(Context.ConnectionId).SendAsync("ShowResults", quizzResults);
         }
 
-        public async Task PostQuestion(string groupId, string question,string userName)
+        public async Task PostQuestion(string groupId, string question,string userName,string date)
         {
-            UserQuestionsDTO userQuestion=_userServicePost.SaveQuestion(groupId, question, userName);
+            UserQuestionsDTO userQuestion=_userServicePost.SaveQuestion(groupId, question, userName, date);
             await Clients.Group(groupId).SendAsync("AddNewQuestion", userQuestion);
         }
 
