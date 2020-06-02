@@ -13,8 +13,8 @@ using App.TalkCreation.Data.DataFetch.Dto;
 using Microsoft.Extensions.Logging;
 using App.TokenValidation;
 using App.TalkCreation.Data.DataPost;
-using App.TalkAnswer.Models;
 using App.TalkAnswer.Dto;
+using App.TalkCreation.Data.DataFetch;
 
 namespace App.TalkCreation.Data
 {

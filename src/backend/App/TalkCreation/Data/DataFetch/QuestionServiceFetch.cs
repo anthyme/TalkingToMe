@@ -1,30 +1,25 @@
-﻿using App.TalkCreation.Context;
-using App.TalkCreation.Models;
-using App.TalkCreation.Data.DataFetch.Dto;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using App.TalkCreation.Context;
+using App.TalkCreation.Data.DataFetch.Dto;
+using App.TalkCreation.Models;
+using Microsoft.EntityFrameworkCore;
 
-
-namespace App.TalkCreation.Data
+namespace App.TalkCreation.Data.DataFetch
 {
     public class QuestionServiceFetch
     {
-        private IConfiguration configuration;
-        private string _connectionString;
-        public QuestionServiceFetch(IConfiguration configuration)
+        readonly TalkContextFactory _talkContextFactory;
+        public QuestionServiceFetch(TalkContextFactory talkContextFactory)
         {
-            _connectionString = configuration.GetConnectionString("DBString");
+            _talkContextFactory = talkContextFactory;
         }
 
-        public async Task<List<Question>> getQuestionsByQuizzId(int quizzId)
+        public async Task<List<Question>> GetQuestionsByQuizzId(int quizzId)
         {
-            TalkContextFactory talkFactory = new TalkContextFactory(_connectionString);
-            using TalkContext context = talkFactory.create();
+            using var context = _talkContextFactory.Create();
             try
             {
                 var response = await context.Questions
@@ -39,21 +34,20 @@ namespace App.TalkCreation.Data
             }
         }
 
-        public async Task<List<QuestionDto>> getQuestionsDtoByQuizzId(int quizzId)
+        public async Task<List<QuestionDto>> GetQuestionsDtoByQuizzId(int quizzId)
         {
-            TalkContextFactory talkFactory = new TalkContextFactory(_connectionString);
-            using TalkContext context = talkFactory.create();
-            List<QuestionDto> listDto = new List<QuestionDto>();
+            using var context = _talkContextFactory.Create();
+            var listDto = new List<QuestionDto>();
             try
             {
-                List<Question> response = await context.Questions
+                var response = await context.Questions
                         .Where(p => p.QuizzId == quizzId)
                         .Include(p => p.Answers)
                         .ToListAsync();
 
-                foreach (Question quest in response)
+                foreach (var quest in response)
                 {
-                    QuestionDto dto =
+                    var dto =
                         new QuestionDto
                         {
                             Id = quest.Id,
@@ -61,8 +55,8 @@ namespace App.TalkCreation.Data
                             CorrectAn = quest.CorrectAn,
                             Type = quest.Type
                         };
-                    List<string> anss = new List<string>();
-                    foreach (Answer ans in quest.Answers) anss.Add(ans.Response);
+                    var anss = new List<string>();
+                    foreach (var ans in quest.Answers) anss.Add(ans.Response);
                     dto.Answers = anss;
                     listDto.Add(dto);
                 }
@@ -70,7 +64,7 @@ namespace App.TalkCreation.Data
             }
             catch (ArgumentOutOfRangeException e)
             {
-                QuestionDto dto =new QuestionDto{Id = -1};
+                var dto =new QuestionDto{Id = -1};
                 listDto.Add(dto);
                 return listDto;
             }

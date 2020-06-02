@@ -1,10 +1,4 @@
-﻿using App.TalkCreation.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace App.TalkAnswer.Models
+﻿namespace App.TalkCreation.Models
 {
     public class UserAnswer
     {

@@ -5,24 +5,23 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using App.TalkCreation.Data.DataFetch.Dto;
 
 namespace App.TalkCreation.Data.DataFetch
 {
     public class QuizzServiceFetch
     {
-        private string _connectionString;
-        public QuizzServiceFetch(IConfiguration configuration)
+        readonly TalkContextFactory _talkContextFactory;
+
+        public QuizzServiceFetch(TalkContextFactory talkContextFactory)
         {
-            _connectionString = configuration.GetConnectionString("DBString");
+            _talkContextFactory = talkContextFactory;
         }
 
         //TODO - Change syntax for fetch
         public async Task<QuizzDTO> returnQuizzById(int id)
         {
-            TalkContextFactory talkFactory = new TalkContextFactory(_connectionString);
-            using TalkContext context = talkFactory.create();
+            using TalkContext context = _talkContextFactory.Create();
             try
             {
                 var quizz = await context.Quizzes
@@ -71,8 +70,7 @@ namespace App.TalkCreation.Data.DataFetch
 
         public async Task<List<QuizzDTO>> returnQuizzByUserId(int id)
         {
-            TalkContextFactory talkFactory = new TalkContextFactory(_connectionString);
-            using TalkContext context = talkFactory.create();
+            using TalkContext context = _talkContextFactory.Create();
             try
             {
                 var quizzes = await context.Quizzes
@@ -103,8 +101,7 @@ namespace App.TalkCreation.Data.DataFetch
 
         public async Task<List<String>> returnQuizzByTalkId(int id)
         {
-            TalkContextFactory talkFactory = new TalkContextFactory(_connectionString);
-            using TalkContext context = talkFactory.create();
+            using TalkContext context = _talkContextFactory.Create();
             try
             {
                 var quizzesToTalk = context.QuizzToTalks

@@ -1,34 +1,33 @@
-﻿using App.TalkCreation.Context;
-using App.TalkCreation.Data;
-using Microsoft.Extensions.Diagnostics.HealthChecks;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using App.TalkCreation.Data.DataFetch;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 
-public class TalkHealthCheck : IHealthCheck
+namespace App.HeathChecks
 {
-    private readonly TalksServiceFetch _talkService;
-    public TalkHealthCheck(TalksServiceFetch talkService)
+    public class TalkHealthCheck : IHealthCheck
     {
-        _talkService = talkService;
-    }
-
-    public object ApplicationEvent { get; private set; }
-
-    public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = default)
-    {
-        try
+        private readonly TalksServiceFetch _talkService;
+        public TalkHealthCheck(TalksServiceFetch talkService)
         {
-            await _talkService.getTalkAndQuizzes(1);
-            return HealthCheckResult.Healthy();
+            _talkService = talkService;
         }
-        catch (Exception exception)
+
+        public object ApplicationEvent { get; private set; }
+
+        public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = default)
         {
-            return HealthCheckResult.Unhealthy("Description", exception);
-            throw;
+            try
+            {
+                await _talkService.getTalkAndQuizzes(1);
+                return HealthCheckResult.Healthy();
+            }
+            catch (Exception exception)
+            {
+                return HealthCheckResult.Unhealthy("Description", exception);
+                throw;
+            }
         }
     }
 }

@@ -1,36 +1,31 @@
-﻿using App.TalkCreation.Context;
-using App.TalkCreation.Models;
-using App.TalkCreation.Data.DataFetch.Dto;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using System.IO;
-using Microsoft.Extensions.Logging;
-using App.TalkAnswer.SaveTalkProgress;
-using App.TalkAnswer.Models;
 using App.TalkAnswer.Dto;
+using App.TalkAnswer.SaveTalkProgress;
+using App.TalkCreation.Context;
+using App.TalkCreation.Models;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
-namespace App.TalkCreation.Data
+namespace App.TalkCreation.Data.DataFetch
 {
     public class UserServiceFetch
     {
-        private IConfiguration configuration;
-        private string _connectionString;
         private readonly ILogger _logger;
-        public UserServiceFetch(IConfiguration configuration, ILogger<TalksController> logger)
+        readonly TalkContextFactory _talkContextFactory;
+        readonly TalkSessionRepo _talkSessionRepo;
+
+        public UserServiceFetch(ILogger<TalksController> logger, TalkContextFactory talkContextFactory, TalkSessionRepo talkSessionRepo)
         {
-            _connectionString = configuration.GetConnectionString("DBString");
             _logger = logger;
+            _talkContextFactory = talkContextFactory;
+            _talkSessionRepo = talkSessionRepo;
         }
 
         public string CheckUserExistence(dynamic data)
         {
-            TalkContextFactory talkFactory = new TalkContextFactory(_connectionString);
-            using TalkContext context = talkFactory.create();
+            using TalkContext context = _talkContextFactory.Create();
             data = data[0];
             try
             {
@@ -67,14 +62,12 @@ namespace App.TalkCreation.Data
 
         public List<UserQuestionsDTO> GetQuestionsBySession(string groupId)
         {
-            TalkSessionRepo _talkSessionRepo = TalkSessionRepo.GetInstance();
             CurrentSession currentSession = _talkSessionRepo.Get(groupId);
             if (currentSession == null)
             {
                 return null;
             }
-            TalkContextFactory talkFactory = new TalkContextFactory(_connectionString);
-            using TalkContext context = talkFactory.create();
+            using TalkContext context = _talkContextFactory.Create();
             Session session = context.Sessions.Where(p => p.groupId == groupId).FirstOrDefault();
             List<UserQuestion> userQuestions = context.UserQuestions.Where(p => p.SessionId == session.Id).ToList();
             List<UserQuestionsDTO> userQuestionsDTO = new List<UserQuestionsDTO>();

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using App.TalkCreation.Context;
+using App.TalkCreation.Data.DataFetch;
 using App.TalkCreation.Models;
 using Newtonsoft.Json.Linq;
 using Microsoft.Extensions.Configuration;
@@ -24,23 +25,25 @@ namespace App.TalkCreation.Data
         private readonly IConfiguration configuration;
         private readonly ILogger<QuestionController> log;
         private readonly QuestionServiceFetch _questionServiceFetch;
+        readonly TalkContextFactory _talkContextFactory;
 
-        public QuestionController(TalkContext context, IConfiguration configuration, ILogger<QuestionController> log, QuestionServiceFetch questionServiceFetch)
+        public QuestionController(
+            TalkContext context, IConfiguration configuration,
+            ILogger<QuestionController> log, 
+            QuestionServiceFetch questionServiceFetch,
+            TalkContextFactory talkContextFactory)
         {
             this.configuration = configuration;
             this.log = log;
             _context = context;
             _questionServiceFetch = questionServiceFetch;
+            _talkContextFactory = talkContextFactory;
         }
 
         [Route("migrate")]
         public IActionResult Migrate()
         {
-            string _connectionString = configuration.GetConnectionString("DBString");
-            var optionsBuilder = new DbContextOptionsBuilder<TalkContext>();
-            optionsBuilder.UseSqlServer(_connectionString);
-            using var context = new TalkContext(optionsBuilder.Options);
-            //using var context = talkContextFactory.Create();
+            using var context = _talkContextFactory.Create();
 
             try
             {
@@ -62,7 +65,7 @@ namespace App.TalkCreation.Data
         [HttpGet("fetchQuestionsByQuizzId/{quizzId}")] //Fetch custom to get all questions from a quizz
         public async Task<IEnumerable<Question>> fetchTalkAndQuizzes(int quizzId)
         {
-            Task<List<Question>> quests = _questionServiceFetch.getQuestionsByQuizzId(quizzId);
+            Task<List<Question>> quests = _questionServiceFetch.GetQuestionsByQuizzId(quizzId);
             return await quests;
         }
 

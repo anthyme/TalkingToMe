@@ -25,6 +25,8 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using App.TokenValidation;
 using System;
+using App.TalkAnswer.SaveTalkProgress;
+using App.TalkAnswer.Services;
 using Microsoft.ApplicationInsights.AspNetCore.Extensions;
 
 namespace App
@@ -52,6 +54,12 @@ namespace App
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var dbString = Configuration.GetConnectionString("DBString");
+            var talkFactory = new TalkContextFactory(dbString);
+            services.AddSingleton(talkFactory);
+            services.AddSingleton<TalkSessionRepo>();
+
+
             services.AddScoped<QuizzServiceFetch>();
             services.AddScoped<QuizzServicePost>();
             services.AddScoped<TalksServiceFetch>();

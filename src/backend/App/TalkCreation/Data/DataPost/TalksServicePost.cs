@@ -3,22 +3,24 @@ using App.TalkCreation.Models;
 using App.TalkCreation.Context;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.Extensions.Configuration;
 using App.TalkAnswer.SaveTalkProgress;
 
 namespace App.TalkCreation.Data.DataPost
 {
     public class TalksServicePost
     {
-        private string _connectionString;
-        public TalksServicePost(IConfiguration configuration)
+        readonly TalkContextFactory _talkContextFactory;
+        readonly TalkSessionRepo _talkSessionRepo;
+
+        public TalksServicePost(TalkContextFactory talkContextFactory, TalkSessionRepo talkSessionRepo)
         {
-            _connectionString = configuration.GetConnectionString("DBString");
+            _talkContextFactory = talkContextFactory;
+            _talkSessionRepo = talkSessionRepo;
         }
+
         public string AddNewTalk(dynamic data)
         {
-            TalkContextFactory talkFactory = new TalkContextFactory(_connectionString);
-            using TalkContext context = talkFactory.create();
+            using TalkContext context = _talkContextFactory.Create();
             try
 
             {
@@ -36,7 +38,8 @@ namespace App.TalkCreation.Data.DataPost
                 AddQuizzesToTalk(data[0].quizzesId.selectedQuizzes, talkId);
 
                 return "{\"response\":\"New Talk created\"}";
-            } catch(Exception e)
+            }
+            catch (Exception e)
             {
                 return "{\"response\":\"New Talk failed to create\"}";
             }
@@ -44,8 +47,7 @@ namespace App.TalkCreation.Data.DataPost
 
         public string AddQuizzesToTalk(dynamic quizzesId, int talkId)
         {
-            TalkContextFactory talkFactory = new TalkContextFactory(_connectionString);
-            using TalkContext context = talkFactory.create();
+            using TalkContext context = _talkContextFactory.Create();
             try
             {
                 foreach (int quizzId in quizzesId)
@@ -69,8 +71,7 @@ namespace App.TalkCreation.Data.DataPost
         public void ChangeTalk(dynamic data)
         {
 
-            TalkContextFactory talkFactory = new TalkContextFactory(_connectionString);
-            using TalkContext context = talkFactory.create();
+            using TalkContext context = _talkContextFactory.Create();
             try
             {
                 int talkId = data[0].id.id;
@@ -89,19 +90,20 @@ namespace App.TalkCreation.Data.DataPost
                         checkedQuizzes.Remove(checkedQuizzes[i]);
                     }
                 }
-                foreach(int i in oldQuizzes)
+                foreach (int i in oldQuizzes)
                 {
                     QuizzToTalk qtt = context.QuizzToTalks.Where(a => a.QuizzId == i && a.TalkId == talkId).FirstOrDefault();
                     context.Remove(qtt);
                 }
-                foreach(int j in checkedQuizzes)
+                foreach (int j in checkedQuizzes)
                 {
                     var qtt = new QuizzToTalk { QuizzId = j, TalkId = talkId };
                     context.Add(qtt);
                 }
 
                 context.SaveChanges();
-            } catch (ArgumentOutOfRangeException e)
+            }
+            catch (ArgumentOutOfRangeException e)
             {
                 Console.WriteLine("error modifiying talk");
             }
@@ -109,14 +111,13 @@ namespace App.TalkCreation.Data.DataPost
 
         public void ChangeTalkUrl(dynamic data, int id)
         {
-            TalkContextFactory talkFactory = new TalkContextFactory(_connectionString);
-            using TalkContext context = talkFactory.create();
+            using TalkContext context = _talkContextFactory.Create();
             try
             {
                 string talkurl = data[0].url;
                 Talk changeTalk = context.Talks.FirstOrDefault(item => item.Id == id);
                 string groupId = changeTalk.Url;
-                changeTalk.Url = (talkurl.Equals("NULL"))? changeTalk.Url = null: changeTalk.Url = talkurl;
+                changeTalk.Url = (talkurl.Equals("NULL")) ? changeTalk.Url = null : changeTalk.Url = talkurl;
                 context.Talks.Update(changeTalk);
                 var closingSession = context.Sessions.FirstOrDefault(s => s.groupId == groupId);
                 closingSession.EndDate = DateTime.Now.ToString();
@@ -124,8 +125,7 @@ namespace App.TalkCreation.Data.DataPost
                 context.SaveChanges();
                 if (talkurl.Equals("NULL"))
                 {
-                   TalkSessionRepo _talkSessionRepo = TalkSessionRepo.GetInstance();
-                   _talkSessionRepo.EndSession(groupId);
+                    _talkSessionRepo.EndSession(groupId);
                 }
             }
             catch (ArgumentOutOfRangeException e)
@@ -134,6 +134,6 @@ namespace App.TalkCreation.Data.DataPost
             }
         }
 
-        
+
     }
 }

@@ -1,35 +1,27 @@
-﻿using App.TalkCreation.Context;
-using App.TalkCreation.Models;
-using App.TalkCreation.Data.DataFetch.Dto;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.IO;
-using App.TalkAnswer.Models;
-using App.TalkAnswer.Dto;
-using System.Runtime.InteropServices.ComTypes;
+using App.TalkCreation.Context;
+using App.TalkCreation.Data.DataFetch.Dto;
+using App.TalkCreation.Models;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
-namespace App.TalkCreation.Data
+namespace App.TalkCreation.Data.DataFetch
 {
     public class TalksServiceFetch
     {
-        private IConfiguration configuration;
-        private string _connectionString;
-        public TalksServiceFetch(IConfiguration configuration)
+        readonly TalkContextFactory _talkContextFactory;
+
+        public TalksServiceFetch(TalkContextFactory talkContextFactory)
         {
-            _connectionString = configuration.GetConnectionString("DBString");
+            _talkContextFactory = talkContextFactory;
         }
-
-
 
         public async Task<TalkAndQuizzesDTO> getTalkAndQuizzes(int id)
         {
-            TalkContextFactory talkFactory = new TalkContextFactory(_connectionString);
-            using TalkContext context = talkFactory.create();
+            using TalkContext context = _talkContextFactory.Create();
             try
             {
                 var response = await context.Talks
@@ -62,8 +54,7 @@ namespace App.TalkCreation.Data
 
         public async Task<List<String>> returnTalksByQuizzId(int quizzId)
         {
-            TalkContextFactory talkFactory = new TalkContextFactory(_connectionString);
-            using TalkContext context = talkFactory.create();
+            using TalkContext context = _talkContextFactory.Create();
             try
             {
                 var quizzesToTalk = context.QuizzToTalks
@@ -86,8 +77,7 @@ namespace App.TalkCreation.Data
 
         public async Task<List<Talk>> getTalksByUserId(int id)
         {
-            TalkContextFactory talkFactory = new TalkContextFactory(_connectionString);
-            using TalkContext context = talkFactory.create();
+            using TalkContext context = _talkContextFactory.Create();
             try
             {
                 var talks = await context.Talks.Where(p => p.OwnerId == id).ToListAsync();
@@ -101,8 +91,7 @@ namespace App.TalkCreation.Data
 
         public async Task<string> deleteTalk(int id)
         {
-            TalkContextFactory talkFactory = new TalkContextFactory(_connectionString);
-            using TalkContext context = talkFactory.create();
+            using TalkContext context = _talkContextFactory.Create();
             try
             {
                 var talk = await context.Talks.FindAsync(id);

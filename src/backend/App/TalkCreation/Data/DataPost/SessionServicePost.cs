@@ -9,16 +9,16 @@ namespace App.TalkCreation.Data.DataPost
 {
     public class SessionServicePost
     {
-        private string _connectionString;
-        public SessionServicePost(IConfiguration configuration)
+        readonly TalkContextFactory _talkContextFactory;
+
+        public SessionServicePost(TalkContextFactory talkContextFactory)
         {
-            _connectionString = configuration.GetConnectionString("DBString");
+            _talkContextFactory = talkContextFactory;
         }
 
-        public async Task<string> deleteSession(int id)
+        public async Task<string> DeleteSession(int id)
         {
-            TalkContextFactory talkFactory = new TalkContextFactory(_connectionString);
-            using TalkContext context = talkFactory.create();
+            using TalkContext context = _talkContextFactory.Create();
             try
             {
                 var session = await context.Sessions.FindAsync(id);

@@ -10,20 +10,19 @@ namespace App.TalkCreation.Data.DataPost
 {
     public class QuizzServicePost
     {
-        private IConfiguration configuration;
-        private string _connectionString;
         private readonly ILogger _logger;
-        public QuizzServicePost(IConfiguration configuration, ILogger<QuizzServicePost> logger)
+        readonly TalkContextFactory _talkContextFactory;
+
+        public QuizzServicePost(ILogger<QuizzServicePost> logger, TalkContextFactory talkContextFactory)
         {
-            _connectionString = configuration.GetConnectionString("DBString");
             _logger = logger;
+            _talkContextFactory = talkContextFactory;
         }
 
         //TODO - Change syntax for fetch
         public string AddNewQuizzToTalk(dynamic data)
         {
-            TalkContextFactory talkFactory = new TalkContextFactory(_connectionString);
-            using TalkContext context = talkFactory.create();
+            using TalkContext context = _talkContextFactory.Create();
             try
             {
                 var QuizzInfo = data[data.Count - 1];
@@ -55,8 +54,7 @@ namespace App.TalkCreation.Data.DataPost
         }
         public string updateQuizz(dynamic data)
         {
-            TalkContextFactory talkFactory = new TalkContextFactory(_connectionString);
-            using TalkContext context = talkFactory.create();
+            using TalkContext context = _talkContextFactory.Create();
             try
             {
                 int quizzId = data[data.Count-1].id.quizzId;
@@ -105,8 +103,7 @@ namespace App.TalkCreation.Data.DataPost
 
         public void changeTalksToQuizz(dynamic data)
         {
-            TalkContextFactory talkFactory = new TalkContextFactory(_connectionString);
-            using TalkContext context = talkFactory.create();
+            using TalkContext context = _talkContextFactory.Create();
             try
             {
                 int quizzId = data[0].quizzId.quizzId;
@@ -142,8 +139,7 @@ namespace App.TalkCreation.Data.DataPost
 
         private void createNewQuestion(dynamic question, int quizzId)
         {
-            TalkContextFactory talkFactory = new TalkContextFactory(_connectionString);
-            using TalkContext context = talkFactory.create();
+            using TalkContext context = _talkContextFactory.Create();
             Question addQuestion = new Question
             {
                 QuizzId = quizzId,
@@ -168,8 +164,7 @@ namespace App.TalkCreation.Data.DataPost
 
         private void putQuestion(dynamic question, int quizzId)
         {
-            TalkContextFactory talkFactory = new TalkContextFactory(_connectionString);
-            using TalkContext context = talkFactory.create();
+            using TalkContext context = _talkContextFactory.Create();
 
             int questionId = question.questionId.questionId; 
             Question questionMod = context.Questions.FirstOrDefault(p => p.Id == questionId);
@@ -199,8 +194,7 @@ namespace App.TalkCreation.Data.DataPost
 
         private void deleteQA(int questionId)
         {
-            TalkContextFactory talkFactory = new TalkContextFactory(_connectionString);
-            using TalkContext context = talkFactory.create();
+            using TalkContext context = _talkContextFactory.Create();
             List<Answer> deleteAnswers = context.Answers.Where(p => p.QuestionId == questionId).ToList();
             foreach(Answer answer in deleteAnswers)
             {

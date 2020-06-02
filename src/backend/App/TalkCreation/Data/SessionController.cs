@@ -43,7 +43,7 @@ namespace App.TalkCreation.Data
         [HttpDelete("{id}")]
         public async Task<ActionResult<string>> DeleteSession(int id)
         {
-            string response = await _sessionServicePost.deleteSession(id);
+            string response = await _sessionServicePost.DeleteSession(id);
             return response;
         }
     }

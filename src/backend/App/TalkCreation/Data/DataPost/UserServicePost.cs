@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
 using App.TalkAnswer.Dto;
-using App.TalkAnswer.Models;
 using App.TalkAnswer.SaveTalkProgress;
 using App.TalkCreation.Context;
 using App.TalkCreation.Models;
@@ -13,16 +10,18 @@ namespace App.TalkCreation.Data.DataPost
 {
     public class UserServicePost
     {
-        private string _connectionString;
-        public UserServicePost(IConfiguration configuration)
+        readonly TalkContextFactory _talkContextFactory;
+        readonly TalkSessionRepo _talkSessionRepo;
+
+        public UserServicePost(TalkContextFactory talkContextFactory, TalkSessionRepo talkSessionRepo)
         {
-            _connectionString = configuration.GetConnectionString("DBString");
+            _talkContextFactory = talkContextFactory;
+            _talkSessionRepo = talkSessionRepo;
         }
 
         public void SaveSessionAndAnswers(CurrentSession currentSession)
         {
-            TalkContextFactory talkFactory = new TalkContextFactory(_connectionString);
-            using TalkContext context = talkFactory.create();
+            using TalkContext context = _talkContextFactory.Create();
             try
             {
                 Session session = context.Sessions.FirstOrDefault(p => p.groupId == currentSession.groupid);
@@ -115,9 +114,7 @@ namespace App.TalkCreation.Data.DataPost
         }
         public UserQuestionsDTO SaveQuestion(string groupId, string question, string userName, string date)
         {
-            TalkContextFactory talkFactory = new TalkContextFactory(_connectionString);
-            using TalkContext context = talkFactory.create();
-            TalkSessionRepo _talkSessionRepo = TalkSessionRepo.GetInstance();
+            using TalkContext context = _talkContextFactory.Create();
             CurrentSession currentSession = _talkSessionRepo.Get(groupId);
             if (currentSession != null)
             {
@@ -153,8 +150,7 @@ namespace App.TalkCreation.Data.DataPost
 
         public int ChangeUpVote(int id, bool addUpvote)
         {
-            TalkContextFactory talkFactory = new TalkContextFactory(_connectionString);
-            using (TalkContext context = talkFactory.create())
+            using (TalkContext context = _talkContextFactory.Create())
             {
                 UserQuestion userQuestion = context.UserQuestions.FirstOrDefault(p => p.Id == id);
                 if (addUpvote)
@@ -169,8 +165,6 @@ namespace App.TalkCreation.Data.DataPost
                 context.SaveChanges();
                 return userQuestion.Upvotes;
             }
-
         }
-
     }
 }

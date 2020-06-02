@@ -1,28 +1,39 @@
 ﻿using App.TalkAnswer.Dto;
-using App.TalkAnswer.Models;
 using App.TalkCreation.Context;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using App.TalkCreation.Models;
 
 namespace App.TalkCreation.Data.DataFetch
 {
     public class SessionServiceFetch
     {
-        private string _connectionString;
-        public SessionServiceFetch(IConfiguration configuration)
+        readonly TalkContextFactory _talkContextFactory;
+        readonly SessionMapper _mapper;
+
+        public SessionServiceFetch(TalkContextFactory talkContextFactory, SessionMapper mapper)
         {
-            _connectionString = configuration.GetConnectionString("DBString");
+            _talkContextFactory = talkContextFactory;
+            _mapper = mapper;
         }
 
         public async Task<List<SessionHistoryDTO>> returnSessionsByTalkId(int talkId)
         {
-            TalkContextFactory talkFactory = new TalkContextFactory(_connectionString);
-            using TalkContext context = talkFactory.create();
-            var sessions = context.Sessions.Where(s => s.TalkId == talkId && s.EndDate != null).OrderByDescending(s => s.StartDate).ToList();
-            List<SessionHistoryDTO> sessionDTOs = new List<SessionHistoryDTO>();
+            using TalkContext context = _talkContextFactory.Create();
+            var sessions = context.Sessions.Where(s => s.TalkId == talkId && s.EndDate != null)
+                .OrderByDescending(s => s.StartDate).ToList();
+            return _mapper.Map(sessions);
+        }
+    }
+
+    public class SessionMapper
+    {
+        public List<SessionHistoryDTO> Map(List<Session> sessions)
+        {
+            var sessionDTOs = new List<SessionHistoryDTO>();
             foreach (Session session in sessions)
             {
                 SessionHistoryDTO tempSession = new SessionHistoryDTO();
@@ -41,16 +52,20 @@ namespace App.TalkCreation.Data.DataFetch
                         tempSession.TimeLasted += timeDiff.Hours.ToString();
                         tempSession.TimeLasted += timeDiff.Hours == 1 ? " hour " : " hours ";
                     }
+
                     if (timeDiff.Minutes >= 1)
                     {
                         tempSession.TimeLasted += timeDiff.Minutes.ToString();
                         tempSession.TimeLasted += timeDiff.Minutes == 1 ? " minute " : " minutes ";
                     }
+
                     tempSession.TimeLasted += timeDiff.Seconds.ToString();
                     tempSession.TimeLasted += timeDiff.Seconds == 1 ? " second " : " seconds";
                 }
+
                 sessionDTOs.Add(tempSession);
             }
+
             return sessionDTOs;
         }
     }

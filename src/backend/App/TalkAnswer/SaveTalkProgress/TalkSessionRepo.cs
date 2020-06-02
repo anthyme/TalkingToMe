@@ -6,22 +6,9 @@ using App.TalkAnswer.Dto;
 
 namespace App.TalkAnswer.SaveTalkProgress
 {
-    sealed class TalkSessionRepo
+    public sealed class TalkSessionRepo
     {
         private static Dictionary<string, CurrentSession> Sessions = new Dictionary<string, CurrentSession>();
-        private static readonly object padlock = new object();
-        private TalkSessionRepo()
-        {
-        }
-        private static TalkSessionRepo _talkSessionRepo;
-        public static TalkSessionRepo GetInstance()
-        {
-            if (_talkSessionRepo == null)
-            {
-                _talkSessionRepo = new TalkSessionRepo();
-            }
-            return _talkSessionRepo;
-        }
 
         public CurrentSession Get(string groupId)
         {
