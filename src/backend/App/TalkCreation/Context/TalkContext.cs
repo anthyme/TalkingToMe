@@ -53,6 +53,17 @@ namespace App.TalkCreation.Context
             modelBuilder.Entity<Session>().HasMany(c => c.UserAnswers).WithOne(e => e.Session);
             modelBuilder.Entity<UserQuestion>().HasOne(e => e.Session).WithMany(p => p.UserQuestions).HasForeignKey(p => p.SessionId);
             modelBuilder.Entity<Session>().HasMany(c => c.UserQuestions).WithOne(e => e.Session);
+
+            modelBuilder.Entity<Talk>().HasData(new {Id = 1, OwnerId =1, Name="Test", Description = "Test" });
+            modelBuilder.Entity<Quizz>().HasData(new {Id = 1,OwnerId=1, Name="Test" });
+            modelBuilder.Entity<Session>().HasData(new {Id = 1,StartDate= "01/01/2020 01:00:00", EndDate= "01/01/2020 01:30:00" , groupId="1", TalkId=1});
+            modelBuilder.Entity<SessionToQuizz>().HasData(new {Id = 1,QuizzId=1, SessionId= 1});
+            modelBuilder.Entity<UserQuestion>().HasData(new {Id = 1,Question="Test", Upvotes= 1, SessionId=1, Username="Anonymous"});
+            modelBuilder.Entity<UserAnswer>().HasData(new {Id = 1,QuestionId=1, Response= "Test", Count=1, SessionId=1});
+            modelBuilder.Entity<Answer>().HasData(new {Id = 1,QuestionId=1, Response="Test" }, new { Id = 2, QuestionId = 1, Response = "Test2" });
+            modelBuilder.Entity<QuizzToTalk>().HasData(new {Id = 1,TalkId=1, QuizzId=1 });
+            modelBuilder.Entity<Question>().HasData(new {Id = 1,QuizzId=1, Quest="Test", Type="UCQ",CorrectAn="Test" });
+            modelBuilder.Entity<User>().HasData(new {Id = 1, Service ="Google", ExternalId="0", UserId = 1 });
         }
     }
 }

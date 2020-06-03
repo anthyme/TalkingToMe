@@ -42,6 +42,7 @@ const TalkInterface = () => {
   const [listQuizzes, setListQuizzes] = useState([{}])
   const [talkName, setTalkName] = useState('')
   const [tab, setTab] = useState('Talk')
+  const [username, setUsername] = useState("Talker")
   const [likedQuestions, setLikedQuestions] = useState<number[]>([])
   const [showQuestion, setShowQuestion] = useState(false)
   const [connection, setConnection] = useState<HubConnection>()
@@ -130,6 +131,9 @@ const TalkInterface = () => {
   const changeToTalk = () => {
     setTab('Talk')
   }
+  const changeUsername = (username: string) => {
+    setUsername(username)
+   }
 
   const changeToChat = () => {
     setTab('Chat')
@@ -367,6 +371,8 @@ const TalkInterface = () => {
           groupId={groupId}
           likedQuestions={likedQuestions}
           changeLikedQuestions={changeLikedQuestions}
+          username={username}
+          changeUserName={changeUsername}
         />
       )}
     </React.Fragment>

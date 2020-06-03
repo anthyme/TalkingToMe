@@ -21,12 +21,14 @@ namespace App.Tests.TalkCreationTests
     {
         TalksServiceFetch _talksServiceFetch;
         TalksServicePost _talksServicePost;
+        TalkContextFactory _talkContextFactory;
 
         public TalkControllerTests()
         {
             var bootstrapper = new TestBootstrapper().Start();
             _talksServiceFetch = bootstrapper.TalksServiceFetch;
             _talksServicePost = bootstrapper.TalksServicePost;
+            _talkContextFactory = bootstrapper.TalkContextFactory;
         }
 
         [Fact]
@@ -38,17 +40,13 @@ namespace App.Tests.TalkCreationTests
         [Fact]
         public async Task PassTalkId()
         {
-            //arrange
-            //insert talk id 1 dans la table
-
             //act
-            var talk = await _talksServiceFetch.getTalkAndQuizzes(1);
-
+            var result = await _talksServiceFetch.getTalkAndQuizzes(1);
             //assert
-            talk.Should().BeEquivalentTo(new TalkAndQuizzesDTO
+            result.Should().BeEquivalentTo(new TalkAndQuizzesDTO
             {
-                talkName = "toto1",
-                talkUrl = "xxxxxxxx",
+                talkName = "Test",
+                talkUrl = null,
             }, x => x.Excluding(x=> x.Quizzes).Excluding(x => x.idTalk));
 
         }
