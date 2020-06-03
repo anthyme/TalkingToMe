@@ -42,7 +42,6 @@ namespace App.TalkAnswer.Services
                     if (!context.Sessions.Where(s => s.groupId == groupId).Any())
                     {
                         _talkSessionRepo.Save(currentSession);
-
                     }
                 }
                 context.SaveChanges();
