@@ -96,9 +96,8 @@ namespace App.TalkCreation.Data
         public async Task<ActionResult<string>> PostTalk([FromBody]dynamic talk)
         {
             var parsedTalk = JArray.Parse(talk.ToString());
-            string returnQuizz = _talkServicePost.AddNewTalk(parsedTalk);
-            Console.WriteLine(returnQuizz);
-            return returnQuizz;
+            _talkServicePost.AddNewTalk(parsedTalk);
+            return "New Talk created";
         }
 
         // DELETE: api/ChannelsControllerTest/5

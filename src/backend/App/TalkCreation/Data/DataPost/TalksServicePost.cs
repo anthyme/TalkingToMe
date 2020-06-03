@@ -18,13 +18,9 @@ namespace App.TalkCreation.Data.DataPost
             _talkSessionRepo = talkSessionRepo;
         }
 
-        public string AddNewTalk(dynamic data)
+        public int AddNewTalk(dynamic data)
         {
             using TalkContext context = _talkContextFactory.Create();
-            try
-
-            {
-                Console.WriteLine(data);
                 Talk newTalk = new Talk
                 {
                     Name = data[0].name.name,
@@ -36,13 +32,7 @@ namespace App.TalkCreation.Data.DataPost
                 int talkId = newTalk.Id;
 
                 AddQuizzesToTalk(data[0].quizzesId.selectedQuizzes, talkId);
-
-                return "{\"response\":\"New Talk created\"}";
-            }
-            catch (Exception e)
-            {
-                return "{\"response\":\"New Talk failed to create\"}";
-            }
+                return talkId;
         }
 
         public string AddQuizzesToTalk(dynamic quizzesId, int talkId)
