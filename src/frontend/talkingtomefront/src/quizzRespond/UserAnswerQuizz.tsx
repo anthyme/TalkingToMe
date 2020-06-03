@@ -29,6 +29,7 @@ const UserAnswerQuizz: React.FC<IProps> = (props) => {
   const [tab, setTab] = useState('Quizz')
   const [quizzId, setQuizzId] = useState(-1)
   const [questionsData, setQuestionsData] = useState([{}])
+  const [username, setUsername] = useState("")
   const [likedQuestions, setLikedQuestions] = useState<number[]>([]);
   const [waitingQuizz, setWaitingQuizz] = useState(true)
   const [connection, setConnection] = useState<HubConnection>()
@@ -90,6 +91,10 @@ const changeLikedQuestions = (upvoted:boolean, questionId: number) =>{
       }
       setWaitingQuizz(false)
     }
+  }
+
+  const changeUsername = (username: string) => {
+   setUsername(username);
   }
 
   const changeToChat = () => {
@@ -226,7 +231,7 @@ const changeLikedQuestions = (upvoted:boolean, questionId: number) =>{
             </div>
           )
         ) : (
-          <ChatInterface connection={connection} groupId={groupId} likedQuestions={likedQuestions} changeLikedQuestions={changeLikedQuestions}/>
+          <ChatInterface connection={connection} groupId={groupId} likedQuestions={likedQuestions} username={username} changeLikedQuestions={changeLikedQuestions} changeUserName={changeUsername}/>
         )}
       </>
     </React.Fragment>

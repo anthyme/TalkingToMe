@@ -30,16 +30,20 @@ interface IProps {
   connection: any
   groupId: string | null
   likedQuestions: number[]
+  username: string
   changeLikedQuestions: Function
+  changeUserName: Function
 }
 
 const ChatInterface: React.FC<IProps> = (props) => {
   const classes = useStyles()
+  const username =props.username
   const [question, setQuestion] = useState('')
-  const [userName, setUserName] = useState('')
+  const [userName, setUserName] = useState(username)
   const [messages, setMessages] = useState([{}])
   const connection = props.connection
   const groupId = props.groupId
+  const changeUsername = props.changeUserName
 
   const SendNewQuestions = () => {
     if (connection) {
@@ -52,7 +56,9 @@ const ChatInterface: React.FC<IProps> = (props) => {
   const handleQuestionChange = (event: any) => {
     setQuestion(event.target.value)
   }
+
   const handleUserNameChange = (event: any) => {
+    changeUsername(event.target.value)
     setUserName(event.target.value)
   }
   useEffect(() => {

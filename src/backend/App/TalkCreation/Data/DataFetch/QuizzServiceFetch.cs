@@ -71,32 +71,25 @@ namespace App.TalkCreation.Data.DataFetch
         public async Task<List<QuizzDTO>> returnQuizzByUserId(int id)
         {
             using TalkContext context = _talkContextFactory.Create();
-            try
-            {
-                var quizzes = await context.Quizzes
-                .Where(p => p.OwnerId == id)
-                .Include(p => p.Questions)
-                .ThenInclude(p => p.Answers)
-                .ToListAsync();
 
-                List<QuizzDTO> quizzesDto = new List<QuizzDTO>();
-                foreach (Quizz quizz in quizzes)
+            var quizzes = await context.Quizzes
+            .Where(p => p.OwnerId == id)
+            .Include(p => p.Questions)
+            .ThenInclude(p => p.Answers)
+            .ToListAsync();
+
+            List<QuizzDTO> quizzesDto = new List<QuizzDTO>();
+            foreach (Quizz quizz in quizzes)
+            {
+                QuizzDTO quizzDto = new QuizzDTO
                 {
-                    QuizzDTO quizzDto = new QuizzDTO
-                    {
-                        Id = quizz.Id,
-                        Name = quizz.Name,
-                    };
-                    quizzesDto.Add(quizzDto);
-                }
+                    Id = quizz.Id,
+                    Name = quizz.Name,
+                };
+                quizzesDto.Add(quizzDto);
+            }
 
-                return quizzesDto;
-            }
-            catch (ArgumentOutOfRangeException e)
-            {
-                Console.WriteLine("This user does not have any Quizzes");
-                return null;
-            }
+            return quizzesDto;
         }
 
         public async Task<List<String>> returnQuizzByTalkId(int id)
