@@ -36,7 +36,7 @@ namespace App.Tests.TalkCreationTests
                 {
                     Id = 2,
                     StartDate = new DateTime(2020, 1, 2, 12, 0, 0),
-                    TimeLasted = "2 hours 0 seconds"
+                    TimeLasted = "2 hours "
                 },
             });
         }

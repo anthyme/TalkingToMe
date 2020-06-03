@@ -52,20 +52,19 @@ namespace App.TalkCreation.Data.DataFetch
                         tempSession.TimeLasted += timeDiff.Hours.ToString();
                         tempSession.TimeLasted += timeDiff.Hours == 1 ? " hour " : " hours ";
                     }
-
                     if (timeDiff.Minutes >= 1)
                     {
                         tempSession.TimeLasted += timeDiff.Minutes.ToString();
                         tempSession.TimeLasted += timeDiff.Minutes == 1 ? " minute " : " minutes ";
                     }
-
-                    tempSession.TimeLasted += timeDiff.Seconds.ToString();
-                    tempSession.TimeLasted += timeDiff.Seconds == 1 ? " second " : " seconds";
+                    if (timeDiff.Seconds >= 1)
+                    {
+                        tempSession.TimeLasted += timeDiff.Seconds.ToString();
+                        tempSession.TimeLasted += timeDiff.Seconds == 1 ? " second " : " seconds";
+                    }
                 }
-
                 sessionDTOs.Add(tempSession);
             }
-
             return sessionDTOs;
         }
     }

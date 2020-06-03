@@ -72,6 +72,7 @@ namespace App
             services.AddScoped<JwtTokenValidation>();
             services.AddScoped<SessionServiceFetch>();
             services.AddScoped<SessionServicePost>();
+            services.AddScoped<SessionMapper>();
 
             services.AddCors(o => o.AddPolicy("ReactPolicy", builder =>
             {
