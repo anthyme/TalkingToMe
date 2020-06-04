@@ -147,7 +147,7 @@ namespace App.Tests.TalkCreationTests
             questionObject.questionId = questionId;
 
             var name = new JObject();
-            name.Add("quizzName", "Test");
+            name.Add("name", "Test");
             generalInfoObject.Name = name;
 
             var quizzId = new JObject();
