@@ -19,13 +19,14 @@ namespace App.Tests.DataTests
             _questionServiceFetch = bootstrap.QuestionServiceFetch;
         }
         [Fact]
-        public async void GetQuestionByQuizzId()
+        public async void GetQuestionByQuizzIdTest()
         {
-            List<Question> questionList = await _questionServiceFetch.GetQuestionsByQuizzId(1);
+            var exception =  _questionServiceFetch.GetQuestionsByQuizzId(1);
+            Assert.NotNull(exception);
         }
 
         [Fact]
-        public async void GetQuestionsDtoByQuizzId()
+        public async void GetQuestionsDtoByQuizzIdTest()
         {
             List<QuestionDto> questionList = await _questionServiceFetch.GetQuestionsDtoByQuizzId(1);
             questionList.Should().BeEquivalentTo(new[]
