@@ -104,7 +104,7 @@ namespace App.TalkCreation.Data
         [HttpDelete("{id}")]
         public async Task<ActionResult<string>> DeleteTalk(int id)
         {
-            string response = await _talkServiceFetch.deleteTalk(id);
+            string response = await _talkServicePost.deleteTalk(id);
             return response;
         }
     }

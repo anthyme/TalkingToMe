@@ -22,15 +22,15 @@ namespace App.TalkCreation.Data.DataFetch
         public async Task<TalkAndQuizzesDTO> getTalkAndQuizzes(int id)
         {
             using TalkContext context = _talkContextFactory.Create();
-            try
-            {
-                var response = await context.Talks
-                    .Where(p => p.Id == id)
-                    .Include(p => p.Quizzes)
-                    .ThenInclude(p => p.Quizz)
-                    .ToListAsync();
+            var response = await context.Talks
+                .Where(p => p.Id == id)
+                .Include(p => p.Quizzes)
+                .ThenInclude(p => p.Quizz)
+                .ToListAsync();
 
-                TalkAndQuizzesDTO talkNQuizzes = new TalkAndQuizzesDTO();
+            TalkAndQuizzesDTO talkNQuizzes = new TalkAndQuizzesDTO();
+            if (response.Count() != 0)
+            {
                 talkNQuizzes.idTalk = id;
                 talkNQuizzes.talkName = response[0].Name;
                 talkNQuizzes.talkUrl = response[0].Url;
@@ -45,11 +45,7 @@ namespace App.TalkCreation.Data.DataFetch
                 }
                 return talkNQuizzes;
             }
-            catch (ArgumentOutOfRangeException e)
-            {
-                Console.WriteLine("The Desired Talk does not exist");
-                return null;
-            }
+            else return null;
         }
 
         public async Task<List<String>> returnTalksByQuizzId(int quizzId)
@@ -87,24 +83,6 @@ namespace App.TalkCreation.Data.DataFetch
             {
                 return null;
             }
-        }
-
-        public async Task<string> deleteTalk(int id)
-        {
-            using TalkContext context = _talkContextFactory.Create();
-            try
-            {
-                var talk = await context.Talks.FindAsync(id);
-                context.QuizzToTalks.RemoveRange(context.QuizzToTalks.Where(q => q.TalkId == id));
-                context.Talks.Remove(talk);
-                await context.SaveChangesAsync();
-                return "{\"response\":\"Remove sucessful\"}";
-            }
-            catch (ArgumentOutOfRangeException e)
-            {
-                return "{\"response\":\"Remove failed\"}";
-            }
-
         }
     }
 }

@@ -4,6 +4,7 @@ using App.TalkCreation.Context;
 using System.Collections.Generic;
 using System.Linq;
 using App.TalkAnswer.SaveTalkProgress;
+using System.Threading.Tasks;
 
 namespace App.TalkCreation.Data.DataPost
 {
@@ -21,18 +22,18 @@ namespace App.TalkCreation.Data.DataPost
         public int AddNewTalk(dynamic data)
         {
             using TalkContext context = _talkContextFactory.Create();
-                Talk newTalk = new Talk
-                {
-                    Name = data[0].name.name,
-                    Description = data[0].description.description,
-                    OwnerId = data[0].ownerId.userIdRdx
-                };
-                context.Talks.Add(newTalk);
-                context.SaveChanges();
-                int talkId = newTalk.Id;
+            Talk newTalk = new Talk
+            {
+                Name = data[0].name.name,
+                Description = data[0].description.description,
+                OwnerId = data[0].ownerId.userIdRdx
+            };
+            context.Talks.Add(newTalk);
+            context.SaveChanges();
+            int talkId = newTalk.Id;
 
-                if (data[0].quizzesId !=null) AddQuizzesToTalk(data[0].quizzesId.selectedQuizzes, talkId);
-                return talkId;
+            if (data[0].quizzesId != null) AddQuizzesToTalk(data[0].quizzesId.selectedQuizzes, talkId);
+            return talkId;
         }
 
         public string AddQuizzesToTalk(dynamic quizzesId, int talkId)
@@ -60,43 +61,35 @@ namespace App.TalkCreation.Data.DataPost
 
         public void ChangeTalk(dynamic data)
         {
-
             using TalkContext context = _talkContextFactory.Create();
-            try
-            {
-                int talkId = data[0].id.id;
-                Talk changeTalk = context.Talks.FirstOrDefault(item => item.Id == talkId);
-                changeTalk.Name = data[0].name.name;
-                changeTalk.Description = data[0].description.description;
-                context.Talks.Update(changeTalk);
+            int talkId = data[0].id.id;
+            Talk changeTalk = context.Talks.FirstOrDefault(item => item.Id == talkId);
+            changeTalk.Name = data[0].name.name;
+            changeTalk.Description = data[0].description.description;
+            context.Talks.Update(changeTalk);
 
-                List<int> oldQuizzes = data[0].oldQuizzes.oldQuizzes.ToObject<List<int>>();
-                List<int> checkedQuizzes = data[0].selectedQuizzes.selectedQuizzes.ToObject<List<int>>();
-                for (int i = checkedQuizzes.Count - 1; i >= 0; i--) //reversed loop to be able to call .remove in the loop
-                {
-                    if (oldQuizzes.Contains(checkedQuizzes[i]))
-                    {
-                        oldQuizzes.Remove(checkedQuizzes[i]);
-                        checkedQuizzes.Remove(checkedQuizzes[i]);
-                    }
-                }
-                foreach (int i in oldQuizzes)
-                {
-                    QuizzToTalk qtt = context.QuizzToTalks.Where(a => a.QuizzId == i && a.TalkId == talkId).FirstOrDefault();
-                    context.Remove(qtt);
-                }
-                foreach (int j in checkedQuizzes)
-                {
-                    var qtt = new QuizzToTalk { QuizzId = j, TalkId = talkId };
-                    context.Add(qtt);
-                }
-
-                context.SaveChanges();
-            }
-            catch (ArgumentOutOfRangeException e)
+            List<int> oldQuizzes = data[0].oldQuizzes.oldQuizzes.ToObject<List<int>>();
+            List<int> checkedQuizzes = data[0].selectedQuizzes.selectedQuizzes.ToObject<List<int>>();
+            for (int i = checkedQuizzes.Count - 1; i >= 0; i--) //reversed loop to be able to call .remove in the loop
             {
-                Console.WriteLine("error modifiying talk");
+                if (oldQuizzes.Contains(checkedQuizzes[i]))
+                {
+                    oldQuizzes.Remove(checkedQuizzes[i]);
+                    checkedQuizzes.Remove(checkedQuizzes[i]);
+                }
             }
+            foreach (int i in oldQuizzes)
+            {
+                QuizzToTalk qtt = context.QuizzToTalks.Where(a => a.QuizzId == i && a.TalkId == talkId).FirstOrDefault();
+                context.Remove(qtt);
+            }
+            foreach (int j in checkedQuizzes)
+            {
+                var qtt = new QuizzToTalk { QuizzId = j, TalkId = talkId };
+                context.Add(qtt);
+            }
+
+            context.SaveChanges();
         }
 
         public void ChangeTalkUrl(dynamic data, int id)
@@ -124,6 +117,22 @@ namespace App.TalkCreation.Data.DataPost
             }
         }
 
+        public async Task<string> deleteTalk(int id)
+        {
+            using TalkContext context = _talkContextFactory.Create();
+            try
+            {
+                var talk = await context.Talks.FindAsync(id);
+                context.QuizzToTalks.RemoveRange(context.QuizzToTalks.Where(q => q.TalkId == id));
+                context.Talks.Remove(talk);
+                await context.SaveChangesAsync();
+                return "{\"response\":\"Remove sucessful\"}";
+            }
+            catch (ArgumentOutOfRangeException e)
+            {
+                return "{\"response\":\"Remove failed\"}";
+            }
 
+        }
     }
 }

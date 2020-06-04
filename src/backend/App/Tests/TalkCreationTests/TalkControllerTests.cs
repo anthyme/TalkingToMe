@@ -46,7 +46,7 @@ namespace App.Tests.TalkCreationTests
             int tempTalkId = _talksServicePost.AddNewTalk(parsedTempJson);
             var tempTalk = await _talksServiceFetch.getTalkAndQuizzes(tempTalkId);
             Assert.NotNull(tempTalk);
-            await _talksServiceFetch.deleteTalk(tempTalkId);
+            await _talksServicePost.deleteTalk(tempTalkId);
             tempTalk = await _talksServiceFetch.getTalkAndQuizzes(tempTalkId);
             tempTalk.Should().BeNull();
         }
@@ -54,7 +54,7 @@ namespace App.Tests.TalkCreationTests
         [Fact]
         public void ThrowDeleteTalkId()
         {
-            Assert.ThrowsAsync<ArgumentOutOfRangeException>(async () => await _talksServiceFetch.deleteTalk(-1));
+            Assert.ThrowsAsync<ArgumentOutOfRangeException>(async () => await _talksServicePost.deleteTalk(-1));
         }
 
         [Fact]
@@ -63,6 +63,22 @@ namespace App.Tests.TalkCreationTests
             var newTalk = "[{\"description\":{\"description\":\"test\"}}]";
             var parsedTalk = JArray.Parse(newTalk);
             Assert.ThrowsAsync<Exception>(async () => _talksServicePost.AddNewTalk(parsedTalk).ToString());
+        }
+
+        [Fact]
+        public async Task shouldDeleteAndCreateQuizzToTalk()
+        {
+            var tempJson = "[{\"id\":{\"id\":1},\"name\":{\"name\":\"Test\"},\"description\":{\"description\":\"Test\"},\"selectedQuizzes\":{\"selectedQuizzes\":[]},\"oldQuizzes\":{\"oldQuizzes\":[\"1\"]}}]";
+            var parsedTempJson = JArray.Parse(tempJson);
+            _talksServicePost.ChangeTalk(parsedTempJson);
+            var quizzesToTalks = await _talksServiceFetch.returnTalksByQuizzId(1);
+            quizzesToTalks.Count().Should().Equals(0);
+
+            tempJson = "[{\"id\":{\"id\":1},\"name\":{\"name\":\"Test\"},\"description\":{\"description\":\"Test\"},\"selectedQuizzes\":{\"selectedQuizzes\":[\"1\"]},\"oldQuizzes\":{\"oldQuizzes\":[]}}]";
+            parsedTempJson = JArray.Parse(tempJson);
+            _talksServicePost.ChangeTalk(parsedTempJson);
+            quizzesToTalks = await _talksServiceFetch.returnTalksByQuizzId(1);
+            quizzesToTalks.Count().Should().Equals(1);
         }
 
         public void Dispose()
