@@ -103,7 +103,7 @@ namespace App.Tests.TalkCreationTests
             generalInfoObject.Name=name;
 
             var ownerId = new JObject();
-            ownerId.Add("userId", "1");
+            ownerId.Add("userId", "0");
             generalInfoObject.OwnerId=ownerId;
 
             quizzJArray.Add(questionObject);
@@ -120,7 +120,7 @@ namespace App.Tests.TalkCreationTests
             dynamic questionObject = new JObject();
             dynamic generalInfoObject = new JObject();
             var selectedValue = new JObject();
-            selectedValue.Add("selectedValue", "Test");
+            selectedValue.Add("questionValue", "Test");
             questionObject.question = selectedValue;
 
             var type = new JObject();
@@ -129,13 +129,13 @@ namespace App.Tests.TalkCreationTests
 
             dynamic answers = new JObject();
             dynamic answersList = new JArray();
-            answersList.Add("Test1");
+            answersList.Add("Test");
             answersList.Add("Test2");
             answers.answers = answersList;
             questionObject.answers = answers;
 
             var rightAnswer = new JObject();
-            rightAnswer.Add("value", "Test1");
+            rightAnswer.Add("value", "Test");
             questionObject.rightAnswer = rightAnswer;
 
             var isNew = new JObject();
