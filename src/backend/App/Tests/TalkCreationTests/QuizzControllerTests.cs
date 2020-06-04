@@ -56,7 +56,7 @@ namespace App.Tests.TalkCreationTests
         {
             List<String> results = await _quizzServiceFetch.returnQuizzByTalkId(1);
             List<String> testResults = new List<String>();
-            testResults.Add("Test");
+            testResults.Add("1");
             results.Should().BeEquivalentTo(testResults);
         }
     }

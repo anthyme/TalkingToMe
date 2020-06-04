@@ -29,60 +29,43 @@ namespace App.TalkCreation.Data.DataFetch
                 .ToListAsync();
 
             TalkAndQuizzesDTO talkNQuizzes = new TalkAndQuizzesDTO();
-            if (response.Count() != 0)
+            if (response.Count() == 0) return null;
+            talkNQuizzes.idTalk = id;
+            talkNQuizzes.talkName = response[0].Name;
+            talkNQuizzes.talkUrl = response[0].Url;
+            talkNQuizzes.Quizzes = new List<Quizz>();
+            foreach (QuizzToTalk qtt in response[0].Quizzes)
             {
-                talkNQuizzes.idTalk = id;
-                talkNQuizzes.talkName = response[0].Name;
-                talkNQuizzes.talkUrl = response[0].Url;
-                talkNQuizzes.Quizzes = new List<Quizz>();
-                foreach (QuizzToTalk qtt in response[0].Quizzes)
-                {
-                    Quizz qtemp = new Quizz();
-                    qtemp.Id = qtt.Quizz.Id;
-                    qtemp.Name = qtt.Quizz.Name;
-                    talkNQuizzes.Quizzes
-                        .Add(qtemp);
-                }
-                return talkNQuizzes;
+                Quizz qtemp = new Quizz();
+                qtemp.Id = qtt.Quizz.Id;
+                qtemp.Name = qtt.Quizz.Name;
+                talkNQuizzes.Quizzes
+                    .Add(qtemp);
             }
-            else return null;
+            return talkNQuizzes;
         }
 
         public async Task<List<String>> returnTalksByQuizzId(int quizzId)
         {
             using TalkContext context = _talkContextFactory.Create();
-            try
+            var quizzesToTalk = context.QuizzToTalks
+                .Where(p => p.QuizzId == quizzId)
+                .ToList();
+            List<String> listTalksId = new List<String>();
+            foreach (QuizzToTalk quizzToTalk in quizzesToTalk)
             {
-                var quizzesToTalk = context.QuizzToTalks
-                    .Where(p => p.QuizzId == quizzId)
-                    .ToList();
-                List<String> listTalksId = new List<String>();
-                foreach (QuizzToTalk quizzToTalk in quizzesToTalk)
-                {
-                    listTalksId.Add(quizzToTalk.TalkId.ToString());
-                }
-                return listTalksId;
+                listTalksId.Add(quizzToTalk.TalkId.ToString());
             }
-            catch (ArgumentOutOfRangeException e)
-            {
-                Console.WriteLine("This quizz isn't linked to any talk");
-                return null;
-            }
+            return listTalksId;
         }
 
 
         public async Task<List<Talk>> getTalksByUserId(int id)
         {
             using TalkContext context = _talkContextFactory.Create();
-            try
-            {
-                var talks = await context.Talks.Where(p => p.OwnerId == id).ToListAsync();
-                return talks;
-            }
-            catch (ArgumentOutOfRangeException e)
-            {
-                return null;
-            }
+            var talks = await context.Talks.Where(p => p.OwnerId == id).ToListAsync();
+            return talks;
+
         }
     }
 }
