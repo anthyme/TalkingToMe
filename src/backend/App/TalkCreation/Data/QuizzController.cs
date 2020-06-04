@@ -73,6 +73,7 @@ namespace App.TalkCreation.Data
        public async Task<string> putTalksToQuizz([FromBody] dynamic jsonTTQ)
         {
             var parsedTtq = JArray.Parse(jsonTTQ.ToString());
+            Console.WriteLine(parsedTtq);
             _quizzService.changeTalksToQuizz(parsedTtq);
             return "{\"response\":\"QuizzToTalks modified\"}";
         }
@@ -87,7 +88,6 @@ namespace App.TalkCreation.Data
         {
             var parsedQuizz = JArray.Parse(quizz.ToString());
             string returnQuizz= _quizzService.AddNewQuizzToTalk(parsedQuizz);
-            Console.WriteLine(returnQuizz);
             return returnQuizz;
         }
 

@@ -85,6 +85,7 @@ namespace App.TalkCreation.Data.DataFetch
                 {
                     Id = quizz.Id,
                     Name = quizz.Name,
+                    OwnerId = quizz.OwnerId,
                 };
                 quizzesDto.Add(quizzDto);
             }
