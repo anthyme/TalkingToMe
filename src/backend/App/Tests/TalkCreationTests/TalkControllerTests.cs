@@ -41,27 +41,14 @@ namespace App.Tests.TalkCreationTests
         [Fact]
         public async void shouldCreateAndDeleteTalk()
         {
-            var tempJson = "[{\"description\":{\"description\":\"test\"},\"name\":{\"name\":\"talkToTest\"},\"ownerId\":{\"userIdRdx\":0}}]";
+            var tempJson = "[{\"description\":{},\"name\":{\"name\":\"talkToTest\"},\"ownerId\":{\"userIdRdx\":0}}]";
             var parsedTempJson= JArray.Parse(tempJson);
             int tempTalkId = _talksServicePost.AddNewTalk(parsedTempJson);
             var tempTalk = await _talksServiceFetch.getTalkAndQuizzes(tempTalkId);
             Assert.NotNull(tempTalk);
             await _talksServiceFetch.deleteTalk(tempTalkId);
-            await Assert.ThrowsAsync<Exception>(async() => await _talksServiceFetch.getTalkAndQuizzes(tempTalkId));
-        }
-
-        [Fact]
-        public async Task PassTalkId()
-        {
-            //act
-            var result = await _talksServiceFetch.getTalkAndQuizzes(1);
-            //assert
-            result.Should().BeEquivalentTo(new TalkAndQuizzesDTO
-            {
-                talkName = "Test",
-                talkUrl = null,
-            }, x => x.Excluding(x=> x.Quizzes).Excluding(x => x.idTalk));
-
+            tempTalk = await _talksServiceFetch.getTalkAndQuizzes(tempTalkId);
+            tempTalk.Should().BeNull();
         }
 
         [Fact]

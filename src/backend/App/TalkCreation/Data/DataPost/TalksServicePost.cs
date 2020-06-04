@@ -31,7 +31,7 @@ namespace App.TalkCreation.Data.DataPost
                 context.SaveChanges();
                 int talkId = newTalk.Id;
 
-                AddQuizzesToTalk(data[0].quizzesId.selectedQuizzes, talkId);
+                if (data[0].quizzesId !=null) AddQuizzesToTalk(data[0].quizzesId.selectedQuizzes, talkId);
                 return talkId;
         }
 
