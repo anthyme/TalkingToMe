@@ -9,6 +9,7 @@ using App.TalkAnswer.SaveTalkProgress;
 using App.TalkCreation.Context;
 using System;
 using App.TalkCreation.Models;
+using Newtonsoft.Json.Linq;
 
 namespace App.Tests.DataTests
 {
@@ -31,9 +32,27 @@ namespace App.Tests.DataTests
         [Fact]
         public async void CheckUserExistenceTest()
         {
-            string userExists = _userServiceFetch.CheckUserExistence(1);
-            string expectedResponse = "{\"response\":\"1\"}";
-            userExists.Should().BeEquivalentTo(expectedResponse);
+            dynamic userJArray = new JArray();
+            dynamic userObject = new JObject();
+
+            var externalId = new JObject();
+            externalId.Add("externalId", "1");
+            userObject.externalId = externalId;
+
+            var email = new JObject();
+            userObject.email = email;
+
+            var service = new JObject();
+            service.Add("service", "Google");
+            userObject.service = service;
+
+            var name = new JObject();
+            service.Add("name", "Google");
+            userObject.name = name;
+
+            userJArray.Add(userObject);
+            var result = _userServiceFetch.CheckUserExistence(userJArray);
+            Assert.Equal("{\"response\":\"" + 6 + "\"}", result);
         }
         
 
