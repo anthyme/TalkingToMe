@@ -39,9 +39,9 @@ namespace App.TalkCreation.Data
         public async Task<ActionResult<string>> CheckUserAndGetId([FromBody]dynamic userInfos)
         {
             var parsedInfos = JArray.Parse(userInfos.ToString());
+            Console.WriteLine(parsedInfos);
             string userId = _userServiceFetch.CheckUserExistence(parsedInfos);
             // End of test purpose //
-            Console.WriteLine(userId);
             return userId;
         }
     }
