@@ -112,6 +112,26 @@ namespace App.Tests.TalkCreationTests
             quizzesToTalks.Count().Should().Equals(1);
         }
 
+        [Fact]
+        public async Task ShouldChangeTalkUrl()
+        {
+            //Delete quizzToTalk link
+            var tempJson = "[{\"url\":\"Test\"}]";
+            var parsedTempJson = JArray.Parse(tempJson);
+            _talksServicePost.ChangeTalkUrl(parsedTempJson, 1);
+            var talkNQuizzes = await _talksServiceFetch.getTalkAndQuizzes(1);
+            talkNQuizzes.Should().BeEquivalentTo(
+            new TalkAndQuizzesDTO
+            {
+                idTalk = 1,
+                talkName = "Test",
+                talkUrl = "Test"
+            }, x => x.Excluding(x => x.Quizzes));
+            tempJson = "[{\"url\":\"NULL\"}]";
+            parsedTempJson = JArray.Parse(tempJson);
+            _talksServicePost.ChangeTalkUrl(parsedTempJson, 1);
+        }
+
         public void Dispose()
         {
             //delete talk id 1 dans la table

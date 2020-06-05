@@ -95,26 +95,22 @@ namespace App.TalkCreation.Data.DataPost
         public void ChangeTalkUrl(dynamic data, int id)
         {
             using TalkContext context = _talkContextFactory.Create();
-            try
+            string talkurl = data[0].url;
+            Talk changeTalk = context.Talks.FirstOrDefault(item => item.Id == id);
+            string groupId = changeTalk.Url;
+            changeTalk.Url = (talkurl.Equals("NULL")) ? changeTalk.Url = null : changeTalk.Url = talkurl;
+            context.Talks.Update(changeTalk);
+            var closingSession = context.Sessions.FirstOrDefault(s => s.groupId == groupId);
+            if (closingSession != null)
             {
-                string talkurl = data[0].url;
-                Talk changeTalk = context.Talks.FirstOrDefault(item => item.Id == id);
-                string groupId = changeTalk.Url;
-                changeTalk.Url = (talkurl.Equals("NULL")) ? changeTalk.Url = null : changeTalk.Url = talkurl;
-                context.Talks.Update(changeTalk);
-                var closingSession = context.Sessions.FirstOrDefault(s => s.groupId == groupId);
                 closingSession.EndDate = DateTime.Now.ToString();
                 context.Sessions.Update(closingSession);
-                context.SaveChanges();
                 if (talkurl.Equals("NULL"))
                 {
                     _talkSessionRepo.EndSession(groupId);
                 }
             }
-            catch (ArgumentOutOfRangeException e)
-            {
-                Console.WriteLine("error modifiying talk url");
-            }
+            context.SaveChanges();
         }
 
         public async Task<string> deleteTalk(int id)
