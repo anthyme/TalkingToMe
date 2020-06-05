@@ -3,6 +3,7 @@ using App.TalkCreation.Context;
 using App.TalkCreation.Data;
 using App.TalkCreation.Data.DataFetch;
 using App.TalkCreation.Data.DataPost;
+using App.TalkCreation.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
@@ -14,6 +15,7 @@ namespace App.Tests.Infrastructure
         public QuizzServiceFetch QuizzServiceFetch { get; private set; }
         public QuizzServicePost QuizzServicePost { get; private set; }
         public SessionServiceFetch SessionServiceFetch { get; private set; }
+        public SessionServicePost SessionServicePost { get; private set; }
         public TalksServicePost TalksServicePost { get; private set; }
         public TalksServiceFetch TalksServiceFetch { get; set; }
         public TalkContextFactory TalkContextFactory { get; set; }
@@ -35,6 +37,7 @@ namespace App.Tests.Infrastructure
             TalkSessionRepo = talkSessionRepo;
             QuizzServiceFetch = new QuizzServiceFetch(talkContextFactoryTest);
             SessionServiceFetch = new SessionServiceFetch(talkContextFactoryTest, sessionMapper);
+            SessionServicePost = new SessionServicePost(talkContextFactoryTest);
             TalksServicePost = new TalksServicePost(talkContextFactoryTest, talkSessionRepo);
             TalksServiceFetch = new TalksServiceFetch(talkContextFactoryTest);
             UserServicePost = new UserServicePost(talkContextFactoryTest, talkSessionRepo);

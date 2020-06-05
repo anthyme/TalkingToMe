@@ -19,19 +19,11 @@ namespace App.TalkCreation.Data.DataPost
         public async Task<string> DeleteSession(int id)
         {
             using TalkContext context = _talkContextFactory.Create();
-            try
-            {
-                var session = await context.Sessions.FindAsync(id);
-                context.SessionToQuizzes.RemoveRange(context.SessionToQuizzes.Where(s => s.SessionId == id));
-                context.Sessions.Remove(session);
-                await context.SaveChangesAsync();
-                return "{\"response\":\"Remove sucessful\"}";
-            }
-            catch (ArgumentOutOfRangeException e)
-            {
-                return "{\"response\":\"Remove failed\"}";
-            }
-
+            var session = await context.Sessions.FindAsync(id);
+            context.SessionToQuizzes.RemoveRange(context.SessionToQuizzes.Where(s => s.SessionId == id));
+            context.Sessions.Remove(session);
+            await context.SaveChangesAsync();
+            return "{\"response\":\"Remove sucessful\"}";
         }
     }
 }
