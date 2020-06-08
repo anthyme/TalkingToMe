@@ -2,4 +2,8 @@
 # Ce fichier .gitignore a été automatiquement créé par Microsoft(R) Visual Studio.
 ################################################################################
 
+Tests front
 /src/frontend/talkingtomefront/cypress/integration/examples
+
+#Tests back
+#/src/backend/App/Tests

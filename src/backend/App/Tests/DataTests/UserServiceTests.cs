@@ -36,7 +36,7 @@ namespace App.Tests.DataTests
             dynamic userObject = new JObject();
 
             var externalId = new JObject();
-            externalId.Add("externalId", "1");
+            externalId.Add("externalId", "0");
             userObject.externalId = externalId;
 
             var email = new JObject();
@@ -52,7 +52,7 @@ namespace App.Tests.DataTests
 
             userJArray.Add(userObject);
             var result = _userServiceFetch.CheckUserExistence(userJArray);
-            Assert.Equal("{\"response\":\"" + 6 + "\"}", result);
+            Assert.Equal("{\"response\":\"" + 1 + "\"}", result);
         }
         
 
