@@ -5,5 +5,5 @@
 Tests front
 /src/frontend/talkingtomefront/cypress/integration/examples
 
-Tests back
-/src/backend/App/Tests
+#Tests back
+#/src/backend/App/Tests

@@ -1,0 +1,37 @@
+﻿using App.TalkCreation.Context;
+using App.TalkCreation.Data;
+using App.TalkCreation.Data.DataFetch;
+using App.TalkCreation.Models;
+using App.TokenValidation;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
+using Xunit;
+
+namespace App.Tests.TokenValidationTests
+{
+    public class TokenValidationTest
+    {
+
+        [Fact]
+        public async void ValidateToken()
+        {
+            string tokenId = "eyJhbGciOiJSUzI1NiIsImtpZCI6Ijc0YmQ4NmZjNjFlNGM2Y2I0NTAxMjZmZjRlMzhiMDY5YjhmOGYzNWMiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJhY2NvdW50cy5nb29nbGUuY29tIiwiYXpwIjoiNDAxNzMwNjA2MTY0LXA3NzRxOG9zaXB0bmNiNG1mbDhjZ2ZzMmdyNmxyczkyLmFwcHMuZ29vZ2xldXNlcmNvbnRlbnQuY29tIiwiYXVkIjoiNDAxNzMwNjA2MTY0LXA3NzRxOG9zaXB0bmNiNG1mbDhjZ2ZzMmdyNmxyczkyLmFwcHMuZ29vZ2xldXNlcmNvbnRlbnQuY29tIiwic3ViIjoiMTEzMTcwODU0NjYzMjI5NTM5NDkyIiwiZW1haWwiOiJ0aXNzb3RtQGhvdG1haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImF0X2hhc2giOiJjNURCOWo4ZGljc3BBTnRWMm5UeWZRIiwibmFtZSI6InN2ZWVuIG9ha2Vuc2hpZWxkIiwicGljdHVyZSI6Imh0dHBzOi8vbGg1Lmdvb2dsZXVzZXJjb250ZW50LmNvbS8tUVNRQlljVzRaMzAvQUFBQUFBQUFBQUkvQUFBQUFBQUFBQUEvQUFLV0pKTXpTOWUyZ0kwYnlUdk9DUnptY0I0UFNaSVl4US9zOTYtYy9waG90by5qcGciLCJnaXZlbl9uYW1lIjoic3ZlZW4iLCJmYW1pbHlfbmFtZSI6Im9ha2Vuc2hpZWxkIiwibG9jYWxlIjoiZW4iLCJpYXQiOjE1ODg2ODY5MzksImV4cCI6MTU4ODY5MDUzOSwianRpIjoiYjZhNTliM2M2OTcwYTdmYjc3ZjZiZjM3NmZhOWU5MWQ5MTIxYmMxOSJ9.Yk3TWMubqRd_csiSwGJ2sp6V-DgvcKnqftUynFYA8RkIwezNmKokW2KedPZlmR1uLqYpzWmlW3SaR1Jero5ltfDoNBr-U5i7F-c4SS1NLYOPu95gRTsrhyoMnUNK9pupzTNuzWxO0VOSN9fk_Gwlo2KZwBf5MmL56YYy1aTLk4Kk2f8zG1RAO0nBiFpMqhhdDBnlVf3ZqC5rzjOMuOJEz3GIKeHqt3pVzK1SgxKxtSC30W8jJNUZtrMff8MfCPtQA7U1nqVQq8KqT88n2lexDwEjy-i8jAq86-KHx02V85aYHC8ScxSjQJNZ57WJSdwdXv2htcn4YvsIx9u0k6Iatw";
+            JwtTokenValidation _tokenValidation = new JwtTokenValidation();
+            Assert.True(await _tokenValidation.ValidateToken(tokenId));
+        }
+
+        [Fact]
+        public async void InvalidateToken()
+        {
+            string tokenId = "eyJhbGciOiJSUzI1NiIsImtpZCI6Ij0YmQ4NmZjNjFlNGM2Y2I0NTAxMjZmZRlMzhiMDY5YjhmOGYzNWMiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJhY2NvdW50cy5nb29nbGUuY29tIiwiYXpwIjoiNDAxNzMwNjA2MTY0LXA3NzRxOG9zaXB0bmNiNG1mbDhjZ2ZzMmdyNmxyczkyLmFwcHMuZ29vZ2xldXNlcmNvbnRlbnQuY29tIiwiYXVkIjoiNDAxNzMwNjA2MTY0LXA3NzRxOG9zaXB0bmNiNG1mbDhjZ2ZzMmdyNmxyczkyLmFwcHMuZ29vZ2xldXNlcmNvbnRlbnQuY29tIiwic3ViIjoiMTEzMTcwODU0NjYzMjI5NTM5NDkyIiwiZW1haWwiOiJ0aXNzb3RtQGhvdG1haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImF0X2hhc2giOiJjNURCOWo4ZGljc3BBTnRWMm5UeWZRIiwibmFtZSI6InN2ZWVuIG9ha2Vuc2hpZWxkIiwicGljdHVyZSI6Imh0dHBzOi8vbGg1Lmdvb2dsZXVzZXJjb250ZW50LmNvbS8tUVNRQlljVzRaMzAvQUFBQUFBQUFBQUkvQUFBQUFBQUFBQUEvQUFLV0pKTXpTOWUyZ0kwYnlUdk9DUnptY0I0UFNaSVl4US9zOTYtYy9waG90by5qcGciLCJnaXZlbl9uYW1lIjoic3ZlZW4iLCJmYW1pbHlfbmFtZSI6Im9ha2Vuc2hpZWxkIiwibG9jYWxlIjoiZW4iLCJpYXQiOjE1ODg2ODY5MzksImV4cCI6MTU4ODY5MDUzOSwianRpIjoiYjZhNTliM2M2OTcwYTdmYjc3ZjZiZjM3NmZhOWU5MWQ5MTIxYmMxOSJ9.Yk3TWMubqRd_csiSwGJ2sp6V-DgvcKnqftUynFYA8RkIwezNmKokW2KedPZlmR1uLqYpzWmlW3SaR1Jero5ltfDoNBr-U5i7F-c4SS1NLYOPu95gRTsrhyoMnUNK9pupzTNuzWxO0VOSN9fk_Gwlo2KZwBf5MmL56YYy1aTLk4Kk2f8zG1RAO0nBiFpMqhhdDBnlVf3ZqC5rzjOMuOJEz3GIKeHqt3pVzK1SgxKxtSC30W8jJNUZtrMff8MfCPtQA7U1nqVQq8KqT88n2lexDwEjy-i8jAq86-KHx02V85aYHC8ScxSjQJNZ57WJSdwdXv2htcn4YvsIx9u0k6Iatw";
+            JwtTokenValidation _tokenValidation = new JwtTokenValidation();
+            Assert.False(await _tokenValidation.ValidateToken(tokenId));
+        }
+
+    }
+}
