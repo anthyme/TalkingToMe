@@ -12,6 +12,14 @@
     <EmbeddedResource Remove="Logger\**" />
     <None Remove="Logger\**" />
   </ItemGroup>
+  
+
+  <ItemGroup>
+    <Compile Remove="Migrations\20200608120458_SeedValues.cs" />
+    <Compile Remove="Migrations\20200608120458_SeedValues.Designer.cs" />
+    <Compile Remove="Migrations\20200608120654_SeedValues.cs" />
+    <Compile Remove="Migrations\20200608120654_SeedValues.Designer.cs" />
+  </ItemGroup>
 
   <ItemGroup>
     
