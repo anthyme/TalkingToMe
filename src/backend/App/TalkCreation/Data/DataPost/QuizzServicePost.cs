@@ -20,7 +20,7 @@ namespace App.TalkCreation.Data.DataPost
         }
 
         //TODO - Change syntax for fetch
-        public string AddNewQuizzToTalk(dynamic data)
+        public int AddNewQuizzToTalk(dynamic data)
         {
             using TalkContext context = _talkContextFactory.Create();
             try
@@ -44,12 +44,12 @@ namespace App.TalkCreation.Data.DataPost
                         createNewQuestion(question, quizzId);
                     }
                 }
-                return "{\"response\":\"New Quizz Saved\"}";
+                return quizzId;
             }
             catch (ArgumentOutOfRangeException e)
             {
                 _logger.LogError("The Quizz did get added correctly check Json format", e);
-                return "{\"response\":\"New Quizz failed to save\"}";
+                return -1;
             }
         }
         public string updateQuizz(dynamic data)

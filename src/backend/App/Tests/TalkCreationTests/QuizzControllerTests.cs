@@ -109,8 +109,12 @@ namespace App.Tests.TalkCreationTests
             quizzJArray.Add(questionObject);
             quizzJArray.Add(generalInfoObject);
    
-            string results = _quizzServicePost.AddNewQuizzToTalk(quizzJArray);
-            results.Should().BeEquivalentTo("{\"response\":\"New Quizz Saved\"}");
+            int results = _quizzServicePost.AddNewQuizzToTalk(quizzJArray);
+            results.Should().NotBe(-1);
+            var context = _talkContextFactory.Create();
+            var quizz = context.Quizzes.Find(results);
+            context.Quizzes.Remove(quizz);
+            context.SaveChanges();
         }
 
         [Fact]
