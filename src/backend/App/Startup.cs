@@ -27,7 +27,6 @@ using App.TokenValidation;
 using System;
 using App.TalkAnswer.SaveTalkProgress;
 using App.TalkAnswer.Services;
-using Microsoft.ApplicationInsights.AspNetCore.Extensions;
 
 namespace App
 {
