@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace App.Migrations
 {
     [DbContext(typeof(TalkContext))]
-    [Migration("20200527131953_ajoutTalkIdInSessions")]
-    partial class ajoutTalkIdInSessions
+    [Migration("20200608130342_SeedValuesAndBaseDb")]
+    partial class SeedValuesAndBaseDb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -19,80 +19,6 @@ namespace App.Migrations
                 .HasAnnotation("ProductVersion", "3.1.3")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-            modelBuilder.Entity("App.TalkAnswer.Models.Session", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("EndDate")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("StartDate")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("TalkId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("groupId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Sessions");
-                });
-
-            modelBuilder.Entity("App.TalkAnswer.Models.SessionToQuizz", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("QuizzId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("SessionId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("QuizzId");
-
-                    b.HasIndex("SessionId");
-
-                    b.ToTable("SessionToQuizzes");
-                });
-
-            modelBuilder.Entity("App.TalkAnswer.Models.UserAnswer", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("Count")
-                        .HasColumnType("int");
-
-                    b.Property<int>("QuestionId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Response")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("SessionId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("QuestionId");
-
-                    b.HasIndex("SessionId");
-
-                    b.ToTable("UserAnswers");
-                });
 
             modelBuilder.Entity("App.TalkCreation.Models.Answer", b =>
                 {
@@ -112,6 +38,20 @@ namespace App.Migrations
                     b.HasIndex("QuestionId");
 
                     b.ToTable("Answers");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            QuestionId = 1,
+                            Response = "Test"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            QuestionId = 1,
+                            Response = "Test2"
+                        });
                 });
 
             modelBuilder.Entity("App.TalkCreation.Models.Question", b =>
@@ -138,6 +78,16 @@ namespace App.Migrations
                     b.HasIndex("QuizzId");
 
                     b.ToTable("Questions");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CorrectAn = "Test",
+                            Quest = "Test",
+                            QuizzId = 1,
+                            Type = "UCQ"
+                        });
                 });
 
             modelBuilder.Entity("App.TalkCreation.Models.Quizz", b =>
@@ -156,6 +106,14 @@ namespace App.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Quizz");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "Test",
+                            OwnerId = 1
+                        });
                 });
 
             modelBuilder.Entity("App.TalkCreation.Models.QuizzToTalk", b =>
@@ -178,6 +136,78 @@ namespace App.Migrations
                     b.HasIndex("TalkId");
 
                     b.ToTable("QuizzToTalks");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            QuizzId = 1,
+                            TalkId = 1
+                        });
+                });
+
+            modelBuilder.Entity("App.TalkCreation.Models.Session", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("EndDate")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("StartDate")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("TalkId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("groupId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Sessions");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            EndDate = "01/01/2020 01:30:00",
+                            StartDate = "01/01/2020 01:00:00",
+                            TalkId = 1,
+                            groupId = "1"
+                        });
+                });
+
+            modelBuilder.Entity("App.TalkCreation.Models.SessionToQuizz", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("QuizzId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SessionId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("QuizzId");
+
+                    b.HasIndex("SessionId");
+
+                    b.ToTable("SessionToQuizzes");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            QuizzId = 1,
+                            SessionId = 1
+                        });
                 });
 
             modelBuilder.Entity("App.TalkCreation.Models.Talk", b =>
@@ -202,6 +232,15 @@ namespace App.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Talks");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Description = "Test",
+                            Name = "Test",
+                            OwnerId = 1
+                        });
                 });
 
             modelBuilder.Entity("App.TalkCreation.Models.User", b =>
@@ -229,6 +268,53 @@ namespace App.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            ExternalId = "0",
+                            Service = "Google",
+                            UserId = 1
+                        });
+                });
+
+            modelBuilder.Entity("App.TalkCreation.Models.UserAnswer", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("Count")
+                        .HasColumnType("int");
+
+                    b.Property<int>("QuestionId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Response")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("SessionId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("QuestionId");
+
+                    b.HasIndex("SessionId");
+
+                    b.ToTable("UserAnswers");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Count = 1,
+                            QuestionId = 1,
+                            Response = "Test",
+                            SessionId = 1
+                        });
                 });
 
             modelBuilder.Entity("App.TalkCreation.Models.UserQuestion", b =>
@@ -237,6 +323,9 @@ namespace App.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Date")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Question")
                         .HasColumnType("nvarchar(max)");
@@ -255,36 +344,16 @@ namespace App.Migrations
                     b.HasIndex("SessionId");
 
                     b.ToTable("UserQuestions");
-                });
 
-            modelBuilder.Entity("App.TalkAnswer.Models.SessionToQuizz", b =>
-                {
-                    b.HasOne("App.TalkCreation.Models.Quizz", "Quizz")
-                        .WithMany("Sessions")
-                        .HasForeignKey("QuizzId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("App.TalkAnswer.Models.Session", "Session")
-                        .WithMany("Quizzes")
-                        .HasForeignKey("SessionId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("App.TalkAnswer.Models.UserAnswer", b =>
-                {
-                    b.HasOne("App.TalkCreation.Models.Question", "Question")
-                        .WithMany("UserAnswers")
-                        .HasForeignKey("QuestionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("App.TalkAnswer.Models.Session", "Session")
-                        .WithMany("UserAnswers")
-                        .HasForeignKey("SessionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Question = "Test",
+                            SessionId = 1,
+                            Upvotes = 1,
+                            Username = "Anonymous"
+                        });
                 });
 
             modelBuilder.Entity("App.TalkCreation.Models.Answer", b =>
@@ -320,9 +389,39 @@ namespace App.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("App.TalkCreation.Models.SessionToQuizz", b =>
+                {
+                    b.HasOne("App.TalkCreation.Models.Quizz", "Quizz")
+                        .WithMany("Sessions")
+                        .HasForeignKey("QuizzId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("App.TalkCreation.Models.Session", "Session")
+                        .WithMany("Quizzes")
+                        .HasForeignKey("SessionId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("App.TalkCreation.Models.UserAnswer", b =>
+                {
+                    b.HasOne("App.TalkCreation.Models.Question", "Question")
+                        .WithMany("UserAnswers")
+                        .HasForeignKey("QuestionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("App.TalkCreation.Models.Session", "Session")
+                        .WithMany("UserAnswers")
+                        .HasForeignKey("SessionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("App.TalkCreation.Models.UserQuestion", b =>
                 {
-                    b.HasOne("App.TalkAnswer.Models.Session", "Session")
+                    b.HasOne("App.TalkCreation.Models.Session", "Session")
                         .WithMany("UserQuestions")
                         .HasForeignKey("SessionId")
                         .OnDelete(DeleteBehavior.Cascade)
