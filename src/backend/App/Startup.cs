@@ -95,12 +95,12 @@ namespace App
 
             services.AddSignalR();
 
-            services.AddApplicationInsightsTelemetry(
+/*            services.AddApplicationInsightsTelemetry(
                    new ApplicationInsightsServiceOptions
                    {
                        RequestCollectionOptions = { TrackExceptions = true },
                        EnableRequestTrackingTelemetryModule = true,
-                   });
+                   });*/
 
             services.AddControllersWithViews()
             .AddNewtonsoftJson(options =>
