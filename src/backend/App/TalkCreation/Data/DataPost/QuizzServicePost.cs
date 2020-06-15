@@ -150,15 +150,18 @@ namespace App.TalkCreation.Data.DataPost
             context.Questions.Add(addQuestion);
             context.SaveChanges();
             int questionId = addQuestion.Id;
-            foreach (string answerString in question.answers.answers)
+            if (!addQuestion.Type.Equals("Text"))
             {
-                Answer answer = new Answer
+                foreach (string answerString in question.answers.answers)
                 {
-                    QuestionId = questionId,
-                    Response = answerString
-                };
-                context.Answers.Add(answer);
-                context.SaveChanges();
+                    Answer answer = new Answer
+                    {
+                        QuestionId = questionId,
+                        Response = answerString
+                    };
+                    context.Answers.Add(answer);
+                    context.SaveChanges();
+                }
             }
         }
 
