@@ -140,6 +140,8 @@ const EditQuizzPopUp: React.FC<IProps> = (props) => {
     let newQuestionId = questionsID[questionsID.length - 1] + 1
     let newTable = [...questionsID, newQuestionId]
     setQuestionsId(newTable)
+    await rootDispatcher.setAnswerRdx("")
+    await rootDispatcher.setAnswerIdRdx(0)
     await rootDispatcher.setQuestionIdRdx(newQuestionId)
   }
 
