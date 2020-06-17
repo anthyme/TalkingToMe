@@ -10,6 +10,8 @@ import {
   Toolbar,
   Dialog,
   Box,
+  Grid,
+  IconButton,
 } from '@material-ui/core'
 import { loadTalkNQuizzes } from '../dataTransfers/Fetchs/DataTalkFetch'
 import { loadQuizzContent } from '../dataTransfers/Fetchs/DataQuestionFetch'
@@ -19,6 +21,8 @@ import QRCode from 'qrcode.react'
 import ChatInterface from '../chatBox/ChatInterface'
 import { InitialState } from '../store/reducers/MainReducer'
 import { useSelector } from 'react-redux'
+import useSound from 'use-sound'
+import NotificationImportantIcon from '@material-ui/icons/NotificationImportant'
 import { siteUrl, urlHub } from '../constants'
 import {
   HubConnectionBuilder,
@@ -42,6 +46,7 @@ const TalkInterface = () => {
   const [listQuizzes, setListQuizzes] = useState([{}])
   const [talkName, setTalkName] = useState('')
   const [tab, setTab] = useState('Talk')
+  const [bell, setBell] =useState(false);
   const [username, setUsername] = useState("Talker")
   const [likedQuestions, setLikedQuestions] = useState<number[]>([])
   const [showQuestion, setShowQuestion] = useState(false)
@@ -139,12 +144,19 @@ const TalkInterface = () => {
     setTab('Chat')
   }
 
+  const handleBellChange= async ()=>{
+    if (connection) {
+      await connection.invoke('CancelBell', groupId)}
+    setBell(false);
+  }
   const stopQuizz = async () => {
     if (connection) {
       await connection.invoke('StopQuizz', groupId, quizzId)
       setQuizzRunning(false)
     }
   }
+
+  const [playActive] = useSound('../sounds/pop-down.mp3', { volume: 0.25 });
 
   useEffect(() => {
     if (!isEmpty(results)) {
@@ -180,6 +192,10 @@ const TalkInterface = () => {
     })
     connection.on('ShowResults', function (responseData: any) {
       setResults(responseData.listQuestions)
+    })
+    connection.on('CannotHear', function (responseData: any) {
+      playActive();
+      setBell(true)
     })
     setConnection(connection)
     loadInit()
@@ -296,12 +312,26 @@ const TalkInterface = () => {
                 </Button>
               )}
             </div>
+            <Grid container justify="flex-end">
+              {bell ? (
+                <IconButton
+                  aria-label="edit"
+                  onClick={handleBellChange}
+                  className="CannotHear"
+                >
+                  <NotificationImportantIcon color="primary" fontSize="large" />{' '}
+                </IconButton>
+              ) : (
+                <NotificationImportantIcon color="disabled" fontSize="large" />
+              )}
+            </Grid>
             <div>
               <a
                 href={`TalkAnswer?talkId=${groupId}&ownerId=${userIdRdx}&talkName=${talkName}`}
               >
                 Link to a user page
               </a>
+              
               <div className={classes.smallQR} onClick={() => setBigQR(true)}>
                 <QRCode value={qrString ? qrString : ''} />
               </div>

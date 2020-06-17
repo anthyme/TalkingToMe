@@ -112,5 +112,15 @@ namespace App.TalkAnswer.Hubs
             };
             await Clients.Group(groupId).SendAsync("ConfirmChangedUpvote", upvotesDTO);
         }
+
+        public async Task CannotHear(string groupId)
+        {
+            await Clients.Group(groupId).SendAsync("CannotHear");
+        }
+
+        public async Task CancelBell(string groupId)
+        {
+            await Clients.Group(groupId).SendAsync("CancelBell");
+        }
     }
 }
