@@ -12,6 +12,8 @@ interface IProps {
   questionId: number;
   answerIndex: number;
   answer: any;
+  radioChange: any;
+  value?: string;
 }
 interface StateProps {
   currentAnswerIdRdx: number;
@@ -20,6 +22,7 @@ interface StateProps {
 
 const Answer: React.FC<IProps> = (props) => {
   const [value, setValue] = useState(props.answer);
+  const radioChange = props.radioChange;
   const { questionIdRdx } = useSelector<InitialState, StateProps>(
     (state: InitialState) => {
       return {
@@ -50,6 +53,14 @@ const Answer: React.FC<IProps> = (props) => {
     rootDispatcher.setAnswerRdx(event.target.value);
   };
 
+  const cancelRadioSelect = () => {
+    if(props.value === value){
+      console.log(value);
+      console.log(props.value);
+      setValue("");
+    }
+  };
+
   return (
     <React.Fragment>
       <Grid item>
@@ -58,6 +69,7 @@ const Answer: React.FC<IProps> = (props) => {
           value={value}
           control={<Radio />}
           label=""
+          onClick={cancelRadioSelect}
         />
         <TextField
           placeholder="Answer"

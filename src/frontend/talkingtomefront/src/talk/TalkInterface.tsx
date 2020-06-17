@@ -322,7 +322,7 @@ const TalkInterface = () => {
             </div>
           </div>
           <div className={classes.quizzNQuest}>
-            {showQuestion && <h3 className={classes.title}>Quizz preview</h3>}
+            {showQuestion && <h3 className={classes.title}>Quizz {showResults?"results":"preview"}</h3>}
             {showQuestion &&
               questionsData.map(
                 (question: any) =>
@@ -347,7 +347,7 @@ const TalkInterface = () => {
                             addAnswer={() => {}} //Prop only useful for users but typescript needs us to declare it here too
                           />
                         </Box>
-                        <Box width="40%" height="20%">
+                        <Box marginLeft="10px" width="40%" height="20%">
                           {showResults ? (
                             <GraphInterface
                               results={results}

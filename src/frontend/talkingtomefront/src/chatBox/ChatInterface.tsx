@@ -64,6 +64,7 @@ const ChatInterface: React.FC<IProps> = (props) => {
   useEffect(() => {
     connection.invoke('GetCurrentSessionUserQuestions', groupId)
     connection.on('AddNewQuestion', async (result: any) => {
+      console.log(result);
       if (messages[0] === {}) {
         await setMessages([result])
       } else {

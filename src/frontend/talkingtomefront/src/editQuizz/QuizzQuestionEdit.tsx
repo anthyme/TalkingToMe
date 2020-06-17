@@ -78,7 +78,14 @@ const QuizzQuestionEdit: React.FC<IProps> = (props) => {
   };
 
   const handleRadioChange = (event: any) => {
+    console.log(event.target.checked);
     setValue(event.target.value);
+    rootDispatcher.setQuestionIdRdx(props.questionId);
+  };
+
+  const radioChange = () => {
+    console.log("good");
+    setValue(undefined);
     rootDispatcher.setQuestionIdRdx(props.questionId);
   };
 
@@ -86,6 +93,8 @@ const QuizzQuestionEdit: React.FC<IProps> = (props) => {
     setQuestionValue(event.target.value);
     rootDispatcher.setQuestionIdRdx(props.questionId);
   };
+
+  
 
   const addNewAnswer = () => {
     let newQuestionId;
@@ -239,12 +248,14 @@ const QuizzQuestionEdit: React.FC<IProps> = (props) => {
                     onChange={handleRadioChange}
                   >
                     <div className="answersPanel">
-                      {answersId.map((qId) => (
+                      {answersId.map((anId) => (
                         <Answer
-                          key={qId}
+                          key={anId}
                           questionId={props.questionId}
-                          answer={answers[answersId.indexOf(qId)]}
-                          answerIndex={qId}
+                          answer={answers[answersId.indexOf(anId)]}
+                          answerIndex={anId}
+                          value ={value}
+                          radioChange = {radioChange}
                         />
                       ))}
                     </div>

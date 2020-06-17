@@ -6,6 +6,7 @@ import CardContent from '@material-ui/core/CardContent'
 import Button from '@material-ui/core/Button'
 import Typography from '@material-ui/core/Typography'
 import { Paper, List } from '@material-ui/core'
+import AnswerText from './AnswerText'
 
 const useStyles = makeStyles({
   root: {
@@ -41,17 +42,11 @@ const TextGraph: React.FC<IProps> = (props) => {
       <Typography variant="h5" component="h2">
                 {props.quest}
               </Typography>
-      <Paper style={{maxHeight: 200, overflow: 'auto'}}>
+      <Paper style={{maxHeight: 250, overflow: 'auto'}}>
       <List>
-        {results.map((answer: any) => { return(
-          <Card className={classes.root} >
-               <CardContent>
-              <Typography className={classes.pos} color="textSecondary">
-                {answer.answer}
-              </Typography>
-            </CardContent>
-          </Card>
-        );})}
+        {results.map((answer: any) => {return(
+          <AnswerText answer={answer} question={quest}/>);}
+        )}
              </List>
         </Paper>
       </CardContent>
