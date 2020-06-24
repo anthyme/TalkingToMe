@@ -2,10 +2,12 @@
 using App.TalkCreation.Context;
 using App.TalkCreation.Data.DataFetch;
 using App.TalkCreation.Data.DataPost;
+using App.TalkCreation.Models;
 using App.TokenValidation;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Primitives;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,6 +40,21 @@ namespace App.TalkCreation.Data
         {
             List<SessionHistoryDTO> sessions = await _sessionServiceFetch.returnSessionsByTalkId(talkId);
             return sessions;
+        }
+
+        [HttpGet("SessionById/{sessionId}")]
+        public async Task<SessionQuizzNChatDto> getSessionAndChatById(int sessionId)
+        {
+            var header = Request.Headers;
+            if (header.ContainsKey("UserId"))
+            {
+                StringValues userId;
+                header.TryGetValue("UserId", out userId);
+
+                var sessionQuizzNChat = await _sessionServiceFetch.returnSessionAndChatById(sessionId, userId.ToString());
+                return sessionQuizzNChat;
+            }
+            return null;
         }
 
         [HttpDelete("{id}")]

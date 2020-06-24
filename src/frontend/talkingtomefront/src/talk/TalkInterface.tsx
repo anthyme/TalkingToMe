@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react'
-import Button from '@material-ui/core/Button'
-import Select from '@material-ui/core/Select'
-import MenuItem from '@material-ui/core/MenuItem'
-import { makeStyles } from '@material-ui/core/styles'
+import React, { useState, useEffect } from 'react';
+import Button from '@material-ui/core/Button';
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
+import { makeStyles } from '@material-ui/core/styles';
 import {
   Typography,
   CssBaseline,
@@ -10,180 +10,180 @@ import {
   Toolbar,
   Dialog,
   Box,
-} from '@material-ui/core'
-import { loadTalkNQuizzes } from '../dataTransfers/Fetchs/DataTalkFetch'
-import { loadQuizzContent } from '../dataTransfers/Fetchs/DataQuestionFetch'
-import QuestionInterface from './questionsPreview/QuestionInterface'
-import { useHistory } from 'react-router-dom'
-import QRCode from 'qrcode.react'
-import ChatInterface from '../chatBox/ChatInterface'
-import { InitialState } from '../store/reducers/MainReducer'
-import { useSelector } from 'react-redux'
-import { siteUrl, urlHub } from '../constants'
+} from '@material-ui/core';
+import { loadTalkNQuizzes } from '../dataTransfers/Fetchs/DataTalkFetch';
+import { loadQuizzContent } from '../dataTransfers/Fetchs/DataQuestionFetch';
+import QuestionInterface from './questionsPreview/QuestionInterface';
+import { useHistory } from 'react-router-dom';
+import QRCode from 'qrcode.react';
+import ChatInterface from '../chatBox/ChatInterface';
+import { InitialState } from '../store/reducers/MainReducer';
+import { useSelector } from 'react-redux';
+import { siteUrl, urlHub } from '../constants';
 import {
   HubConnectionBuilder,
   HttpTransportType,
   HubConnection,
-} from '@microsoft/signalr'
-import GraphInterface from '../graphs/GraphInterface'
-import { isEmpty } from 'lodash'
-import { putTalk } from '../dataTransfers/Posts/DataTalkPost'
+} from '@microsoft/signalr';
+import GraphInterface from '../graphs/GraphInterface';
+import { isEmpty } from 'lodash';
+import { putTalk } from '../dataTransfers/Posts/DataTalkPost';
 
 interface StateProps {
-  userIdRdx: string
-  tokenIdRdx: string
+  userIdRdx: string;
+  tokenIdRdx: string;
 }
 
 const TalkInterface = () => {
-  const url = new URL(window.location.href)
-  const [quizzId, setQuizzId] = useState('0')
-  const [results, setResults] = useState(Object)
-  const [showResults, setShowResults] = useState(false)
-  const [listQuizzes, setListQuizzes] = useState([{}])
-  const [talkName, setTalkName] = useState('')
-  const [tab, setTab] = useState('Talk')
-  const [username, setUsername] = useState("Talker")
-  const [likedQuestions, setLikedQuestions] = useState<number[]>([])
-  const [showQuestion, setShowQuestion] = useState(false)
-  const [connection, setConnection] = useState<HubConnection>()
-  const [questionsData, setQuestionsData] = useState([{}])
-  const [groupId, setGroupId] = useState(url.searchParams.get('groupId'))
-  const [quizzRunning, setQuizzRunning] = useState(false)
-  const [bigQR, setBigQR] = useState(false)
+  const url = new URL(window.location.href);
+  const [quizzId, setQuizzId] = useState('0');
+  const [results, setResults] = useState(Object);
+  const [showResults, setShowResults] = useState(false);
+  const [listQuizzes, setListQuizzes] = useState([{}]);
+  const [talkName, setTalkName] = useState('');
+  const [tab, setTab] = useState('Talk');
+  const [username, setUsername] = useState('Talker');
+  const [likedQuestions, setLikedQuestions] = useState<number[]>([]);
+  const [showQuestion, setShowQuestion] = useState(false);
+  const [connection, setConnection] = useState<HubConnection>();
+  const [questionsData, setQuestionsData] = useState([{}]);
+  const [groupId, setGroupId] = useState(url.searchParams.get('groupId'));
+  const [quizzRunning, setQuizzRunning] = useState(false);
+  const [bigQR, setBigQR] = useState(false);
   const { userIdRdx, tokenIdRdx } = useSelector<InitialState, StateProps>(
     (state: InitialState) => {
       return {
         userIdRdx: state.userIdRdx,
         tokenIdRdx: state.tokenIdRdx,
-      }
+      };
     },
-  )
+  );
   const qrString =
-    groupId && `${siteUrl}TalkAnswer?talkId=${groupId}&ownerId=${userIdRdx}`
+    groupId && `${siteUrl}TalkAnswer?talkId=${groupId}&ownerId=${userIdRdx}`;
 
-  const TalkId: string | null = url.searchParams.get('talkId')
-  const history = useHistory()
+  const TalkId: string | null = url.searchParams.get('talkId');
+  const history = useHistory();
   window.onbeforeunload = function () {
-    connection?.stop()
-  }
+    connection?.stop();
+  };
   const changeLikedQuestions = (upvoted: boolean, questionId: number) => {
     if (upvoted === true) {
-      let newLikedQuestions = [...likedQuestions, questionId]
-      setLikedQuestions(newLikedQuestions)
+      let newLikedQuestions = [...likedQuestions, questionId];
+      setLikedQuestions(newLikedQuestions);
     } else {
-      let newLikedQuestions = likedQuestions
-      newLikedQuestions.splice(newLikedQuestions.indexOf(questionId), 1)
-      setLikedQuestions(newLikedQuestions)
+      let newLikedQuestions = likedQuestions;
+      newLikedQuestions.splice(newLikedQuestions.indexOf(questionId), 1);
+      setLikedQuestions(newLikedQuestions);
     }
-  }
+  };
   //Buttons
   const backToMenu = async () => {
     const json = [
       {
         url: 'NULL',
       },
-    ]
+    ];
     if (TalkId) {
-      await putTalk('Talks/ChangeUrl/', json, parseInt(TalkId), tokenIdRdx)
+      await putTalk('Talks/ChangeUrl/', json, parseInt(TalkId), tokenIdRdx);
     }
-    history.push('/Menu')
+    history.push('/Menu');
     if (connection) {
-      connection?.stop()
+      connection?.stop();
     }
-  }
+  };
 
   //Data Fetching
   const onChangeQuizz = async (value: string) => {
-    setQuizzId(value)
-    setShowResults(false)
-    const responseData = await loadQuizzContent(value, tokenIdRdx)
-    responseData && showQuestions(responseData)
-  }
+    setQuizzId(value);
+    setShowResults(false);
+    const responseData = await loadQuizzContent(value, tokenIdRdx);
+    responseData && showQuestions(responseData);
+  };
 
   const loadInit = async () => {
-    const responseData = await loadTalkNQuizzes(TalkId, tokenIdRdx)
-    responseData && showInitialFetchedData(responseData)
-  }
+    const responseData = await loadTalkNQuizzes(TalkId, tokenIdRdx);
+    responseData && showInitialFetchedData(responseData);
+  };
 
   //Data Showing
   const showInitialFetchedData = (data: any) => {
-    setTalkName(data.talkName)
+    setTalkName(data.talkName);
     for (let quizz of data.quizzes) {
-      setListQuizzes((listQuizzes) => [...listQuizzes, quizz])
+      setListQuizzes((listQuizzes) => [...listQuizzes, quizz]);
     }
-  }
+  };
 
   const showQuestions = (data: any) => {
-    setQuestionsData(data)
-    setShowQuestion(true)
-  }
+    setQuestionsData(data);
+    setShowQuestion(true);
+  };
 
   const startQuizz = () => {
     if (connection) {
       let quiz: any = listQuizzes.filter(
         (q: any) => q.id === parseInt(quizzId),
-      )[0]
-      connection.invoke('StartQuizz', groupId, quizzId, quiz.name)
-      setQuizzRunning(true)
-      setShowResults(false)
+      )[0];
+      connection.invoke('StartQuizz', groupId, quizzId, quiz.name);
+      setQuizzRunning(true);
+      setShowResults(false);
     }
-  }
+  };
   const changeToTalk = () => {
-    setTab('Talk')
-  }
+    setTab('Talk');
+  };
   const changeUsername = (username: string) => {
-    setUsername(username)
-   }
+    setUsername(username);
+  };
 
   const changeToChat = () => {
-    setTab('Chat')
-  }
+    setTab('Chat');
+  };
 
   const stopQuizz = async () => {
     if (connection) {
-      await connection.invoke('StopQuizz', groupId, quizzId)
-      setQuizzRunning(false)
+      await connection.invoke('StopQuizz', groupId, quizzId);
+      setQuizzRunning(false);
     }
-  }
+  };
 
   useEffect(() => {
     if (!isEmpty(results)) {
-      setShowResults(true)
+      setShowResults(true);
     }
-  }, [results]) //Load only once at first build
+  }, [results]); //Load only once at first build
 
   //UseEffects
   useEffect(() => {
     if (userIdRdx === '-1') {
-      history.push('/')
+      history.push('/');
     }
-    setResults({})
+    setResults({});
     const connection = new HubConnectionBuilder()
       .withUrl(`${urlHub}TalkAnswerHub`, {
         skipNegotiation: true,
         transport: HttpTransportType.WebSockets,
       })
       .withAutomaticReconnect()
-      .build()
+      .build();
     connection.start().then(() => {
-      connection.invoke('CreateTalkGroup', groupId, Number(TalkId))
-      console.log('connected')
-    })
+      connection.invoke('CreateTalkGroup', groupId, Number(TalkId));
+      console.log('connected');
+    });
     connection.on('NewChannel', function (responseData: string) {
-      console.log('The new channel is: ' + responseData)
-    })
+      console.log('The new channel is: ' + responseData);
+    });
     connection.on('JoinedGroup', function (responseData: string) {
-      console.log('A new User has joined the channel: ' + responseData)
-    })
+      console.log('A new User has joined the channel: ' + responseData);
+    });
     connection.on('RequestCurrentQuizz', function (responseData: string) {
-      connection.invoke('GetCurrentQuizz', groupId, quizzId)
-    })
+      connection.invoke('GetCurrentQuizz', groupId, quizzId);
+    });
     connection.on('ShowResults', function (responseData: any) {
-      setResults(responseData.listQuestions)
-    })
-    setConnection(connection)
-    loadInit()
-  }, []) //Load only once at first build
+      setResults(responseData.listQuestions);
+    });
+    setConnection(connection);
+    loadInit();
+  }, []); //Load only once at first build
 
   //CSS
   const useStyles = makeStyles((theme) => ({
@@ -219,9 +219,9 @@ const TalkInterface = () => {
     bigQR: {
       cursor: 'zoom-out',
     },
-  }))
+  }));
 
-  const classes = useStyles()
+  const classes = useStyles();
 
   return (
     <React.Fragment>
@@ -229,8 +229,12 @@ const TalkInterface = () => {
       <AppBar position="relative">
         <Toolbar className={classes.toolbar}>
           <Typography variant="h6" color="inherit" noWrap>
-            <Button onClick={changeToTalk} color="inherit">Talk</Button>
-            <Button onClick={changeToChat} color="inherit">Chat</Button>
+            <Button onClick={changeToTalk} color="inherit">
+              Talk
+            </Button>
+            <Button onClick={changeToChat} color="inherit">
+              Chat
+            </Button>
           </Typography>
           <Button
             variant="contained"
@@ -337,9 +341,9 @@ const TalkInterface = () => {
                             typeQuest={question.type}
                             answers={question.answers.map(
                               (ans: {
-                                id: number
-                                questionId: number
-                                response: string
+                                id: number;
+                                questionId: number;
+                                response: string;
                               }) => ans.response,
                             )}
                             isPreview={true}
@@ -376,7 +380,7 @@ const TalkInterface = () => {
         />
       )}
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default TalkInterface
+export default TalkInterface;

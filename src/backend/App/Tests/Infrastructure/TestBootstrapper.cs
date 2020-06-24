@@ -36,10 +36,10 @@ namespace App.Tests.Infrastructure
             TalkContextFactory = talkContextFactoryTest;
             TalkSessionRepo = talkSessionRepo;
             QuizzServiceFetch = new QuizzServiceFetch(talkContextFactoryTest);
-            SessionServiceFetch = new SessionServiceFetch(talkContextFactoryTest, sessionMapper);
+            TalksServiceFetch = new TalksServiceFetch(talkContextFactoryTest);
+            SessionServiceFetch = new SessionServiceFetch(talkContextFactoryTest, TalksServiceFetch, sessionMapper);
             SessionServicePost = new SessionServicePost(talkContextFactoryTest);
             TalksServicePost = new TalksServicePost(talkContextFactoryTest, talkSessionRepo);
-            TalksServiceFetch = new TalksServiceFetch(talkContextFactoryTest);
             UserServicePost = new UserServicePost(talkContextFactoryTest, talkSessionRepo);
             UserServiceFetch = new UserServiceFetch(loggerTalks, talkContextFactoryTest, talkSessionRepo);
             QuizzServicePost = new QuizzServicePost(loggerQuizz, talkContextFactoryTest);

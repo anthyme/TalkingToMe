@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react'
-import Paper from '@material-ui/core/Paper'
-import { Chart, PieSeries } from '@devexpress/dx-react-chart-material-ui'
-import PieGraph from './PieGraph'
-import BarGraph from './BarGraph'
+import React, { useEffect, useState } from 'react';
+import Paper from '@material-ui/core/Paper';
+import { Chart, PieSeries } from '@devexpress/dx-react-chart-material-ui';
+import PieGraph from './PieGraph';
+import BarGraph from './BarGraph';
 import {
   FormControl,
   FormLabel,
@@ -10,60 +10,57 @@ import {
   FormControlLabel,
   Grid,
   makeStyles,
-} from '@material-ui/core'
-import Radio from '@material-ui/core/Radio'
-import TextGraph from './TextGraph'
+} from '@material-ui/core';
+import Radio from '@material-ui/core/Radio';
+import TextGraph from './TextGraph';
 
 interface IProps {
-  results: any
-  questionId: number
-  typeQuest: string
-  quest: string
+  results: any;
+  questionId: number;
+  typeQuest: string;
+  quest: string;
 }
 
 const GraphInterface: React.FC<IProps> = (props) => {
-  const [results, setResults] = useState(Object)
-  const [showResults, setShowResults] = useState(false)
-  const [value, setValue] = React.useState('Pie graph')
+  const [results, setResults] = useState(Object);
+  const [showResults, setShowResults] = useState(false);
+  const [value, setValue] = React.useState('Pie graph');
 
-  const questionResults = props.results
-  const questionId = props.questionId
-  const typeQuest = props.typeQuest
-  const quest = props.quest
+  const questionResults = props.results;
+  const questionId = props.questionId;
+  const typeQuest = props.typeQuest;
+  const quest = props.quest;
 
   const useStyles = makeStyles(() => ({
     gridSpacing: {
       padding: '2%',
     },
-  }))
-  const classes = useStyles()
+  }));
+  const classes = useStyles();
 
   const handleChange = (event: any) => {
-    setValue(event.target.value)
-  }
+    setValue(event.target.value);
+  };
 
   useEffect(() => {
-    console.log(questionResults)
     if (questionResults) {
-      let answerList: any[] = []
+      let answerList: any[] = [];
       questionResults.forEach(
         (answer: { questionId: number; listAnswers: any }) => {
-          console.log(answer)
           if (answer.questionId === questionId) {
             answer.listAnswers.forEach((answers: any) => {
-              answerList = [...answerList, answers]
-            })
+              answerList = [...answerList, answers];
+            });
           }
         },
-      )
-      console.log(answerList)
-      setResults(answerList)
+      );
+      setResults(answerList);
     }
-  }, [])
+  }, []);
 
   useEffect(() => {
-    setShowResults(true)
-  }, [results])
+    setShowResults(true);
+  }, [results]);
   switch (typeQuest) {
     case 'UCQ':
       return (
@@ -108,12 +105,16 @@ const GraphInterface: React.FC<IProps> = (props) => {
             <></>
           )}
         </div>
-      )
+      );
     case 'Text':
-      return <div>{showResults ? <TextGraph results={results} quest={quest}/> : <></>}</div>
+      return (
+        <div>
+          {showResults ? <TextGraph results={results} quest={quest} /> : <></>}
+        </div>
+      );
     default:
-      return <></>
+      return <></>;
   }
-}
+};
 
-export default GraphInterface
+export default GraphInterface;

@@ -17,6 +17,7 @@ import { useSelector } from 'react-redux';
 import { InitialState } from '../../store/reducers/MainReducer';
 import { getSessionsByTalkId } from '../../dataTransfers/Fetchs/DataSessionFetch';
 import DeleteSessionPopUp from './DeleteSessionPopUp';
+import { useHistory } from 'react-router-dom';
 
 interface IProps {
   talk: any;
@@ -32,6 +33,7 @@ const OldSessions: React.FC<IProps> = (props) => {
   const [sessions, setSessions] = useState<any>([]);
   const [openDeleteSession, setOpenDeleteSession] = useState(false);
   const [sessionIdToDelete, setSessionIdToDelete] = useState(-1);
+  const history = useHistory();
 
   const { tokenIdRdx } = useSelector<InitialState, StateProps>(
     (state: InitialState) => {
@@ -85,6 +87,9 @@ const OldSessions: React.FC<IProps> = (props) => {
                       <ListItemText
                         primary={displayDateLine(session)}
                         secondary={'This session lasted ' + session.timeLasted}
+                        onClick={() =>
+                          history.push(`/SessionReview?sessionId=${session.id}`)
+                        }
                       />
                       <ListItemSecondaryAction>
                         <IconButton
