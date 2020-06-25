@@ -7,6 +7,7 @@ import ListItemText from '@material-ui/core/ListItemText'
 import ListItemAvatar from '@material-ui/core/ListItemAvatar'
 import Avatar from '@material-ui/core/Avatar'
 import Typography from '@material-ui/core/Typography'
+import SpeakerNotesOffIcon from '@material-ui/icons/SpeakerNotesOff'
 import { Button, TextField, IconButton, Box } from '@material-ui/core'
 import ThumbUpAltIcon from '@material-ui/icons/ThumbUpAlt'
 import './MessageStyles.css'
@@ -27,6 +28,9 @@ interface IProps {
   likedQuestions: number[]
   changeLikedQuestions: Function
   groupId: string | null
+  talkerChat: boolean
+  mutedUsers?: string[]
+  changeMutedUsers?: Function
 }
 
 const Message: React.FC<IProps> = (props) => {
@@ -34,12 +38,21 @@ const Message: React.FC<IProps> = (props) => {
   const connection = props.connection
   const message = props.message
   const groupId = props.groupId
+  const talkerChat = props.talkerChat
   const likedQuestions = props.likedQuestions
+  const mutedUsers = props.mutedUsers
   const changeLikedQuestions = props.changeLikedQuestions
+  const changeMutedUsers = props.changeMutedUsers
   const [question, setQuestion] = useState('')
   const [userName, setUserName] = useState('')
+  const [userContext, setUserContext] = useState(
+    message.UserContext !== null ? message.UserContext : '',
+  )
   const [upvoted, setUpVoted] = useState(false)
-  const [upvotes, setUpvotes] = useState(message.upvotes!==null?message.upvotes:0)
+  const [muted, setMuted] = useState(mutedUsers?.indexOf(message.UserContext)!==-1?true:false)
+  const [upvotes, setUpvotes] = useState(
+    message.upvotes !== null ? message.upvotes : 0,
+  )
 
   const changeUpvote = (addUpvote: boolean) => {
     if (connection) {
@@ -58,6 +71,17 @@ const Message: React.FC<IProps> = (props) => {
       changeLikedQuestions(true, message.id)
     }
   }
+
+  const handleMuteUnmute = () => {
+    if (connection) {
+      connection.invoke('MuteUnmuteUser', groupId, userContext)
+      if(changeMutedUsers){
+        changeMutedUsers(message.UserContext);
+      }
+    }
+  }
+
+
   const handleUserNameChange = (event: any) => {
     setUserName(event.target.value)
   }
@@ -84,10 +108,7 @@ const Message: React.FC<IProps> = (props) => {
                 flexDirection="row"
                 justifyContent="flex-start"
               >
-                <Box p={0} m={0} flexGrow={1}>
-                  
-                    
-                </Box>
+                <Box p={0} m={0} flexGrow={1}></Box>
                 <Box p={0}>
                   {upvotes !== 0 ? upvotes : <></>}
                   {upvoted === true ? (
@@ -99,17 +120,36 @@ const Message: React.FC<IProps> = (props) => {
                       <ThumbUpAltIcon color="disabled" fontSize="small" />
                     </IconButton>
                   )}
+                  {talkerChat === true ? (
+                    muted ? (
+                      <IconButton onClick={handleMuteUnmute}>
+                        <SpeakerNotesOffIcon color="secondary" fontSize="small" />
+                      </IconButton>
+                    ) : (
+                      <IconButton onClick={handleMuteUnmute}>
+                        <SpeakerNotesOffIcon
+                          color="primary"
+                          fontSize="small"
+                        />
+                      </IconButton>
+                    )
+                  ) : (
+                    <></>
+                  )}
                 </Box>
               </Box>
             </div>
           </div>
-          <span className="time_date"> {message.username} | {message.date}</span>
+          <span className="time_date">
+            {' '}
+            {message.username} | {message.date}
+          </span>
         </div>
-        
       ) : (
         <></>
       )}
     </div>
   )
 }
+
 export default Message

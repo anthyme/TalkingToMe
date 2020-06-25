@@ -5,6 +5,8 @@ import { useSelector } from 'react-redux'
 import { InitialState } from '../store/reducers/MainReducer'
 import { v4 as uuidv4 } from 'uuid'
 import { getQuizzById } from '../dataTransfers/Fetchs/DataQuizzFetch'
+import useSound from 'use-sound'
+import NotificationImportantIcon from '@material-ui/icons/NotificationImportant'
 import {
   HubConnectionBuilder,
   HttpTransportType,
@@ -17,6 +19,8 @@ import {
   Toolbar,
   makeStyles,
   Button,
+  Grid,
+  IconButton,
 } from '@material-ui/core'
 import ChatInterface from '../chatBox/ChatInterface'
 interface StateProps {
@@ -29,11 +33,12 @@ const UserAnswerQuizz: React.FC<IProps> = (props) => {
   const [tab, setTab] = useState('Quizz')
   const [quizzId, setQuizzId] = useState(-1)
   const [questionsData, setQuestionsData] = useState([{}])
-  const [username, setUsername] = useState("")
-  const [likedQuestions, setLikedQuestions] = useState<number[]>([]);
+  const [username, setUsername] = useState('')
+  const [likedQuestions, setLikedQuestions] = useState<number[]>([])
   const [waitingQuizz, setWaitingQuizz] = useState(true)
   const [connection, setConnection] = useState<HubConnection>()
   const [hasValidated, setHasValidated] = useState(false)
+  const [bell, setBell] = useState(true)
   const url = new URL(window.location.href)
   const groupId: string | null = url.searchParams.get('talkId')
   const ownerId: string | null = url.searchParams.get('ownerId')
@@ -43,16 +48,18 @@ const UserAnswerQuizz: React.FC<IProps> = (props) => {
   window.onbeforeunload = function () {
     connection?.stop()
   }
-const changeLikedQuestions = (upvoted:boolean, questionId: number) =>{
-  if(upvoted===true){
-    let newLikedQuestions = [...likedQuestions, questionId];
-    setLikedQuestions(newLikedQuestions);
-  } else {
-    let newLikedQuestions = likedQuestions;
-    newLikedQuestions.splice(newLikedQuestions.indexOf(questionId),1);
-    setLikedQuestions(newLikedQuestions);
+  const changeLikedQuestions = (upvoted: boolean, questionId: number) => {
+    if (upvoted === true) {
+      let newLikedQuestions = [...likedQuestions, questionId]
+      setLikedQuestions(newLikedQuestions)
+    } else {
+      let newLikedQuestions = likedQuestions
+      newLikedQuestions.splice(newLikedQuestions.indexOf(questionId), 1)
+      setLikedQuestions(newLikedQuestions)
+    }
   }
-};
+
+  
 
   if (connection) {
     connection.on(
@@ -81,8 +88,11 @@ const changeLikedQuestions = (upvoted:boolean, questionId: number) =>{
       setQuestionsData([{}])
       setHasValidated(false)
     })
-  }
 
+    connection.on('CancelBell', () => {
+      setBell(true);
+    })
+  }
   const showQuestions = (data: any) => {
     if (data) {
       setQuestionsData(data)
@@ -94,7 +104,7 @@ const changeLikedQuestions = (upvoted:boolean, questionId: number) =>{
   }
 
   const changeUsername = (username: string) => {
-   setUsername(username);
+    setUsername(username)
   }
 
   const changeToChat = () => {
@@ -103,6 +113,12 @@ const changeLikedQuestions = (upvoted:boolean, questionId: number) =>{
 
   const changeToQuizz = () => {
     setTab('Quizz')
+  }
+
+  const handleBellChange = async () => {
+    if (connection) {
+      await connection.invoke('CannotHear', groupId)}
+    setBell(false)
   }
 
   const addAnswerToList = (questId: number, resp: string) => {
@@ -156,12 +172,12 @@ const changeLikedQuestions = (upvoted:boolean, questionId: number) =>{
       display: 'flex',
       justifyContent: 'center',
     },
-    rightButton:{
-       right: '0%',
-       marginLeft:"100px",
-       marginRight:"100px",
-       color: "white",
-       backgroundColor: "#3f51b5"
+    rightButton: {
+      right: '0%',
+      marginLeft: '100px',
+      marginRight: '100px',
+      color: 'white',
+      backgroundColor: '#3f51b5',
     },
   }))
 
@@ -172,14 +188,31 @@ const changeLikedQuestions = (upvoted:boolean, questionId: number) =>{
       <>
         <AppBar position="relative">
           <Toolbar className={classes.center}>
-          <Button onClick={changeToQuizz} className={classes.rightButton}>Quizz</Button>
+            <Button onClick={changeToQuizz} className={classes.rightButton}>
+              Quizz
+            </Button>
             <Typography variant="h4" align="center" color="inherit">
               {talkName}
             </Typography>
-            <Button onClick={changeToChat} className={classes.rightButton}>Chat</Button>
+            <Button onClick={changeToChat} className={classes.rightButton}>
+              Chat
+            </Button>
+            <Grid container justify="flex-end">
+              
+            </Grid>
           </Toolbar>
         </AppBar>
-
+        {bell ? (
+                <IconButton
+                  aria-label="edit"
+                  onClick={handleBellChange}
+                  className="CannotHear"
+                >
+                  <NotificationImportantIcon color="primary" fontSize="large" />{' '}
+                </IconButton>
+              ) : (
+                <NotificationImportantIcon color="disabled" fontSize="large" />
+              )}
         {tab === 'Quizz' ? (
           waitingQuizz ? (
             <div className={classes.center}>
@@ -231,7 +264,15 @@ const changeLikedQuestions = (upvoted:boolean, questionId: number) =>{
             </div>
           )
         ) : (
-          <ChatInterface connection={connection} groupId={groupId} likedQuestions={likedQuestions} username={username} changeLikedQuestions={changeLikedQuestions} changeUserName={changeUsername}/>
+          <ChatInterface
+            connection={connection}
+            groupId={groupId}
+            likedQuestions={likedQuestions}
+            username={username}
+            changeLikedQuestions={changeLikedQuestions}
+            changeUserName={changeUsername}
+            talkerChat={false}
+          />
         )}
       </>
     </React.Fragment>

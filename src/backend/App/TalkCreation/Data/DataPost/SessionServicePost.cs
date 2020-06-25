@@ -26,5 +26,6 @@ namespace App.TalkCreation.Data.DataPost
             await context.SaveChangesAsync();
             return "{\"response\":\"Remove sucessful\"}";
         }
+
     }
 }

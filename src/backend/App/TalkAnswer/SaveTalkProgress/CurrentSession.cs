@@ -12,6 +12,7 @@ namespace App.TalkAnswer.SaveTalkProgress
         public int currentQuizz { get; set; }
         public DateTime startDate { get; set; }
         public List<QuizzAnswers> allAnswers { get; set; }
+        public List<string>  mutedUsers { get; set; }
 
         public CurrentSession(string Groupid, int CurrentQuizz, DateTime StartDate, List<QuizzAnswers> AllAnswers)
         {

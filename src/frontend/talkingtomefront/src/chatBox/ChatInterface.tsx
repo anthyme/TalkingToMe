@@ -33,17 +33,23 @@ interface IProps {
   username: string
   changeLikedQuestions: Function
   changeUserName: Function
+  talkerChat: boolean
+  mutedUsers?: string[]
+  changeMutedUsers?: Function
 }
 
 const ChatInterface: React.FC<IProps> = (props) => {
   const classes = useStyles()
   const username =props.username
+  const talkerChat = props.talkerChat
   const [question, setQuestion] = useState('')
   const [userName, setUserName] = useState(username)
   const [messages, setMessages] = useState([{}])
   const connection = props.connection
   const groupId = props.groupId
   const changeUsername = props.changeUserName
+  const mutedUsers = props.mutedUsers
+  const changeMutedUsers = props.changeMutedUsers
 
   const SendNewQuestions = () => {
     if (connection) {
@@ -63,7 +69,9 @@ const ChatInterface: React.FC<IProps> = (props) => {
   }
   useEffect(() => {
     connection.invoke('GetCurrentSessionUserQuestions', groupId)
+    connection.invoke('GetCurrentSessionMutedUsers', groupId)
     connection.on('AddNewQuestion', async (result: any) => {
+      console.log(result);
       if (messages[0] === {}) {
         await setMessages([result])
       } else {
@@ -93,6 +101,7 @@ const ChatInterface: React.FC<IProps> = (props) => {
         scrollMessages.scrollTop = scrollMessages.scrollHeight;
       }
     })
+    
   }, []) //Load only on
   return (
     <div>
@@ -115,6 +124,9 @@ const ChatInterface: React.FC<IProps> = (props) => {
                 likedQuestions={props.likedQuestions}
                 changeLikedQuestions={props.changeLikedQuestions}
                 groupId={groupId}
+                talkerChat={talkerChat}
+                mutedUsers = {mutedUsers}
+                changeMutedUsers= {changeMutedUsers}
               />
             ))
           ) : (

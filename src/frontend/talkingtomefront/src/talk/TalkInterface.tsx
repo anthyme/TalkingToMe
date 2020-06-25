@@ -10,24 +10,29 @@ import {
   Toolbar,
   Dialog,
   Box,
-} from '@material-ui/core';
-import { loadTalkNQuizzes } from '../dataTransfers/Fetchs/DataTalkFetch';
-import { loadQuizzContent } from '../dataTransfers/Fetchs/DataQuestionFetch';
-import QuestionInterface from './questionsPreview/QuestionInterface';
-import { useHistory } from 'react-router-dom';
-import QRCode from 'qrcode.react';
-import ChatInterface from '../chatBox/ChatInterface';
-import { InitialState } from '../store/reducers/MainReducer';
-import { useSelector } from 'react-redux';
-import { siteUrl, urlHub } from '../constants';
+  Grid,
+  IconButton,
+} from '@material-ui/core'
+import { loadTalkNQuizzes } from '../dataTransfers/Fetchs/DataTalkFetch'
+import { loadQuizzContent } from '../dataTransfers/Fetchs/DataQuestionFetch'
+import QuestionInterface from './questionsPreview/QuestionInterface'
+import { useHistory } from 'react-router-dom'
+import QRCode from 'qrcode.react'
+import ChatInterface from '../chatBox/ChatInterface'
+import { InitialState } from '../store/reducers/MainReducer'
+import { useSelector } from 'react-redux'
+import useSound from 'use-sound'
+import NotificationImportantIcon from '@material-ui/icons/NotificationImportant'
+import { siteUrl, urlHub } from '../constants'
 import {
   HubConnectionBuilder,
   HttpTransportType,
   HubConnection,
-} from '@microsoft/signalr';
-import GraphInterface from '../graphs/GraphInterface';
-import { isEmpty } from 'lodash';
-import { putTalk } from '../dataTransfers/Posts/DataTalkPost';
+} from '@microsoft/signalr'
+import GraphInterface from '../graphs/GraphInterface'
+import { isEmpty } from 'lodash'
+import { putTalk } from '../dataTransfers/Posts/DataTalkPost'
+import Timer from '../timer/Timer'
 
 interface StateProps {
   userIdRdx: string;
@@ -35,21 +40,23 @@ interface StateProps {
 }
 
 const TalkInterface = () => {
-  const url = new URL(window.location.href);
-  const [quizzId, setQuizzId] = useState('0');
-  const [results, setResults] = useState(Object);
-  const [showResults, setShowResults] = useState(false);
-  const [listQuizzes, setListQuizzes] = useState([{}]);
-  const [talkName, setTalkName] = useState('');
-  const [tab, setTab] = useState('Talk');
-  const [username, setUsername] = useState('Talker');
-  const [likedQuestions, setLikedQuestions] = useState<number[]>([]);
-  const [showQuestion, setShowQuestion] = useState(false);
-  const [connection, setConnection] = useState<HubConnection>();
-  const [questionsData, setQuestionsData] = useState([{}]);
-  const [groupId, setGroupId] = useState(url.searchParams.get('groupId'));
-  const [quizzRunning, setQuizzRunning] = useState(false);
-  const [bigQR, setBigQR] = useState(false);
+  const url = new URL(window.location.href)
+  const [quizzId, setQuizzId] = useState('0')
+  const [results, setResults] = useState(Object)
+  const [showResults, setShowResults] = useState(false)
+  const [listQuizzes, setListQuizzes] = useState([{}])
+  const [talkName, setTalkName] = useState('')
+  const [tab, setTab] = useState('Talk')
+  const [bell, setBell] =useState(false);
+  const [username, setUsername] = useState("Talker")
+  const [likedQuestions, setLikedQuestions] = useState<number[]>([])
+  const [mutedUsers, setMutedUsers] = useState<string[]>([])
+  const [showQuestion, setShowQuestion] = useState(false)
+  const [connection, setConnection] = useState<HubConnection>()
+  const [questionsData, setQuestionsData] = useState([{}])
+  const [groupId, setGroupId] = useState(url.searchParams.get('groupId'))
+  const [quizzRunning, setQuizzRunning] = useState(false)
+  const [bigQR, setBigQR] = useState(false)
   const { userIdRdx, tokenIdRdx } = useSelector<InitialState, StateProps>(
     (state: InitialState) => {
       return {
@@ -75,7 +82,19 @@ const TalkInterface = () => {
       newLikedQuestions.splice(newLikedQuestions.indexOf(questionId), 1);
       setLikedQuestions(newLikedQuestions);
     }
-  };
+  }
+
+  const changeMutedUsers = (userContext:string) => {
+    if (mutedUsers.indexOf(userContext) !== -1) {
+      let newMutedUsers = [...mutedUsers, userContext]
+      setMutedUsers(newMutedUsers)
+    } else {
+      let newMutedUsers = mutedUsers
+      newMutedUsers.splice(mutedUsers.indexOf(userContext), 1)
+      setMutedUsers(newMutedUsers)
+    }
+  }
+
   //Buttons
   const backToMenu = async () => {
     const json = [
@@ -139,18 +158,24 @@ const TalkInterface = () => {
     setTab('Chat');
   };
 
+  const handleBellChange= async ()=>{
+    if (connection) {
+      await connection.invoke('CancelBell', groupId)}
+    setBell(false);
+  }
   const stopQuizz = async () => {
     if (connection) {
-      await connection.invoke('StopQuizz', groupId, quizzId);
-      setQuizzRunning(false);
+      await connection.invoke('StopQuizz', groupId, quizzId)
     }
-  };
+  }
+
+  const [playActive] = useSound('../sounds/pop-down.mp3', { volume: 0.25 });
 
   useEffect(() => {
     if (!isEmpty(results)) {
       setShowResults(true);
     }
-  }, [results]); //Load only once at first build
+  }, [results]) 
 
   //UseEffects
   useEffect(() => {
@@ -166,9 +191,10 @@ const TalkInterface = () => {
       .withAutomaticReconnect()
       .build();
     connection.start().then(() => {
-      connection.invoke('CreateTalkGroup', groupId, Number(TalkId));
-      console.log('connected');
-    });
+      connection.invoke('CreateTalkGroup', groupId, Number(TalkId))
+      connection.invoke('GetCurrentSessionMutedUsers', groupId)
+      console.log('connected')
+    })
     connection.on('NewChannel', function (responseData: string) {
       console.log('The new channel is: ' + responseData);
     });
@@ -179,11 +205,25 @@ const TalkInterface = () => {
       connection.invoke('GetCurrentQuizz', groupId, quizzId);
     });
     connection.on('ShowResults', function (responseData: any) {
-      setResults(responseData.listQuestions);
-    });
-    setConnection(connection);
-    loadInit();
-  }, []); //Load only once at first build
+      setResults(responseData.listQuestions)
+    })
+    connection.on('CannotHear', function (responseData: any) {
+      playActive();
+      setBell(true)
+    })
+    connection.on('StopQuizz', function (responseData: any) {
+      setQuizzRunning(false)
+      setQuizzId("0");
+    })
+    connection.on('ShowMutedUsers', async (results: any) => {
+      let newMutedUsers = results;
+      if (results !== null) {
+        await setMutedUsers(newMutedUsers)
+      }
+    })
+    setConnection(connection)
+    loadInit()
+  }, []) //Load only once at first build
 
   //CSS
   const useStyles = makeStyles((theme) => ({
@@ -300,12 +340,27 @@ const TalkInterface = () => {
                 </Button>
               )}
             </div>
+            <Grid container justify="flex-end">
+              {bell ? (
+                <IconButton
+                  aria-label="edit"
+                  onClick={handleBellChange}
+                  className="CannotHear"
+                >
+                  <NotificationImportantIcon color="primary" fontSize="large" />{' '}
+                </IconButton>
+              ) : (
+                <NotificationImportantIcon color="disabled" fontSize="large" />
+              )}
+            </Grid>
+            <Timer connection={connection} groupId={groupId} quizzId={quizzId}/>
             <div>
               <a
                 href={`TalkAnswer?talkId=${groupId}&ownerId=${userIdRdx}&talkName=${talkName}`}
               >
                 Link to a user page
               </a>
+              
               <div className={classes.smallQR} onClick={() => setBigQR(true)}>
                 <QRCode value={qrString ? qrString : ''} />
               </div>
@@ -326,7 +381,7 @@ const TalkInterface = () => {
             </div>
           </div>
           <div className={classes.quizzNQuest}>
-            {showQuestion && <h3 className={classes.title}>Quizz preview</h3>}
+            {showQuestion && <h3 className={classes.title}>Quizz {showResults?"results":"preview"}</h3>}
             {showQuestion &&
               questionsData.map(
                 (question: any) =>
@@ -351,7 +406,7 @@ const TalkInterface = () => {
                             addAnswer={() => {}} //Prop only useful for users but typescript needs us to declare it here too
                           />
                         </Box>
-                        <Box width="40%" height="20%">
+                        <Box marginLeft="10px" width="40%" height="20%">
                           {showResults ? (
                             <GraphInterface
                               results={results}
@@ -377,6 +432,9 @@ const TalkInterface = () => {
           changeLikedQuestions={changeLikedQuestions}
           username={username}
           changeUserName={changeUsername}
+          talkerChat={true}
+          mutedUsers ={mutedUsers}
+          changeMutedUsers= {changeMutedUsers}
         />
       )}
     </React.Fragment>
