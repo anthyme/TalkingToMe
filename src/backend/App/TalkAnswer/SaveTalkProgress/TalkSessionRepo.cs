@@ -46,6 +46,28 @@ namespace App.TalkAnswer.SaveTalkProgress
             }
         }
 
+        public void MuteUnmuteUser(string groupId, string userContext)
+        {
+            try
+            {
+                if (Sessions.ContainsKey(groupId))
+                {
+                    if (!Sessions[groupId].mutedUsers.Contains(userContext))
+                    {
+                        Sessions[groupId].mutedUsers.Add(userContext);
+                    }
+                    else
+                    {
+                        Sessions[groupId].mutedUsers.Remove(userContext);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("THe session you are trying to find has an error");
+            }
+        }
+
         public void AddAnswers(string groupId, int quizzId, List<int> questIdList, List<string> answerList)
         {
 

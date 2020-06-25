@@ -271,6 +271,7 @@ const UserAnswerQuizz: React.FC<IProps> = (props) => {
             username={username}
             changeLikedQuestions={changeLikedQuestions}
             changeUserName={changeUsername}
+            talkerChat={false}
           />
         )}
       </>

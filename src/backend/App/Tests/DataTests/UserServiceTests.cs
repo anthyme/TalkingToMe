@@ -90,14 +90,15 @@ namespace App.Tests.DataTests
             var context =_talkContextFactory.Create();
             CurrentSession currentSession = new CurrentSession("1", -1, DateTime.Now, new List<QuizzAnswers> { new QuizzAnswers() { quizzId = -1, listAnswers = new List<Dictionary<int, string>> { new Dictionary<int, string>() } } });
             _talkSessionRepo.Save(currentSession);
-            UserQuestionsDTO savedUserQuestion = _userServicePost.SaveQuestion("1","Test","Test","Test");
+            UserQuestionsDTO savedUserQuestion = _userServicePost.SaveQuestion("1","Test","Test","Test","1");
             savedUserQuestion.Should().BeEquivalentTo(
             new UserQuestionsDTO{
                 Question = "Test",
                 Upvotes = 0,
                 SessionId = 1,
                 Username = "Test",
-                Date= "Test"
+                Date= "Test",
+                UserContext="1"
                 }, x=>x.Excluding(x=>x.Id)
             );
             _talkSessionRepo.EndSession("1");

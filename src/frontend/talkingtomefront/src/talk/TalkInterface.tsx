@@ -32,6 +32,7 @@ import {
 import GraphInterface from '../graphs/GraphInterface'
 import { isEmpty } from 'lodash'
 import { putTalk } from '../dataTransfers/Posts/DataTalkPost'
+import Timer from '../timer/Timer'
 
 interface StateProps {
   userIdRdx: string
@@ -49,6 +50,7 @@ const TalkInterface = () => {
   const [bell, setBell] =useState(false);
   const [username, setUsername] = useState("Talker")
   const [likedQuestions, setLikedQuestions] = useState<number[]>([])
+  const [mutedUsers, setMutedUsers] = useState<string[]>([])
   const [showQuestion, setShowQuestion] = useState(false)
   const [connection, setConnection] = useState<HubConnection>()
   const [questionsData, setQuestionsData] = useState([{}])
@@ -81,6 +83,18 @@ const TalkInterface = () => {
       setLikedQuestions(newLikedQuestions)
     }
   }
+
+  const changeMutedUsers = (userContext:string) => {
+    if (mutedUsers.indexOf(userContext) !== -1) {
+      let newMutedUsers = [...mutedUsers, userContext]
+      setMutedUsers(newMutedUsers)
+    } else {
+      let newMutedUsers = mutedUsers
+      newMutedUsers.splice(mutedUsers.indexOf(userContext), 1)
+      setMutedUsers(newMutedUsers)
+    }
+  }
+
   //Buttons
   const backToMenu = async () => {
     const json = [
@@ -152,7 +166,6 @@ const TalkInterface = () => {
   const stopQuizz = async () => {
     if (connection) {
       await connection.invoke('StopQuizz', groupId, quizzId)
-      setQuizzRunning(false)
     }
   }
 
@@ -162,7 +175,7 @@ const TalkInterface = () => {
     if (!isEmpty(results)) {
       setShowResults(true)
     }
-  }, [results]) //Load only once at first build
+  }, [results]) 
 
   //UseEffects
   useEffect(() => {
@@ -179,6 +192,7 @@ const TalkInterface = () => {
       .build()
     connection.start().then(() => {
       connection.invoke('CreateTalkGroup', groupId, Number(TalkId))
+      connection.invoke('GetCurrentSessionMutedUsers', groupId)
       console.log('connected')
     })
     connection.on('NewChannel', function (responseData: string) {
@@ -196,6 +210,16 @@ const TalkInterface = () => {
     connection.on('CannotHear', function (responseData: any) {
       playActive();
       setBell(true)
+    })
+    connection.on('StopQuizz', function (responseData: any) {
+      setQuizzRunning(false)
+      setQuizzId("0");
+    })
+    connection.on('ShowMutedUsers', async (results: any) => {
+      let newMutedUsers = results;
+      if (results !== null) {
+        await setMutedUsers(newMutedUsers)
+      }
     })
     setConnection(connection)
     loadInit()
@@ -325,6 +349,7 @@ const TalkInterface = () => {
                 <NotificationImportantIcon color="disabled" fontSize="large" />
               )}
             </Grid>
+            <Timer connection={connection} groupId={groupId} quizzId={quizzId}/>
             <div>
               <a
                 href={`TalkAnswer?talkId=${groupId}&ownerId=${userIdRdx}&talkName=${talkName}`}
@@ -403,6 +428,9 @@ const TalkInterface = () => {
           changeLikedQuestions={changeLikedQuestions}
           username={username}
           changeUserName={changeUsername}
+          talkerChat={true}
+          mutedUsers ={mutedUsers}
+          changeMutedUsers= {changeMutedUsers}
         />
       )}
     </React.Fragment>

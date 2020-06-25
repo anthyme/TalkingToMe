@@ -112,7 +112,7 @@ namespace App.TalkCreation.Data.DataPost
 
             }
         }
-        public UserQuestionsDTO SaveQuestion(string groupId, string question, string userName, string date)
+        public UserQuestionsDTO SaveQuestion(string groupId, string question, string userName, string date, string userContext)
         {
             using TalkContext context = _talkContextFactory.Create();
             CurrentSession currentSession = _talkSessionRepo.Get(groupId);
@@ -142,6 +142,7 @@ namespace App.TalkCreation.Data.DataPost
                 SessionId = session.Id,
                 Username = savedUserName,
                 Date = date,
+                UserContext = userContext,
             };
             return userQuestionsDTO; 
             }

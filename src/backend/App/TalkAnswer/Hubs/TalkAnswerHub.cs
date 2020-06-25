@@ -92,14 +92,24 @@ namespace App.TalkAnswer.Hubs
 
         public async Task PostQuestion(string groupId, string question, string userName, string date)
         {
-            UserQuestionsDTO userQuestion = _userServicePost.SaveQuestion(groupId, question, userName, date);
-            await Clients.Group(groupId).SendAsync("AddNewQuestion", userQuestion);
+            var session = _talkSessionRepo.Get(groupId);
+            if (!session.mutedUsers.Contains(Context.ConnectionId))
+            {
+                UserQuestionsDTO userQuestion = _userServicePost.SaveQuestion(groupId, question, userName, date, Context.ConnectionId);
+                await Clients.Group(groupId).SendAsync("AddNewQuestion", userQuestion);
+            }
         }
 
         public async Task GetCurrentSessionUserQuestions(string groupId)
         {
             List<UserQuestionsDTO> userQuestionsDTO = _userServiceFetch.GetQuestionsBySession(groupId);
             await Clients.Client(Context.ConnectionId).SendAsync("ShowCurrentUserQuestions", userQuestionsDTO);
+        }
+
+        public async Task GetCurrentSessionMutedUsers(string groupId)
+        {
+            List<string> mutedUsers = _talkSessionRepo.Get(groupId).mutedUsers;
+            await Clients.Client(Context.ConnectionId).SendAsync("ShowMutedUsers", mutedUsers);
         }
 
         public async Task ChangeUpVote(string groupId, int id, bool addUpvote)
@@ -122,5 +132,11 @@ namespace App.TalkAnswer.Hubs
         {
             await Clients.Group(groupId).SendAsync("CancelBell");
         }
+
+        public void MuteUnmuteUser(string groupId, string userContext)
+        {
+            _talkSessionRepo.MuteUnmuteUser(groupId, userContext);
+        }
+       
     }
 }
