@@ -12,6 +12,5 @@ namespace App.TalkAnswer.Dto
         public TalkAndQuizzesDTO TalkNQuizzes { get; set; }
         public Session Session { get; set; }
         public DateTime Date { get; set; }
-        public UserQuestion UserQuestions {get; set;}
     }
 }

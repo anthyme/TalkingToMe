@@ -14,6 +14,7 @@ import {
 import {
   getSessionAndChatById,
   loadResults,
+  loadQuestionBySession,
 } from '../dataTransfers/Fetchs/DataSessionFetch';
 import { useHistory } from 'react-router-dom';
 import ChatInterface from '../chatBox/ChatInterface';
@@ -40,7 +41,7 @@ const SessionInterface = () => {
   const [questionsData, setQuestionsData] = useState([{}]);
   const [showQuestion, setShowQuestion] = useState(false);
   const [groupId, setGroupId] = useState('');
-  const [likedQuestions, setLikedQuestions] = useState<number[]>([]);
+  const [historyMessages, setHistoryMessages] = useState([{}]);
   const { userIdRdx, tokenIdRdx } = useSelector<InitialState, StateProps>(
     (state: InitialState) => {
       return {
@@ -76,8 +77,6 @@ const SessionInterface = () => {
   };
 
   const showInitialFetchedData = (data: any) => {
-    console.log('Louis data', data);
-    console.log('Louis userIdRdx', userIdRdx);
     if (data) {
       var options = {
         year: 'numeric',
@@ -114,6 +113,13 @@ const SessionInterface = () => {
         );
     }
   }, [history, sessionId, tokenIdRdx, userIdRdx]);
+
+  useEffect(() => {
+    groupId &&
+      loadQuestionBySession(groupId, tokenIdRdx).then(
+        (results: any) => results && setHistoryMessages([...results]),
+      );
+  }, [groupId, tokenIdRdx]);
 
   const useStyles = makeStyles((theme) => ({
     title: {
@@ -215,7 +221,7 @@ const SessionInterface = () => {
               questionsData.map(
                 (question: any) =>
                   question && (
-                    <div>
+                    <div key={question.id}>
                       <Box display="Flex" flexDirection="row" p={1} m={1}>
                         <Box width="50%">
                           <QuestionInterface
@@ -258,7 +264,7 @@ const SessionInterface = () => {
           talkerChat={false}
           connection={null}
           groupId={groupId}
-          likedQuestions={likedQuestions}
+          likedQuestions={[]}
           changeLikedQuestions={() => {
             return null;
           }}
@@ -267,6 +273,7 @@ const SessionInterface = () => {
             return null;
           }}
           isChatActive={false}
+          historyMessages={historyMessages}
         />
       )}
     </React.Fragment>

@@ -270,6 +270,7 @@ const UserAnswerQuizz: React.FC<IProps> = (props) => {
             changeUserName={changeUsername}
             talkerChat={false}
             isChatActive={true}
+            historyMessages={null}
           />
         )}
       </>

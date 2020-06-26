@@ -445,6 +445,7 @@ const TalkInterface = () => {
           mutedUsers={mutedUsers}
           changeMutedUsers={changeMutedUsers}
           isChatActive={true}
+          historyMessages={null}
         />
       )}
     </React.Fragment>

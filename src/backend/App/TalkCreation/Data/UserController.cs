@@ -18,6 +18,7 @@ using App.TokenValidation;
 using App.TalkAnswer.Dto.QuizzResultsDTO;
 using Microsoft.Extensions.Primitives;
 using App.TalkAnswer.Services;
+using App.TalkAnswer.Dto;
 
 namespace App.TalkCreation.Data
 {
@@ -51,7 +52,7 @@ namespace App.TalkCreation.Data
         }
 
         [HttpGet("resultsBySessionAndQuizz/{groupId}")]
-        public async Task<QuizzResults> loadResults(string groupId)
+        public async Task<QuizzResults> LoadResults(string groupId)
         {
             var header = Request.Headers;
             if (header.ContainsKey("QuizzId"))
@@ -63,6 +64,13 @@ namespace App.TalkCreation.Data
                 return quizzResults;
             }
             return null;
+        }
+
+        [HttpGet("QuestionsBySession/{groupId}")]
+        public async Task<List<UserQuestionsDTO>> LoadQuestionsBySession(string groupId)
+        {
+            var userQuestionsDTO = _userServiceFetch.GetQuestionsBySession(groupId);
+            return userQuestionsDTO;
         }
     }
 }

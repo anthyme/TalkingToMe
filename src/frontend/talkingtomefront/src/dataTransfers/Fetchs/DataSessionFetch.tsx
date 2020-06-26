@@ -56,3 +56,22 @@ export const loadResults = async (
   const responseData = await response.json();
   return responseData;
 };
+
+export const loadQuestionBySession = async (
+  groupId: string,
+  tokenId: string,
+) => {
+  const requestOptions = {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      AuthorizationToken: `${tokenId}`,
+    },
+  };
+  let response = await fetch(
+    constants.urlDataBase + 'User/QuestionsBySession/' + groupId,
+    requestOptions,
+  );
+  const responseData = await response.json();
+  return responseData;
+};

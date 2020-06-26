@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
 import SendIcon from '@material-ui/icons/Send';
-import { Button, TextField, IconButton } from '@material-ui/core';
+import { TextField, IconButton } from '@material-ui/core';
 import Message from './Message';
 
 const useStyles = makeStyles((theme) => ({
@@ -37,6 +37,7 @@ interface IProps {
   mutedUsers?: string[];
   changeMutedUsers?: Function;
   isChatActive: boolean;
+  historyMessages: any;
 }
 
 const ChatInterface: React.FC<IProps> = (props) => {
@@ -51,6 +52,8 @@ const ChatInterface: React.FC<IProps> = (props) => {
   const changeUsername = props.changeUserName;
   const mutedUsers = props.mutedUsers;
   const changeMutedUsers = props.changeMutedUsers;
+  const isChatActive = props.isChatActive;
+  const historyMessages = props.historyMessages;
 
   const SendNewQuestions = () => {
     if (connection) {
@@ -86,17 +89,17 @@ const ChatInterface: React.FC<IProps> = (props) => {
     setUserName(event.target.value);
   };
   useEffect(() => {
-    if (props.isChatActive) {
+    if (isChatActive) {
       connection.invoke('GetCurrentSessionUserQuestions', groupId);
       connection.invoke('GetCurrentSessionMutedUsers', groupId);
       connection.on('AddNewQuestion', async (result: any) => {
         console.log(result);
         if (messages[0] === {}) {
-          await setMessages([result]);
+          setMessages([result]);
         } else {
           let newQuestionList = messages;
           newQuestionList.push(result);
-          await setMessages([...messages]);
+          setMessages([...messages]);
         }
         const scrollMessages = document.getElementById('scrollMessages');
         if (scrollMessages !== null) {
@@ -115,33 +118,38 @@ const ChatInterface: React.FC<IProps> = (props) => {
           results.forEach((element: Object) => {
             newQuestionList.push(element);
           });
-          await setMessages([...messages]);
+          setMessages([...messages]);
         }
         const scrollMessages = document.getElementById('scrollMessages');
         if (scrollMessages !== null) {
           scrollMessages.scrollTop = scrollMessages.scrollHeight;
         }
       });
+    } else {
+      setMessages(historyMessages);
     }
   }, []); //Load only on
+
   return (
     <div>
-      <TextField
-        name={userName}
-        value={userName}
-        label="UserName"
-        fullWidth
-        className="questionText"
-        autoComplete="fname"
-        onChange={handleUserNameChange}
-        disabled={!props.isChatActive}
-      />
+      {isChatActive && (
+        <TextField
+          name={userName}
+          value={userName}
+          label="UserName"
+          fullWidth
+          className="questionText"
+          autoComplete="fname"
+          onChange={handleUserNameChange}
+        />
+      )}
       <div className={classes.overflow} id="scrollMessages">
         <List className={classes.root}>
           {messages.length !== 1 ? (
-            messages.map((message: any) => (
+            messages.map((message: any, index: number) => (
               <Message
-                connection={connection}
+                key={index}
+                connection={isChatActive ? connection : null}
                 message={message}
                 likedQuestions={props.likedQuestions}
                 changeLikedQuestions={props.changeLikedQuestions}
@@ -149,6 +157,7 @@ const ChatInterface: React.FC<IProps> = (props) => {
                 talkerChat={talkerChat}
                 mutedUsers={mutedUsers}
                 changeMutedUsers={changeMutedUsers}
+                isChatActive={isChatActive}
               />
             ))
           ) : (
@@ -156,30 +165,32 @@ const ChatInterface: React.FC<IProps> = (props) => {
           )}
         </List>
       </div>
-      <div className={classes.bottom}>
-        <textarea
-          className={classes.textArea}
-          rows={2}
-          cols={50}
-          name="comment"
-          form="usrform"
-          value={question}
-          onChange={handleQuestionChange}
-          placeholder="Enter text here..."
-          disabled={!props.isChatActive}
-        />
-        <IconButton
-          onClick={SendNewQuestions}
-          className="tooltiptext"
-          disabled={question === '' || !props.isChatActive}
-        >
-          {question ? (
-            <SendIcon color="primary" fontSize="large" />
-          ) : (
-            <SendIcon color="disabled" fontSize="large" />
-          )}
-        </IconButton>
-      </div>
+      {isChatActive && (
+        <div className={classes.bottom}>
+          <textarea
+            className={classes.textArea}
+            rows={2}
+            cols={50}
+            name="comment"
+            form="usrform"
+            value={question}
+            onChange={handleQuestionChange}
+            placeholder="Enter text here..."
+            disabled={!isChatActive}
+          />
+          <IconButton
+            onClick={SendNewQuestions}
+            className="tooltiptext"
+            disabled={question === '' || !isChatActive}
+          >
+            {question ? (
+              <SendIcon color="primary" fontSize="large" />
+            ) : (
+              <SendIcon color="disabled" fontSize="large" />
+            )}
+          </IconButton>
+        </div>
+      )}
     </div>
   );
 };

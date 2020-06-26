@@ -39,14 +39,12 @@ namespace App.TalkCreation.Data.DataFetch
             var talk = context.Talks.Where(t => t.Id == session.TalkId).FirstOrDefault(); ;
             if (talk.OwnerId == Convert.ToInt32(userId))
             {
-                var userQuestions = context.UserQuestions.Where(u => u.SessionId == sessionId).ToList().FirstOrDefault();
                 var talkNQuizzes = await _talkServiceFetch.getTalkAndQuizzes(talk.Id);
                 SessionQuizzNChatDto sessionQuizzNChat = new SessionQuizzNChatDto
                 {
                     Session = session,
                     Date = DateTime.Parse(session.StartDate),
                     TalkNQuizzes = talkNQuizzes,
-                    UserQuestions = userQuestions
                 };
 
                 return sessionQuizzNChat;
