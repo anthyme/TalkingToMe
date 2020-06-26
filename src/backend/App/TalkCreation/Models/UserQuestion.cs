@@ -14,5 +14,7 @@ namespace App.TalkCreation.Models
         public int SessionId { get; set; }
         public string Date { get; set; }
         public Session Session { get; set; }
+
+        public string UserContext { get; set; }
     }
 }

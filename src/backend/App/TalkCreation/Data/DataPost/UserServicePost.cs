@@ -130,7 +130,8 @@ namespace App.TalkCreation.Data.DataPost
                 Upvotes = 0,
                 SessionId = session.Id,
                 Username = savedUserName,
-                Date= date,
+                Date = date,
+                UserContext = userContext,
             };
             context.UserQuestions.Add(userQuestion);
             context.SaveChanges();

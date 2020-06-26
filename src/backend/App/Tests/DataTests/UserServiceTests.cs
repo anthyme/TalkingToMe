@@ -59,7 +59,7 @@ namespace App.Tests.DataTests
        [Fact]
         public async void GetQuestionsBySessionTest()
         {
-            CurrentSession currentSession = new CurrentSession("1", -1, DateTime.Now, new List<QuizzAnswers> { new QuizzAnswers() { quizzId = -1, listAnswers = new List<Dictionary<int, string>> { new Dictionary<int, string>() } } });
+            CurrentSession currentSession = new CurrentSession("1", -1, DateTime.Now, new List<QuizzAnswers> { new QuizzAnswers() { quizzId = -1, listAnswers = new List<Dictionary<int, string>> { new Dictionary<int, string>() } } }, new List<string>());
             _talkSessionRepo.Save(currentSession);
             List<UserQuestionsDTO> userQuestionsDto = _userServiceFetch.GetQuestionsBySession("1");
             userQuestionsDto.Should().BeEquivalentTo(new[] {
@@ -77,7 +77,7 @@ namespace App.Tests.DataTests
         [Fact]
         public async void SaveSessionAndAnswersTest()
         {
-            CurrentSession currentSession = new CurrentSession("1", -1, DateTime.Now, new List<QuizzAnswers> { new QuizzAnswers() { quizzId = -1, listAnswers = new List<Dictionary<int, string>> { new Dictionary<int, string>() } } });
+            CurrentSession currentSession = new CurrentSession("1", -1, DateTime.Now, new List<QuizzAnswers> { new QuizzAnswers() { quizzId = -1, listAnswers = new List<Dictionary<int, string>> { new Dictionary<int, string>() } } }, new List<string>());
             _talkSessionRepo.Save(currentSession);
             var exception = Record.Exception(() => _userServicePost.SaveSessionAndAnswers(currentSession));
             Assert.Null(exception);
@@ -88,7 +88,7 @@ namespace App.Tests.DataTests
         public async void SaveQuestionTest()
         {
             var context =_talkContextFactory.Create();
-            CurrentSession currentSession = new CurrentSession("1", -1, DateTime.Now, new List<QuizzAnswers> { new QuizzAnswers() { quizzId = -1, listAnswers = new List<Dictionary<int, string>> { new Dictionary<int, string>() } } });
+            CurrentSession currentSession = new CurrentSession("1", -1, DateTime.Now, new List<QuizzAnswers> { new QuizzAnswers() { quizzId = -1, listAnswers = new List<Dictionary<int, string>> { new Dictionary<int, string>() } } }, new List<string>());
             _talkSessionRepo.Save(currentSession);
             UserQuestionsDTO savedUserQuestion = _userServicePost.SaveQuestion("1","Test","Test","Test","1");
             savedUserQuestion.Should().BeEquivalentTo(
@@ -110,7 +110,7 @@ namespace App.Tests.DataTests
         [Fact]
         public async void ChangeUpVote()
         {
-            CurrentSession currentSession = new CurrentSession("1", -1, DateTime.Now, new List<QuizzAnswers> { new QuizzAnswers() { quizzId = -1, listAnswers = new List<Dictionary<int, string>> { new Dictionary<int, string>() } } });
+            CurrentSession currentSession = new CurrentSession("1", -1, DateTime.Now, new List<QuizzAnswers> { new QuizzAnswers() { quizzId = -1, listAnswers = new List<Dictionary<int, string>> { new Dictionary<int, string>() } } }, new List<string>());
             _talkSessionRepo.Save(currentSession);
             int upvotesUp = _userServicePost.ChangeUpVote(1, true);
             Assert.Equal<int>(2, upvotesUp);

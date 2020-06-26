@@ -14,12 +14,13 @@ namespace App.TalkAnswer.SaveTalkProgress
         public List<QuizzAnswers> allAnswers { get; set; }
         public List<string>  mutedUsers { get; set; }
 
-        public CurrentSession(string Groupid, int CurrentQuizz, DateTime StartDate, List<QuizzAnswers> AllAnswers)
+        public CurrentSession(string Groupid, int CurrentQuizz, DateTime StartDate, List<QuizzAnswers> AllAnswers, List<string> MutedUsers)
         {
             groupid = Groupid;
             currentQuizz = CurrentQuizz;
             startDate = StartDate;
             allAnswers = AllAnswers;
+            mutedUsers = MutedUsers;
         }
 
         protected bool Equals(CurrentSession other)
@@ -39,13 +40,13 @@ namespace App.TalkAnswer.SaveTalkProgress
         {
             return HashCode.Combine(groupid, currentQuizz);
         }
-        public static readonly CurrentSession Invalid = new CurrentSession("Invalid", -1,new DateTime(), null);
+        public static readonly CurrentSession Invalid = new CurrentSession("Invalid", -1,new DateTime(), null, null);
         public static CurrentSession Add(CurrentSession other)
         {
             if (other.groupid == "-1"
                 || other.Equals(Invalid))
                 return CurrentSession.Invalid;
-            return new CurrentSession(other.groupid, other.currentQuizz, other.startDate, other.allAnswers);
+            return new CurrentSession(other.groupid, other.currentQuizz, other.startDate, other.allAnswers, other.mutedUsers);
         }
     }
 }

@@ -46,10 +46,10 @@ const Message: React.FC<IProps> = (props) => {
   const [question, setQuestion] = useState('')
   const [userName, setUserName] = useState('')
   const [userContext, setUserContext] = useState(
-    message.UserContext !== null ? message.UserContext : '',
+    message.userContext !== null ? message.userContext : '',
   )
   const [upvoted, setUpVoted] = useState(false)
-  const [muted, setMuted] = useState(mutedUsers?.indexOf(message.UserContext)!==-1?true:false)
+  const [muted, setMuted] = useState(mutedUsers?.indexOf(message.userContext)!==-1?true:false)
   const [upvotes, setUpvotes] = useState(
     message.upvotes !== null ? message.upvotes : 0,
   )
@@ -76,7 +76,12 @@ const Message: React.FC<IProps> = (props) => {
     if (connection) {
       connection.invoke('MuteUnmuteUser', groupId, userContext)
       if(changeMutedUsers){
-        changeMutedUsers(message.UserContext);
+        changeMutedUsers(message.userContext);
+        if(muted){
+          setMuted(false)
+        }else{
+          setMuted(true);
+        }
       }
     }
   }
@@ -128,7 +133,7 @@ const Message: React.FC<IProps> = (props) => {
                     ) : (
                       <IconButton onClick={handleMuteUnmute}>
                         <SpeakerNotesOffIcon
-                          color="primary"
+                          color="disabled"
                           fontSize="small"
                         />
                       </IconButton>

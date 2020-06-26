@@ -334,6 +334,9 @@ namespace App.Migrations
                     b.Property<int>("Upvotes")
                         .HasColumnType("int");
 
+                    b.Property<string>("UserContext")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Username")
                         .HasColumnType("nvarchar(max)");
 
