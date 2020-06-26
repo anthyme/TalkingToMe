@@ -12,27 +12,27 @@ import {
   Box,
   Grid,
   IconButton,
-} from '@material-ui/core'
-import { loadTalkNQuizzes } from '../dataTransfers/Fetchs/DataTalkFetch'
-import { loadQuizzContent } from '../dataTransfers/Fetchs/DataQuestionFetch'
-import QuestionInterface from './questionsPreview/QuestionInterface'
-import { useHistory } from 'react-router-dom'
-import QRCode from 'qrcode.react'
-import ChatInterface from '../chatBox/ChatInterface'
-import { InitialState } from '../store/reducers/MainReducer'
-import { useSelector } from 'react-redux'
-import useSound from 'use-sound'
-import NotificationImportantIcon from '@material-ui/icons/NotificationImportant'
-import { siteUrl, urlHub } from '../constants'
+} from '@material-ui/core';
+import { loadTalkNQuizzes } from '../dataTransfers/Fetchs/DataTalkFetch';
+import { loadQuizzContent } from '../dataTransfers/Fetchs/DataQuestionFetch';
+import QuestionInterface from './questionsPreview/QuestionInterface';
+import { useHistory } from 'react-router-dom';
+import QRCode from 'qrcode.react';
+import ChatInterface from '../chatBox/ChatInterface';
+import { InitialState } from '../store/reducers/MainReducer';
+import { useSelector } from 'react-redux';
+import useSound from 'use-sound';
+import NotificationImportantIcon from '@material-ui/icons/NotificationImportant';
+import { siteUrl, urlHub } from '../constants';
 import {
   HubConnectionBuilder,
   HttpTransportType,
   HubConnection,
-} from '@microsoft/signalr'
-import GraphInterface from '../graphs/GraphInterface'
-import { isEmpty } from 'lodash'
-import { putTalk } from '../dataTransfers/Posts/DataTalkPost'
-import Timer from '../timer/Timer'
+} from '@microsoft/signalr';
+import GraphInterface from '../graphs/GraphInterface';
+import { isEmpty } from 'lodash';
+import { putTalk } from '../dataTransfers/Posts/DataTalkPost';
+import Timer from '../timer/Timer';
 
 interface StateProps {
   userIdRdx: string;
@@ -40,23 +40,23 @@ interface StateProps {
 }
 
 const TalkInterface = () => {
-  const url = new URL(window.location.href)
-  const [quizzId, setQuizzId] = useState('0')
-  const [results, setResults] = useState(Object)
-  const [showResults, setShowResults] = useState(false)
-  const [listQuizzes, setListQuizzes] = useState([{}])
-  const [talkName, setTalkName] = useState('')
-  const [tab, setTab] = useState('Talk')
-  const [bell, setBell] =useState(false);
-  const [username, setUsername] = useState("Talker")
-  const [likedQuestions, setLikedQuestions] = useState<number[]>([])
-  const [mutedUsers, setMutedUsers] = useState<string[]>([])
-  const [showQuestion, setShowQuestion] = useState(false)
-  const [connection, setConnection] = useState<HubConnection>()
-  const [questionsData, setQuestionsData] = useState([{}])
-  const [groupId, setGroupId] = useState(url.searchParams.get('groupId'))
-  const [quizzRunning, setQuizzRunning] = useState(false)
-  const [bigQR, setBigQR] = useState(false)
+  const url = new URL(window.location.href);
+  const [quizzId, setQuizzId] = useState('0');
+  const [results, setResults] = useState(Object);
+  const [showResults, setShowResults] = useState(false);
+  const [listQuizzes, setListQuizzes] = useState([{}]);
+  const [talkName, setTalkName] = useState('');
+  const [tab, setTab] = useState('Talk');
+  const [bell, setBell] = useState(false);
+  const [username, setUsername] = useState('Talker');
+  const [likedQuestions, setLikedQuestions] = useState<number[]>([]);
+  const [mutedUsers, setMutedUsers] = useState<string[]>([]);
+  const [showQuestion, setShowQuestion] = useState(false);
+  const [connection, setConnection] = useState<HubConnection>();
+  const [questionsData, setQuestionsData] = useState([{}]);
+  const [groupId, setGroupId] = useState(url.searchParams.get('groupId'));
+  const [quizzRunning, setQuizzRunning] = useState(false);
+  const [bigQR, setBigQR] = useState(false);
   const { userIdRdx, tokenIdRdx } = useSelector<InitialState, StateProps>(
     (state: InitialState) => {
       return {
@@ -82,18 +82,18 @@ const TalkInterface = () => {
       newLikedQuestions.splice(newLikedQuestions.indexOf(questionId), 1);
       setLikedQuestions(newLikedQuestions);
     }
-  }
+  };
 
-  const changeMutedUsers = (userContext:string) => {
+  const changeMutedUsers = (userContext: string) => {
     if (mutedUsers.indexOf(userContext) !== -1) {
-      let newMutedUsers = [...mutedUsers, userContext]
-      setMutedUsers(newMutedUsers)
+      let newMutedUsers = [...mutedUsers, userContext];
+      setMutedUsers(newMutedUsers);
     } else {
-      let newMutedUsers = mutedUsers
-      newMutedUsers.splice(mutedUsers.indexOf(userContext), 1)
-      setMutedUsers(newMutedUsers)
+      let newMutedUsers = mutedUsers;
+      newMutedUsers.splice(mutedUsers.indexOf(userContext), 1);
+      setMutedUsers(newMutedUsers);
     }
-  }
+  };
 
   //Buttons
   const backToMenu = async () => {
@@ -158,16 +158,17 @@ const TalkInterface = () => {
     setTab('Chat');
   };
 
-  const handleBellChange= async ()=>{
+  const handleBellChange = async () => {
     if (connection) {
-      await connection.invoke('CancelBell', groupId)}
+      await connection.invoke('CancelBell', groupId);
+    }
     setBell(false);
-  }
+  };
   const stopQuizz = async () => {
     if (connection) {
-      await connection.invoke('StopQuizz', groupId, quizzId)
+      await connection.invoke('StopQuizz', groupId, quizzId);
     }
-  }
+  };
 
   const [playActive] = useSound('../sounds/pop-down.mp3', { volume: 0.25 });
 
@@ -175,7 +176,7 @@ const TalkInterface = () => {
     if (!isEmpty(results)) {
       setShowResults(true);
     }
-  }, [results]) 
+  }, [results]);
 
   //UseEffects
   useEffect(() => {
@@ -191,10 +192,10 @@ const TalkInterface = () => {
       .withAutomaticReconnect()
       .build();
     connection.start().then(() => {
-      connection.invoke('CreateTalkGroup', groupId, Number(TalkId))
-      connection.invoke('GetCurrentSessionMutedUsers', groupId)
-      console.log('connected')
-    })
+      connection.invoke('CreateTalkGroup', groupId, Number(TalkId));
+      connection.invoke('GetCurrentSessionMutedUsers', groupId);
+      console.log('connected');
+    });
     connection.on('NewChannel', function (responseData: string) {
       console.log('The new channel is: ' + responseData);
     });
@@ -205,25 +206,25 @@ const TalkInterface = () => {
       connection.invoke('GetCurrentQuizz', groupId, quizzId);
     });
     connection.on('ShowResults', function (responseData: any) {
-      setResults(responseData.listQuestions)
-    })
+      setResults(responseData.listQuestions);
+    });
     connection.on('CannotHear', function (responseData: any) {
       playActive();
-      setBell(true)
-    })
+      setBell(true);
+    });
     connection.on('StopQuizz', function (responseData: any) {
-      setQuizzRunning(false)
-      setQuizzId("0");
-    })
+      setQuizzRunning(false);
+      setQuizzId('0');
+    });
     connection.on('ShowMutedUsers', async (results: any) => {
       let newMutedUsers = results;
       if (results !== null) {
-        await setMutedUsers(newMutedUsers)
+        await setMutedUsers(newMutedUsers);
       }
-    })
-    setConnection(connection)
-    loadInit()
-  }, []) //Load only once at first build
+    });
+    setConnection(connection);
+    loadInit();
+  }, []); //Load only once at first build
 
   //CSS
   const useStyles = makeStyles((theme) => ({
@@ -353,14 +354,18 @@ const TalkInterface = () => {
                 <NotificationImportantIcon color="disabled" fontSize="large" />
               )}
             </Grid>
-            <Timer connection={connection} groupId={groupId} quizzId={quizzId}/>
+            <Timer
+              connection={connection}
+              groupId={groupId}
+              quizzId={quizzId}
+            />
             <div>
               <a
                 href={`TalkAnswer?talkId=${groupId}&ownerId=${userIdRdx}&talkName=${talkName}`}
               >
                 Link to a user page
               </a>
-              
+
               <div className={classes.smallQR} onClick={() => setBigQR(true)}>
                 <QRCode value={qrString ? qrString : ''} />
               </div>
@@ -381,7 +386,11 @@ const TalkInterface = () => {
             </div>
           </div>
           <div className={classes.quizzNQuest}>
-            {showQuestion && <h3 className={classes.title}>Quizz {showResults?"results":"preview"}</h3>}
+            {showQuestion && (
+              <h3 className={classes.title}>
+                Quizz {showResults ? 'results' : 'preview'}
+              </h3>
+            )}
             {showQuestion &&
               questionsData.map(
                 (question: any) =>
@@ -433,8 +442,9 @@ const TalkInterface = () => {
           username={username}
           changeUserName={changeUsername}
           talkerChat={true}
-          mutedUsers ={mutedUsers}
-          changeMutedUsers= {changeMutedUsers}
+          mutedUsers={mutedUsers}
+          changeMutedUsers={changeMutedUsers}
+          isChatActive={true}
         />
       )}
     </React.Fragment>

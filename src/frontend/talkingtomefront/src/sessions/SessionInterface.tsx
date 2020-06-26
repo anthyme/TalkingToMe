@@ -76,6 +76,8 @@ const SessionInterface = () => {
   };
 
   const showInitialFetchedData = (data: any) => {
+    console.log('Louis data', data);
+    console.log('Louis userIdRdx', userIdRdx);
     if (data) {
       var options = {
         year: 'numeric',
@@ -105,11 +107,12 @@ const SessionInterface = () => {
   useEffect(() => {
     if (userIdRdx === '-1') {
       history.push('/');
+    } else {
+      sessionId &&
+        getSessionAndChatById(sessionId, userIdRdx, tokenIdRdx).then(
+          (json) => json && showInitialFetchedData(json),
+        );
     }
-    sessionId &&
-      getSessionAndChatById(sessionId, userIdRdx, tokenIdRdx).then(
-        (json) => json && showInitialFetchedData(json),
-      );
   }, [history, sessionId, tokenIdRdx, userIdRdx]);
 
   const useStyles = makeStyles((theme) => ({
@@ -252,6 +255,7 @@ const SessionInterface = () => {
         </div>
       ) : (
         <ChatInterface
+          talkerChat={false}
           connection={null}
           groupId={groupId}
           likedQuestions={likedQuestions}
@@ -262,6 +266,7 @@ const SessionInterface = () => {
           changeUserName={() => {
             return null;
           }}
+          isChatActive={false}
         />
       )}
     </React.Fragment>

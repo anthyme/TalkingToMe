@@ -1,18 +1,18 @@
-import * as signalR from '@aspnet/signalr'
-import React, { useState, useEffect } from 'react'
-import { CreateTalkHub } from '../signalR/CreateHub'
-import { useSelector } from 'react-redux'
-import { InitialState } from '../store/reducers/MainReducer'
-import { v4 as uuidv4 } from 'uuid'
-import { getQuizzById } from '../dataTransfers/Fetchs/DataQuizzFetch'
-import useSound from 'use-sound'
-import NotificationImportantIcon from '@material-ui/icons/NotificationImportant'
+import * as signalR from '@aspnet/signalr';
+import React, { useState, useEffect } from 'react';
+import { CreateTalkHub } from '../signalR/CreateHub';
+import { useSelector } from 'react-redux';
+import { InitialState } from '../store/reducers/MainReducer';
+import { v4 as uuidv4 } from 'uuid';
+import { getQuizzById } from '../dataTransfers/Fetchs/DataQuizzFetch';
+import useSound from 'use-sound';
+import NotificationImportantIcon from '@material-ui/icons/NotificationImportant';
 import {
   HubConnectionBuilder,
   HttpTransportType,
   HubConnection,
-} from '@microsoft/signalr'
-import QuestionInterface from '../talk/questionsPreview/QuestionInterface'
+} from '@microsoft/signalr';
+import QuestionInterface from '../talk/questionsPreview/QuestionInterface';
 import {
   Typography,
   AppBar,
@@ -21,143 +21,142 @@ import {
   Button,
   Grid,
   IconButton,
-} from '@material-ui/core'
-import ChatInterface from '../chatBox/ChatInterface'
+} from '@material-ui/core';
+import ChatInterface from '../chatBox/ChatInterface';
 interface StateProps {
-  userIdRdx: string
-  tokenIdRdx: string
+  userIdRdx: string;
+  tokenIdRdx: string;
 }
 interface IProps {}
 const UserAnswerQuizz: React.FC<IProps> = (props) => {
-  const [quizzName, setQuizzName] = useState('')
-  const [tab, setTab] = useState('Quizz')
-  const [quizzId, setQuizzId] = useState(-1)
-  const [questionsData, setQuestionsData] = useState([{}])
-  const [username, setUsername] = useState('')
-  const [likedQuestions, setLikedQuestions] = useState<number[]>([])
-  const [waitingQuizz, setWaitingQuizz] = useState(true)
-  const [connection, setConnection] = useState<HubConnection>()
-  const [hasValidated, setHasValidated] = useState(false)
-  const [bell, setBell] = useState(true)
-  const url = new URL(window.location.href)
-  const groupId: string | null = url.searchParams.get('talkId')
-  const ownerId: string | null = url.searchParams.get('ownerId')
-  const talkName: string | null = url.searchParams.get('talkName')
-  const listAnswer = new Map()
+  const [quizzName, setQuizzName] = useState('');
+  const [tab, setTab] = useState('Quizz');
+  const [quizzId, setQuizzId] = useState(-1);
+  const [questionsData, setQuestionsData] = useState([{}]);
+  const [username, setUsername] = useState('');
+  const [likedQuestions, setLikedQuestions] = useState<number[]>([]);
+  const [waitingQuizz, setWaitingQuizz] = useState(true);
+  const [connection, setConnection] = useState<HubConnection>();
+  const [hasValidated, setHasValidated] = useState(false);
+  const [bell, setBell] = useState(true);
+  const url = new URL(window.location.href);
+  const groupId: string | null = url.searchParams.get('talkId');
+  const ownerId: string | null = url.searchParams.get('ownerId');
+  const talkName: string | null = url.searchParams.get('talkName');
+  const listAnswer = new Map();
 
   window.onbeforeunload = function () {
-    connection?.stop()
-  }
+    connection?.stop();
+  };
   const changeLikedQuestions = (upvoted: boolean, questionId: number) => {
     if (upvoted === true) {
-      let newLikedQuestions = [...likedQuestions, questionId]
-      setLikedQuestions(newLikedQuestions)
+      let newLikedQuestions = [...likedQuestions, questionId];
+      setLikedQuestions(newLikedQuestions);
     } else {
-      let newLikedQuestions = likedQuestions
-      newLikedQuestions.splice(newLikedQuestions.indexOf(questionId), 1)
-      setLikedQuestions(newLikedQuestions)
+      let newLikedQuestions = likedQuestions;
+      newLikedQuestions.splice(newLikedQuestions.indexOf(questionId), 1);
+      setLikedQuestions(newLikedQuestions);
     }
-  }
-
-  
+  };
 
   if (connection) {
     connection.on(
       'StartQuizz',
       (quests: any, quizzId: number, quizzName: string) => {
-        console.log('StartQuizz')
-        setQuizzId(quizzId)
-        setQuizzName(quizzName)
-        showQuestions(quests)
+        console.log('StartQuizz');
+        setQuizzId(quizzId);
+        setQuizzName(quizzName);
+        showQuestions(quests);
       },
-    )
+    );
     connection.on(
       'SetCurrentQuizz',
       (quests: any, quizzId: number, quizzName: string) => {
         if (quizzId !== -1) {
-          setQuizzId(quizzId)
-          setQuizzName(quizzName)
-          showQuestions(quests)
+          setQuizzId(quizzId);
+          setQuizzName(quizzName);
+          showQuestions(quests);
         }
       },
-    )
+    );
     connection.on('StopQuizz', () => {
-      setWaitingQuizz(true)
-      setQuizzId(-1)
-      setQuizzName('')
-      setQuestionsData([{}])
-      setHasValidated(false)
-    })
+      setWaitingQuizz(true);
+      setQuizzId(-1);
+      setQuizzName('');
+      setQuestionsData([{}]);
+      setHasValidated(false);
+    });
 
     connection.on('CancelBell', () => {
       setBell(true);
-    })
+    });
   }
   const showQuestions = (data: any) => {
     if (data) {
-      setQuestionsData(data)
+      setQuestionsData(data);
       for (let d of data) {
-        listAnswer.set(d.id, '')
+        listAnswer.set(d.id, '');
       }
-      setWaitingQuizz(false)
+      setWaitingQuizz(false);
     }
-  }
+  };
 
   const changeUsername = (username: string) => {
-    setUsername(username)
-  }
+    setUsername(username);
+  };
 
   const changeToChat = () => {
-    setTab('Chat')
-  }
+    setTab('Chat');
+  };
 
   const changeToQuizz = () => {
-    setTab('Quizz')
-  }
+    setTab('Quizz');
+  };
 
   const handleBellChange = async () => {
     if (connection) {
-      await connection.invoke('CannotHear', groupId)}
-    setBell(false)
-  }
+      await connection.invoke('CannotHear', groupId);
+    }
+    setBell(false);
+  };
 
   const addAnswerToList = (questId: number, resp: string) => {
-    listAnswer.set(questId, resp)
-  }
+    listAnswer.set(questId, resp);
+  };
 
   const saveAnswers = () => {
     if (!hasValidated && connection) {
-      let questIdList: number[] = []
-      let answerList: string[] = []
+      let questIdList: number[] = [];
+      let answerList: string[] = [];
       listAnswer.forEach((value, key, map) => {
-        questIdList.push(key)
-        answerList.push(value)
-      })
+        questIdList.push(key);
+        answerList.push(value);
+      });
       connection.invoke(
         'SaveAnswers',
         groupId,
         quizzId,
         questIdList,
         answerList,
-      )
+      );
     }
-    setHasValidated(true)
-  }
+    setHasValidated(true);
+  };
   const createHubConnection = async () => {
-    const connect = CreateTalkHub()
+    const connect = CreateTalkHub();
     try {
-      await connect.start()
+      await connect.start();
       //Invoke method defined in server to add user to a specified group
     } catch (err) {
-      console.log(err)
+      console.log(err);
     }
-    setConnection(connect)
-    connect.invoke('JoinGroup', groupId, ownerId)
-    connect.invoke('GetCurrentQuizz', groupId)
-  }
+    setConnection(connect);
+    connect.invoke('JoinGroup', groupId, ownerId);
+    connect.invoke('GetCurrentQuizz', groupId);
+  };
   useEffect(() => {
-    createHubConnection()
-  }, [])
+    createHubConnection();
+  }, []);
 
   const useStyles = makeStyles((theme) => ({
     button: {
@@ -179,9 +178,9 @@ const UserAnswerQuizz: React.FC<IProps> = (props) => {
       color: 'white',
       backgroundColor: '#3f51b5',
     },
-  }))
+  }));
 
-  const classes = useStyles()
+  const classes = useStyles();
 
   return (
     <React.Fragment>
@@ -197,22 +196,20 @@ const UserAnswerQuizz: React.FC<IProps> = (props) => {
             <Button onClick={changeToChat} className={classes.rightButton}>
               Chat
             </Button>
-            <Grid container justify="flex-end">
-              
-            </Grid>
+            <Grid container justify="flex-end"></Grid>
           </Toolbar>
         </AppBar>
         {bell ? (
-                <IconButton
-                  aria-label="edit"
-                  onClick={handleBellChange}
-                  className="CannotHear"
-                >
-                  <NotificationImportantIcon color="primary" fontSize="large" />{' '}
-                </IconButton>
-              ) : (
-                <NotificationImportantIcon color="disabled" fontSize="large" />
-              )}
+          <IconButton
+            aria-label="edit"
+            onClick={handleBellChange}
+            className="CannotHear"
+          >
+            <NotificationImportantIcon color="primary" fontSize="large" />{' '}
+          </IconButton>
+        ) : (
+          <NotificationImportantIcon color="disabled" fontSize="large" />
+        )}
         {tab === 'Quizz' ? (
           waitingQuizz ? (
             <div className={classes.center}>
@@ -272,10 +269,11 @@ const UserAnswerQuizz: React.FC<IProps> = (props) => {
             changeLikedQuestions={changeLikedQuestions}
             changeUserName={changeUsername}
             talkerChat={false}
+            isChatActive={true}
           />
         )}
       </>
     </React.Fragment>
-  )
-}
-export default UserAnswerQuizz
+  );
+};
+export default UserAnswerQuizz;
