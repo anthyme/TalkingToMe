@@ -21,6 +21,7 @@ namespace App.TalkCreation.Data.DataPost
             using TalkContext context = _talkContextFactory.Create();
             var session = await context.Sessions.FindAsync(id);
             context.SessionToQuizzes.RemoveRange(context.SessionToQuizzes.Where(s => s.SessionId == id));
+            context.UserAnswers.RemoveRange(context.UserAnswers.Where(u => u.SessionId == id));
             context.Sessions.Remove(session);
             await context.SaveChangesAsync();
             return "{\"response\":\"Remove sucessful\"}";

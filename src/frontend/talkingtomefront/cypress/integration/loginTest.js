@@ -18,7 +18,6 @@ before(function fetchUser() {
     .then((resp) => {
       //token extracted from JSON payload and is saved in LocalStorage
       user = resp;
-      console.log('Louis resp', resp);
     });
 });
 
@@ -34,7 +33,6 @@ beforeEach(function setUser() {
 });
 
 describe('Loging-in', () => {
-  console.log('Louis user', user);
   it('Visits localhost:3000 and connects', () => {
     cy.visit('https://localhost:3000/');
     cy.contains('type').click();

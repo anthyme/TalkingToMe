@@ -82,7 +82,6 @@ namespace App.TalkAnswer.Services
 
                     }
                     return quizzResults;
-                    Console.WriteLine("Change Talk");
                 }
                 catch (Exception e)
                 {

@@ -15,6 +15,10 @@ using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Authorization;
 using DocumentFormat.OpenXml.Spreadsheet;
 using App.TokenValidation;
+using App.TalkAnswer.Dto.QuizzResultsDTO;
+using Microsoft.Extensions.Primitives;
+using App.TalkAnswer.Services;
+using App.TalkAnswer.Dto;
 
 namespace App.TalkCreation.Data
 {
@@ -25,12 +29,14 @@ namespace App.TalkCreation.Data
     {
         private readonly TalkContext _context;
         private readonly UserServiceFetch _userServiceFetch;
+        private readonly UserServices _userServices;
         private readonly ILogger _logger;
 
-        public UserController(TalkContext context, UserServiceFetch userServiceFetch, ILogger<TalksController> logger)
+        public UserController(TalkContext context, UserServiceFetch userServiceFetch, UserServices userServices, ILogger<TalksController> logger)
         {
             _context = context;
             _userServiceFetch = userServiceFetch;
+            _userServices = userServices;
             _logger = logger;
         }
 
@@ -43,6 +49,28 @@ namespace App.TalkCreation.Data
             string userId = _userServiceFetch.CheckUserExistence(parsedInfos);
             // End of test purpose //
             return userId;
+        }
+
+        [HttpGet("resultsBySessionAndQuizz/{groupId}")]
+        public async Task<QuizzResults> LoadResults(string groupId)
+        {
+            var header = Request.Headers;
+            if (header.ContainsKey("QuizzId"))
+            {
+                StringValues quizzId;
+                header.TryGetValue("QuizzId", out quizzId);
+
+                var quizzResults = _userServices.GetQuizzResults(groupId, Convert.ToInt32(quizzId));
+                return quizzResults;
+            }
+            return null;
+        }
+
+        [HttpGet("QuestionsBySession/{groupId}")]
+        public async Task<List<UserQuestionsDTO>> LoadQuestionsBySession(string groupId)
+        {
+            var userQuestionsDTO = _userServiceFetch.GetQuestionsBySession(groupId);
+            return userQuestionsDTO;
         }
     }
 }

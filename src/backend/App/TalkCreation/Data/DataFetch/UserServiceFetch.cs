@@ -62,11 +62,6 @@ namespace App.TalkCreation.Data.DataFetch
 
         public List<UserQuestionsDTO> GetQuestionsBySession(string groupId)
         {
-            CurrentSession currentSession = _talkSessionRepo.Get(groupId);
-            if (currentSession == null)
-            {
-                return null;
-            }
             using TalkContext context = _talkContextFactory.Create();
             Session session = context.Sessions.Where(p => p.groupId == groupId).FirstOrDefault();
             List<UserQuestion> userQuestions = context.UserQuestions.Where(p => p.SessionId == session.Id).ToList();
@@ -81,6 +76,7 @@ namespace App.TalkCreation.Data.DataFetch
                     SessionId = session.Id,
                     Username = userQuestion.Username,
                     Date = userQuestion.Date,
+                    UserContext = userQuestion.UserContext,
                 };
                 userQuestionsDTO.Add(userQuestionDTO);
             }

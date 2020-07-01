@@ -6,17 +6,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using App.TalkCreation.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace App.TalkCreation.Data.DataFetch
 {
     public class SessionServiceFetch
     {
         readonly TalkContextFactory _talkContextFactory;
+        private readonly TalksServiceFetch _talkServiceFetch;
         readonly SessionMapper _mapper;
 
-        public SessionServiceFetch(TalkContextFactory talkContextFactory, SessionMapper mapper)
+        public SessionServiceFetch(TalkContextFactory talkContextFactory, TalksServiceFetch talkServiceFetch, SessionMapper mapper)
         {
             _talkContextFactory = talkContextFactory;
+            _talkServiceFetch = talkServiceFetch;
             _mapper = mapper;
         }
 
@@ -26,6 +29,27 @@ namespace App.TalkCreation.Data.DataFetch
             var sessions = context.Sessions.Where(s => s.TalkId == talkId && s.EndDate != null)
                 .OrderByDescending(s => s.StartDate).ToList();
             return _mapper.Map(sessions);
+        }
+
+        public async Task<SessionQuizzNChatDto> returnSessionAndChatById(int sessionId, string userId)
+        {
+            using TalkContext context = _talkContextFactory.Create();
+
+            var session = context.Sessions.Where(s => s.Id == sessionId).FirstOrDefault();
+            var talk = context.Talks.Where(t => t.Id == session.TalkId).FirstOrDefault(); ;
+            if (talk.OwnerId == Convert.ToInt32(userId))
+            {
+                var talkNQuizzes = await _talkServiceFetch.getTalkAndQuizzes(talk.Id);
+                SessionQuizzNChatDto sessionQuizzNChat = new SessionQuizzNChatDto
+                {
+                    Session = session,
+                    Date = DateTime.Parse(session.StartDate),
+                    TalkNQuizzes = talkNQuizzes,
+                };
+
+                return sessionQuizzNChat;
+            }
+            return null;
         }
     }
 

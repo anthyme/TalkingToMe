@@ -40,7 +40,7 @@ namespace App.TalkAnswer.SaveTalkProgress
         {
             return HashCode.Combine(groupid, currentQuizz);
         }
-        public static readonly CurrentSession Invalid = new CurrentSession("Invalid", -1,new DateTime(), null, null);
+        public static readonly CurrentSession Invalid = new CurrentSession("Invalid", -1,new DateTime(), null, new List<string>());
         public static CurrentSession Add(CurrentSession other)
         {
             if (other.groupid == "-1"
