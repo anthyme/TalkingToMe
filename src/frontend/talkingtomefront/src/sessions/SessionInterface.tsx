@@ -157,7 +157,6 @@ const SessionInterface = () => {
   }));
   const classes = useStyles();
 
-  console.log('Louis message', historyMessages);
   return (
     <React.Fragment>
       <AppBar position="relative">

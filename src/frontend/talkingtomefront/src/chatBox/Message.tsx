@@ -35,20 +35,22 @@ interface IProps {
 }
 
 const Message: React.FC<IProps> = (props) => {
-  const classes = useStyles()
-  const connection = props.connection
-  const message = props.message
-  const groupId = props.groupId
-  const talkerChat = props.talkerChat
-  const likedQuestions = props.likedQuestions
-  const mutedUsers = props.mutedUsers
-  const changeLikedQuestions = props.changeLikedQuestions
-  const changeMutedUsers = props.changeMutedUsers
+  const classes = useStyles();
+  const connection = props.connection;
+  const message = props.message;
+  const groupId = props.groupId;
+  const talkerChat = props.talkerChat;
+  const likedQuestions = props.likedQuestions;
+  const mutedUsers = props.mutedUsers;
+  const changeLikedQuestions = props.changeLikedQuestions;
+  const changeMutedUsers = props.changeMutedUsers;
   const [userContext, setUserContext] = useState(
     message.userContext !== null ? message.userContext : '',
-  )
-  const [upvoted, setUpVoted] = useState(false)
-  const [muted, setMuted] = useState(mutedUsers?.indexOf(message.userContext)!==-1?true:false)
+  );
+  const [upvoted, setUpVoted] = useState(false);
+  const [muted, setMuted] = useState(
+    mutedUsers?.indexOf(message.userContext) !== -1 ? true : false,
+  );
   const [upvotes, setUpvotes] = useState(
     message.upvotes !== null ? message.upvotes : 0,
   );
@@ -73,12 +75,12 @@ const Message: React.FC<IProps> = (props) => {
 
   const handleMuteUnmute = () => {
     if (connection) {
-      connection.invoke('MuteUnmuteUser', groupId, userContext)
-      if(changeMutedUsers){
+      connection.invoke('MuteUnmuteUser', groupId, userContext);
+      if (changeMutedUsers) {
         changeMutedUsers(message.userContext);
-        if(muted){
-          setMuted(false)
-        }else{
+        if (muted) {
+          setMuted(false);
+        } else {
           setMuted(true);
         }
       }
@@ -96,7 +98,6 @@ const Message: React.FC<IProps> = (props) => {
         }
       });
   }, []); //Load only on
-  console.log('Louis message', message)
   return (
     <div>
       {message.id ? (

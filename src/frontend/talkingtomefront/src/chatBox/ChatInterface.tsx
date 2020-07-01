@@ -130,9 +130,12 @@ const ChatInterface: React.FC<IProps> = (props) => {
     }
   }, []); //Load only on
 
-  console.log('Louis chatI', messages);
+  console.log('Louis', messages[0]);
   return (
     <div>
+      {!isChatActive && messages[0] !== {} && (
+        <div>There has been no usage of the chat during this session</div>
+      )}
       {isChatActive && (
         <TextField
           name={userName}

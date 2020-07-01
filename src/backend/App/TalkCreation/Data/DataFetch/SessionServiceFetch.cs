@@ -27,7 +27,7 @@ namespace App.TalkCreation.Data.DataFetch
         {
             using TalkContext context = _talkContextFactory.Create();
             var sessions = context.Sessions.Where(s => s.TalkId == talkId && s.EndDate != null)
-                .OrderByDescending(s => s.StartDate).ToList();
+                .OrderByDescending(s => s.Id).ToList();
             return _mapper.Map(sessions);
         }
 
